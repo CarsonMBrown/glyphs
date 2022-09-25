@@ -1,5 +1,10 @@
 from src.binarization.dp_linknet import test
+from src.binarization.filters import gabor_filter
 from src.binarization.thresholding import input_sensitive_threshold
+
+
+def gabor(image_path, output_path):
+    gabor_filter.process(image_path, output_path)
 
 
 def sensitive_threshold(image_path, output_path):

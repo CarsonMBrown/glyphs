@@ -14,9 +14,7 @@ def run(img_in_dir, img_out_dir):
     set_output_dir(img_out_dir)
 
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path, "sensitive")
-        # CONVERT TO GREYSCALE
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path, "sensitive", gray_scale=True)
         # GET HISTOGRAM
         histograph = cv2.calcHist(img, [0], None, [256], [0, 256])
         # GET GLOBAL THRESHOLD VALUE
