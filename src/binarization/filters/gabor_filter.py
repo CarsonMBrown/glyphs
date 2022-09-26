@@ -13,7 +13,7 @@ def build_filters():
     """
     filters = []
     ksize = 31
-    for theta in np.arange(0, np.pi, np.pi / 32):
+    for theta in np.arange(0, np.pi, np.pi / 2):
         params = {'ksize': (ksize, ksize), 'sigma': 0.5, 'theta': theta, 'lambd': 5.0,
                   'gamma': 0.04, 'psi': 0, 'ktype': cv2.CV_32F}
         kern = cv2.getGaborKernel(**params)

@@ -13,7 +13,7 @@ def randomHueSaturationValue(image,
                              sat_shift_limit=(-255, 255),
                              val_shift_limit=(-255, 255), u=0.5):
     if np.random.random() < u:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
         h, s, v = cv2.split(image)
         hue_shift = np.random.randint(hue_shift_limit[0], hue_shift_limit[1] + 1)
         hue_shift = np.uint8(hue_shift)

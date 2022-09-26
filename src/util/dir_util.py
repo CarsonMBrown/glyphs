@@ -15,3 +15,10 @@ def set_output_dir(img_out_dir):
     if not os.path.exists(img_out_dir):
         os.makedirs(img_out_dir)
     print("Image output directory:", img_out_dir)
+
+
+def clean_dir(temp_dir):
+    img_list = get_input_images(temp_dir)
+    for i in img_list:
+        os.remove(os.path.join(temp_dir, i))
+    print("Cleared directory:", temp_dir)

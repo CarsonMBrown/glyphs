@@ -4,10 +4,9 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import Image
-from pytesseract import Output
 
 from src.util.dir_util import get_input_images, set_output_dir
-from src.util.img_util import load_image, save_image
+from src.util.img_util import load_image
 
 
 def tesseract(img_in_dir, img_out_dir):

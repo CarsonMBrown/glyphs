@@ -79,7 +79,7 @@ def fullness(img):
 
 def find_laplace(img):
     ar = np.asarray(img)
-    ar = cv2.cvtColor(ar, cv2.COLOR_BGR2GRAY)
+    ar = cv2.cvtColor(ar, cv2.COLOR_RGB2GRAY)
     ar = cv2.Laplacian(ar, cv2.CV_64F)
     low = 0
     high = 0
@@ -100,7 +100,7 @@ def find_laplace(img):
 def find_sobel(img):
     img = img.copy()
     ar = np.asarray(img)
-    ar = cv2.cvtColor(ar, cv2.COLOR_BGR2GRAY)
+    ar = cv2.cvtColor(ar, cv2.COLOR_RGB2GRAY)
     gX = cv2.Sobel(ar, cv2.CV_64F, 1, 0, ksize=5)
     gY = cv2.Sobel(ar, cv2.CV_64F, 0, 1, ksize=5)
     magnitude = np.sqrt((gX ** 2) + (gY ** 2))
