@@ -14,7 +14,7 @@ def tesseract(img_in_dir, img_out_dir):
     set_output_dir(img_out_dir)
 
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path, "sensitive")
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path)
 
         kernel = np.ones((10, 10), np.uint8)
 

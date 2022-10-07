@@ -1,0 +1,2909 @@
+"C:\Users\Carson Brown\.conda\envs\glyphs\python.exe" "C:/Users/Carson Brown/git/glyphs/src/main.py"
+Image input directory: dataset\train\raw
+Image output directory: dataset\train\ocular_training
+Now processing image: 901045_0007.jpg
+Now processing image: 901045_0009.jpg
+Now processing image: 901045_0019.jpg
+Now processing image: BNU_Pgr1242_r.jpg
+Now processing image: BNU_Pgr1876_r.jpg
+Now processing image: BNU_Pgr2480_v.jpg
+Now processing image: BNU_Pgr_2344fr46.png
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00001_frame_1.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00002_frame_2.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00003_frame_3.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00004_frame_4.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00005_frame_5.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00006_frame_6.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00007_frame_7.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00009_frame_9.jpg
+Now processing image: Bodleian_Library_MS_Gr_class_a_1_P_1_10_00010_frame_10.jpg
+Now processing image: Brux_Inv_5937.jpg
+Now processing image: Brux_Inv_7161.jpg
+Now processing image: Brux_Inv_7188.jpg
+Now processing image: G_02317_26742_Pap.jpg
+Now processing image: G_03085_Pap_recto.jpg
+Now processing image: G_12516_a_b_Pap.jpg
+Now processing image: G_12516_c_Pap1.png
+Now processing image: G_12516_d_26734_b_Pap.jpg
+Now processing image: G_26730_26745_29816_bis_recto.jpg
+Now processing image: G_26732_Pap.jpg
+Now processing image: G_26734_a_35721.jpg
+Now processing image: G_26734_c.jpg
+Now processing image: G_26734_d_Pap.jpg
+Now processing image: G_26734_e_39833_Pap.jpg
+Now processing image: G_26751_Pap.jpg
+Now processing image: G_31798_Pap_verso.jpg
+Now processing image: G_31936_Pap.jpg
+Now processing image: G_39839_Pap.jpg
+Now processing image: MS._Gr._class._d._41_(P)r.jpg
+Now processing image: MS._Gr._class._e._126_(P)r.jpg
+Now processing image: MS._Gr._class._f._42_(P)r.jpg
+Now processing image: MS._Gr._class._g._49_(P)r.jpg
+Now processing image: MS._Gr._class._g._49_(P)v.jpg
+Now processing image: P.Corn.Inv.MSS.A.101.XIII.jpg
+Premature end of JPEG file
+Now processing image: POxy.v0052.n3662.jpg
+Now processing image: PSI_VIII_978r.jpg
+Now processing image: PSI_XIII_1298_15a_r_1.jpg
+Premature end of JPEG file
+Now processing image: PSI_XII_1275r.jpg
+Now processing image: PSI_XIV_1375r.jpg
+Now processing image: PSI_XIV_1375v.jpg
+Now processing image: PSI_XIV_1377r.jpg
+Now processing image: PSI_XIV_1378r.jpg
+Now processing image: P_06845_R_001.jpg
+Now processing image: P_06869_Z_131ff_R_001.jpg
+Now processing image: P_06869_Z_494ff_R_001.jpg
+Now processing image: P_06869_Z_54ff_R_001.jpg
+Now processing image: P_06869_Z_602ff_R_001.jpg
+Now processing image: P_07492_R_001.jpg
+Now processing image: P_07493_R_001.jpg
+Now processing image: P_07494_R_001.jpg
+Now processing image: P_07495_R_001.jpg
+Now processing image: P_07507_R_001.jpg
+Now processing image: P_07807_R_001.jpg
+Now processing image: P_07808_R_001.jpg
+Now processing image: P_08440_R_001.jpg
+Now processing image: P_09584_R_2_001.jpg
+Now processing image: P_09774_R_001.jpg
+Now processing image: P_09813_R_001.jpg
+Now processing image: P_09949_R_001.jpg
+Now processing image: P_10574_R_001.jpg
+Now processing image: P_11522_V_3_001.jpg
+Now processing image: P_11645_R_001.jpg
+Now processing image: P_11761_R_4_001.jpg
+Now processing image: P_17002_R_001.jpg
+Now processing image: P_17054_R_001.jpg
+Now processing image: P_17211_R_2_001.jpg
+Now processing image: P_18125_R_001.jpg
+Now processing image: P_18177_R_3_001.jpg
+Now processing image: P_21121_R_3_001.jpg
+Now processing image: P_21185_R_3_001.jpg
+Now processing image: P_21215_R_3_001.jpg
+Now processing image: P_21216_R_3_001.jpg
+Now processing image: P_21242_R_001.jpg
+Now processing image: P_31080_R_001.jpg
+Now processing image: p_bas_27.b.r.jpg
+Now processing image: p_bas_27.b.v.jpg
+Now processing image: p_bas_27.d.r.jpg
+Now processing image: P_CtYBR_inv_69.jpg
+Now processing image: P_Flor_2_107v.jpg
+Now processing image: P_Gen_Inv_085r.jpg
+Now processing image: P_Gen_Inv_093r.jpg
+Now processing image: P_Gen_Inv_095r.jpg
+Now processing image: P_Hamb_graec_665.jpg
+Now processing image: P_Hamb_graec_696.jpg
+Now processing image: P_Hamb_graec_780.jpg
+Now processing image: P_Heid_inv_G_1262.jpg
+Now processing image: P_Heid_inv_G_675=P_Heid_4_289.jpg
+Now processing image: P_Heid_inv_G_807.jpg
+Now processing image: P_Koln_II_71.jpg
+Now processing image: P_Koln_IV_181.JPG
+Now processing image: P_Koln_I_20.JPG
+Now processing image: P_Koln_I_21_inv_00046_b_verso.jpg
+Now processing image: P_Koln_I_21_inv_00046_c_d_verso.jpg
+Now processing image: P_Koln_I_21_inv_00046_e_verso.jpg
+Now processing image: P_Koln_I_21_inv_1030_verso.JPG
+Now processing image: P_Koln_I_23_inv_1033_recto.JPG
+Now processing image: P_Koln_I_23_inv_42_recto.JPG
+Now processing image: P_Koln_I_26_inv_71a_r.JPG
+Now processing image: P_Koln_I_26_inv_71_b_c_r.JPG
+Now processing image: P_Koln_I_26_inv_71_d_e_r.JPG
+Now processing image: P_Koln_I_27.JPG
+Now processing image: P_Koln_I_27fr.jpg
+Now processing image: P_Koln_I_29.JPG
+Now processing image: P_Koln_I_30.JPG
+Now processing image: P_Koln_I_34.JPG
+Now processing image: P_Koln_I_38.JPG
+Now processing image: P_Koln_VII_300.jpg
+Now processing image: P_Koln_VII_301.jpg
+Now processing image: P_Koln_V_207.jpg
+Now processing image: P_Laur_IV_127r.jpg
+Now processing image: P_Laur_IV_129r.jpg
+Now processing image: P_Laur_IV_129v.jpg
+Now processing image: P_Med_2_14_pl_1.jpg
+Now processing image: P_Mich_inv_12.jpg
+Now processing image: P_Mich_inv_1210_1216a.jpg
+Now processing image: P_Mich_inv_1218.jpg
+Now processing image: P_Mich_inv_13.jpg
+Now processing image: P_Mich_inv_1318v.jpg
+Now processing image: P_Mich_inv_1575.jpg
+Now processing image: P_Mich_inv_6232.jpg
+Now processing image: P_Oslo_3_66.jpg
+Now processing image: P_Oslo_3_67.jpg
+Now processing image: P_Oxy_36_2748.jpg
+Now processing image: P_Oxy_3_555.jpg
+Now processing image: P_Oxy_3_557.jpg
+Now processing image: P_Oxy_3_558.jpg
+Now processing image: P_Oxy_49_3439.jpg
+Now processing image: P_Oxy_4_764.jpg
+Now processing image: P_Oxy_52_3663_a.jpg
+Now processing image: P_Oxy_52_3663_b.jpg
+Now processing image: P_Oxy_52_3663_c.jpg
+Now processing image: P_Oxy_52_3663_d.jpg
+Now processing image: P_Oxy_52_3663_e.jpg
+Now processing image: P_Oxy_52_3663_f.jpg
+Now processing image: P_Oxy_52_3663_g.jpg
+Now processing image: P_Oxy_52_3663_h.jpg
+Now processing image: P_Oxy_52_3663_i.jpg
+Now processing image: P_Oxy_56_3826_recto_verso_unclear.jpg
+Now processing image: P_Oxy_56_3826_verso_recto_unclear.jpg
+Now processing image: P_Oxy_6_949_equal_Graz_Ms._I_1954.jpg
+Now processing image: Sorbonne_inv_2010.jpg
+Now processing image: Sorbonne_inv_2089_verso.jpg
+Now processing image: Sorbonne_inv_2303.jpg
+Now processing image: Sorbonne_inv_542.jpg
+Now processing image: Sorbonne_inv_830_verso.jpg
+Training Ocular Font
+JarClassLoader: Warning: jcuda/jcublas/cublasAtomicsMode.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasDiagType.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasFillMode.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasHandle.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasOperation.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasPointerMode.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasSideMode.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/cublasStatus.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/JCublas.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcublas/JCublas2.class in lib/jcublas-0.8.0.jar is hidden by lib/jcublas-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/BufferUtils.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/cuComplex.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/CudaException.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/cuDoubleComplex.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUaddress_mode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUarray.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUarray_cubemap_face.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUarray_format.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUcomputemode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUcontext.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUctx_flags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_ARRAY3D_DESCRIPTOR.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_ARRAY_DESCRIPTOR.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_MEMCPY2D.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_MEMCPY3D.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_MEMCPY3D_PEER.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_POINTER_ATTRIBUTE_P2P_TOKENS.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_RESOURCE_DESC.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_RESOURCE_VIEW_DESC.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUDA_TEXTURE_DESC.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUdevice.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUdeviceptr.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUdevice_attribute.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUdevprop.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUevent.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUevent_flags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUfilter_mode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUfunction.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUfunction_attribute.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUfunc_cache.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUGLDeviceList.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUGLmap_flags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUgraphicsMapResourceFlags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUgraphicsRegisterFlags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUgraphicsResource.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUipcEventHandle.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUipcMemHandle.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUipcMem_flags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUjitInputType.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUjit_cacheMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUjit_fallback.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUjit_option.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUjit_target.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUlimit.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUlinkState.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUmemAttach_flags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUmemorytype.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUmipmappedArray.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUmodule.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUoutput_mode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUpointer_attribute.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUresourcetype.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUresourceViewFormat.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUresult.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUsharedconfig.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUstream.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUstreamCallback.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUstream_flags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUsurfObject.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUsurfref.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUtexObject.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/CUtexref.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/JCudaDriver$ConstantPointer.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/JCudaDriver.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/driver/JITOptions.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/LibUtils$OSType.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/LibUtils.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/LogLevel.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/NativePointerObject.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/Pointer.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaArray.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaChannelFormatDesc.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaChannelFormatKind.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaComputeMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaDeviceAttr.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaDeviceProp.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaError.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaEvent_t.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaExtent.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaFuncAttributes.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaFuncCache.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaGLDeviceList.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaGLMapFlags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaGraphicsCubeFace.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaGraphicsMapFlags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaGraphicsRegisterFlags.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaGraphicsResource.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaIpcEventHandle.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaIpcMemHandle.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaLimit.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaMemcpy3DParms.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaMemcpy3DPeerParms.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaMemcpyKind.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaMemoryType.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaMipmappedArray.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaOutputMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaPitchedPtr.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaPointerAttributes.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaPos.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaResourceDesc.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaResourceType.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaResourceViewDesc.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaResourceViewFormat.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaSharedMemConfig.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaStreamCallback.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaStream_t.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaSurfaceBoundaryMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaSurfaceFormatMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaSurfaceObject.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaTextureAddressMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaTextureDesc.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaTextureFilterMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaTextureObject.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/cudaTextureReadMode.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/dim3.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/JCuda.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/surfaceReference.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/runtime/textureReference.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/Sizeof.class in lib/jcuda-0.8.0.jar is hidden by lib/jcuda-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcufft/cufftCompatibility.class in lib/jcufft-0.8.0.jar is hidden by lib/jcufft-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcufft/cufftHandle.class in lib/jcufft-0.8.0.jar is hidden by lib/jcufft-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcufft/cufftResult.class in lib/jcufft-0.8.0.jar is hidden by lib/jcufft-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcufft/cufftType.class in lib/jcufft-0.8.0.jar is hidden by lib/jcufft-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcufft/JCufft.class in lib/jcufft-0.8.0.jar is hidden by lib/jcufft-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/curandDirectionVectorSet.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/curandDiscreteDistribution.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/curandGenerator.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/curandOrdering.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/curandRngType.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/curandStatus.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcurand/JCurand.class in lib/jcurand-0.8.0.jar is hidden by lib/jcurand-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/bsric02Info.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/bsrilu02Info.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/bsrsv2Info.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/csric02Info.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/csrilu02Info.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/csrsv2Info.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseAction.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseDiagType.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseDirection.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseFillMode.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseHandle.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseHybMat.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseHybPartition.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseIndexBase.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseMatDescr.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseMatrixType.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseOperation.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparsePointerMode.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseSolveAnalysisInfo.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseSolvePolicy.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/cusparseStatus.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: jcuda/jcusparse/JCusparse.class in lib/jcusparse-0.8.0.jar is hidden by lib/jcusparse-0.6.0.jar (with different bytecode)
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCublas-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCublas-linux-x86_64.so
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCublas2-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCublas2-linux-x86_64.so
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCudaDriver-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCudaDriver-linux-x86_64.so
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCudaRuntime-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCudaRuntime-linux-x86_64.so
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCufft-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCufft-linux-x86_64.so
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCurand-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCurand-linux-x86_64.so
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCusparse-apple-x86_64.dylib
+JarClassLoader: Warning: Null manifest from input stream associated with: lib/libJCusparse-linux-x86_64.so
+JarClassLoader: Warning: com/sun/pdfview/FullScreenWindow$PickMe.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/FullScreenWindow.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFChangeStrokeCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFDocCharsetEncoder.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFFile.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFFillAlphaCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFFillPaintCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFImage$DecodeComponentColorModel.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFImage.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFImageCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFObject.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFPage.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFParser$ParserState.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFParser.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFPopCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFPushCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFRenderer$GraphicsState.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFRenderer.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFStrokeAlphaCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFStrokePaintCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFTextFormat.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFViewer$15.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFViewer.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFXformCmd.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/PDFXref.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/colorspace/CMYKColorSpace.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/colorspace/PDFColorSpace.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decode/DCTDecode.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decode/MyTracker.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decode/PDFDecoder.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decode/Predictor.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decrypt/CryptFilterDecrypter.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decrypt/IdentityDecrypter.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decrypt/PDFDecrypter.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/decrypt/StandardDecrypter.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/BuiltinFont.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/PDFFont.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/PDFFontDescriptor.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/TTFFont$PointRec.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/TTFFont$RenderState.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/TTFFont.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/Type1CFont.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/Type1Font$PSParser.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/Type1Font.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/Type3Font.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/ttf/NameTable$NameRecord.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/ttf/NameTable.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/font/ttf/TrueTypeFont.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/function/FunctionType3.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/pattern/PDFShader.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/pattern/PatternType1$1.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/pattern/PatternType1$TilingPatternPaint.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/pattern/PatternType1$Type1PaintContext.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: com/sun/pdfview/pattern/PatternType1.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: test/TTFTest.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+JarClassLoader: Warning: test/TestType1CFont.class in lib/PDFRenderer-0.9.1.jar is hidden by lib/pdf-renderer-1.0.5.jar (with different bytecode)
+TrainFont
+  -inputFontPath  dataset\font\perseus-init.fontser
+  -inputLmPath  dataset\lm\perseus.lmser
+  -inputDocPath  dataset\train\ocular_training
+  -numDocs  1
+  -outputFontPath  dataset\font\perseus-trained.fontser
+  -outputPath  dataset\train\output
+  -numEMIters  50
+  -continueFromLastCompleteIteration  true
+  -beamSize  50
+  -markovVerticalOffset  true
+
+Started job at 10/06/2022 14:24:40
+
+Loading initial LM from dataset\lm\perseus.lmser
+Loaded CodeSwitchLanguageModel from dataset\lm\perseus.lmser
+    greek: [ , &, *, ,, -, ., [, ], �, �, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?]
+Characters: [ , &, *, ,, -, ., A, E, O, [, ], a, a?, e, e?, o, o?, �, �, �, �, �, �, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?]
+Num characters: 52
+Loading font from dataset\font\perseus-init.fontser
+Glyph substitution not allowed; constructing no-sub GSM.
+Reading data from [dataset\train\ocular_training], which exists
+Using 1 documents (skipping 0)
+  Using dataset\train\ocular_training\901045_0007.png
+trainFont(numEMIters=50, updateDocBatchSize=1, noUpdateIfBatchTooSmall=false, writeIntermediateModelsToTemp=true)
+Last completed iteration: 10
+    Loading font of last completed iteration: dataset\train\output/font/retrained_iter-10_batch-1.fontser
+Training iteration: 11    2022/10/06 14:24:49
+Training iteration 11 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:24:49
+Evaluation diplomatic text found at dataset\train\ocular_training\901045_0007.txt
+No evaluation normalized text found at dataset\train\ocular_training\901045_0007_normalized.txt  (This is only a problem if you were trying to provide a gold normalized transcription to check accuracy.)
+Extracting text line images from dataset\train\ocular_training\901045_0007.png
+Extractor returned 14 line images
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:25:08
+Rebuilding cache    2022/10/06 14:25:08
+Rebuild emission cache: 23765ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:25:32
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 25ms
+Decode: -723ms
+
+????????????????????????- 
+??????????????????????????- 
+??????????????????????????????-
+???????????????????????????????- 
+????????????????????- 
+????????????????????- 
+???????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+?????????????????????- 
+?????????????????????????????????- 
+??????????????????????- 
+??????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-11_transcription.txt
+Update font parameters: 1352ms
+Writing updated font to dataset\train\output/font/retrained_iter-11_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 11, batch 1: avg joint log prob: -32588.85827696648    2022/10/06 14:27:22
+Iteration 11 avg joint log prob: -32588.85827696648
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-11_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 5.304347826086956
+CER, keep punc, allow f->s: 5.304347826086956
+CER, remove punc: 5.101449275362318
+CER, remove punc, allow f->s: 5.101449275362318
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 5.304347826086956
+CER, keep punc, allow f->s: 5.304347826086956
+CER, remove punc: 5.101449275362318
+CER, remove punc, allow f->s: 5.101449275362318
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 12    2022/10/06 14:27:22
+Training iteration 12 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:27:22
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:27:23
+Rebuilding cache    2022/10/06 14:27:23
+Rebuild emission cache: 22654ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:27:46
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 21ms
+Decode: -1604ms
+
+????????????????????????- 
+??????????????????????????- 
+??????????????????????????????-
+???????????????????????????????- 
+????????????????????- 
+????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+?????????????????????- 
+?????????????????????????????????- 
+??????????????????????- 
+??????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-12_transcription.txt
+Update font parameters: 470ms
+Writing updated font to dataset\train\output/font/retrained_iter-12_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 12, batch 1: avg joint log prob: -32531.2292344377    2022/10/06 14:29:34
+Iteration 12 avg joint log prob: -32531.2292344377
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-12_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 5.2898550724637685
+CER, keep punc, allow f->s: 5.2898550724637685
+CER, remove punc: 5.086956521739131
+CER, remove punc, allow f->s: 5.086956521739131
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 5.2898550724637685
+CER, keep punc, allow f->s: 5.2898550724637685
+CER, remove punc: 5.086956521739131
+CER, remove punc, allow f->s: 5.086956521739131
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 13    2022/10/06 14:29:34
+Training iteration 13 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:29:34
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:29:35
+Rebuilding cache    2022/10/06 14:29:35
+Rebuild emission cache: 22648ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:29:57
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 21ms
+Decode: 2091ms
+
+????????????????????????- 
+??????????????????????????- 
+??????????????????????????????-
+??????????????????????????????- 
+????????????????????- 
+????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+?????????????????????- 
+?????????????????????????????????- 
+??????????????????????- 
+??????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-13_transcription.txt
+Update font parameters: 775ms
+Writing updated font to dataset\train\output/font/retrained_iter-13_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 13, batch 1: avg joint log prob: -32524.558168152864    2022/10/06 14:31:45
+Iteration 13 avg joint log prob: -32524.558168152864
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-13_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 5.27536231884058
+CER, keep punc, allow f->s: 5.27536231884058
+CER, remove punc: 5.072463768115942
+CER, remove punc, allow f->s: 5.072463768115942
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 5.27536231884058
+CER, keep punc, allow f->s: 5.27536231884058
+CER, remove punc: 5.072463768115942
+CER, remove punc, allow f->s: 5.072463768115942
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 14    2022/10/06 14:31:45
+Training iteration 14 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:31:45
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:31:46
+Rebuilding cache    2022/10/06 14:31:46
+Rebuild emission cache: 22526ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:32:09
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 23ms
+Decode: -1725ms
+
+????????????????????????- 
+??????????????????????????- 
+????????????????????????????- 
+????????????????????????????- 
+????????????????????- 
+????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+?????????????????????- 
+?????????????????????????????????- 
+??????????????????????- 
+??????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-14_transcription.txt
+Update font parameters: 729ms
+Writing updated font to dataset\train\output/font/retrained_iter-14_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 14, batch 1: avg joint log prob: -32515.547671598906    2022/10/06 14:33:57
+Iteration 14 avg joint log prob: -32515.547671598906
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-14_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 5.217391304347826
+CER, keep punc, allow f->s: 5.217391304347826
+CER, remove punc: 5.0144927536231885
+CER, remove punc, allow f->s: 5.0144927536231885
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 5.217391304347826
+CER, keep punc, allow f->s: 5.217391304347826
+CER, remove punc: 5.0144927536231885
+CER, remove punc, allow f->s: 5.0144927536231885
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 15    2022/10/06 14:33:57
+Training iteration 15 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:33:57
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:33:58
+Rebuilding cache    2022/10/06 14:33:58
+Rebuild emission cache: 22543ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:34:21
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: -2114ms
+
+???????????????????????- 
+??????????????????????????- 
+????????????????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+??????????????????????????????- 
+????????????????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+?????????????????????- 
+?????????????????????????????????- 
+?????????????????????- 
+??????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-15_transcription.txt
+Update font parameters: 1125ms
+Writing updated font to dataset\train\output/font/retrained_iter-15_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 15, batch 1: avg joint log prob: -32462.758831532803    2022/10/06 14:36:09
+Iteration 15 avg joint log prob: -32462.758831532803
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-15_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 5.028985507246377
+CER, keep punc, allow f->s: 5.028985507246377
+CER, remove punc: 4.826086956521739
+CER, remove punc, allow f->s: 4.826086956521739
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 5.028985507246377
+CER, keep punc, allow f->s: 5.028985507246377
+CER, remove punc: 4.826086956521739
+CER, remove punc, allow f->s: 4.826086956521739
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 16    2022/10/06 14:36:09
+Training iteration 16 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:36:09
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:36:10
+Rebuilding cache    2022/10/06 14:36:10
+Rebuild emission cache: 22528ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:36:32
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 1239ms
+
+???????????????????????- 
+??????????????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+??????????????????????????????- 
+?????????????????- 
+??????????????????????????????- 
+??????????????????????????????- 
+???????????????????- 
+?????????????????????????????????- 
+????????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-16_transcription.txt
+Update font parameters: 978ms
+Writing updated font to dataset\train\output/font/retrained_iter-16_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 16, batch 1: avg joint log prob: -32225.684501530443    2022/10/06 14:38:19
+Iteration 16 avg joint log prob: -32225.684501530443
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-16_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.681159420289855
+CER, keep punc, allow f->s: 4.681159420289855
+CER, remove punc: 4.478260869565218
+CER, remove punc, allow f->s: 4.478260869565218
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.681159420289855
+CER, keep punc, allow f->s: 4.681159420289855
+CER, remove punc: 4.478260869565218
+CER, remove punc, allow f->s: 4.478260869565218
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 17    2022/10/06 14:38:19
+Training iteration 17 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:38:19
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:38:20
+Rebuilding cache    2022/10/06 14:38:20
+Rebuild emission cache: 22379ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:38:43
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 1717ms
+
+???????????????????????- 
+??????????????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????????????????- 
+????????????????????- 
+????????????????????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-17_transcription.txt
+Update font parameters: 2520ms
+Writing updated font to dataset\train\output/font/retrained_iter-17_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 17, batch 1: avg joint log prob: -32246.3261122083    2022/10/06 14:40:32
+Iteration 17 avg joint log prob: -32246.3261122083
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-17_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.6521739130434785
+CER, keep punc, allow f->s: 4.6521739130434785
+CER, remove punc: 4.449275362318841
+CER, remove punc, allow f->s: 4.449275362318841
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.6521739130434785
+CER, keep punc, allow f->s: 4.6521739130434785
+CER, remove punc: 4.449275362318841
+CER, remove punc, allow f->s: 4.449275362318841
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 18    2022/10/06 14:40:32
+Training iteration 18 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:40:32
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:40:33
+Rebuilding cache    2022/10/06 14:40:33
+Rebuild emission cache: 22363ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:40:55
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 21ms
+Decode: -2003ms
+
+???????????????????????- 
+??????????????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????????????????- 
+??????????????????- 
+????????????????????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-18_transcription.txt
+Update font parameters: 1000ms
+Writing updated font to dataset\train\output/font/retrained_iter-18_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 18, batch 1: avg joint log prob: -32194.936064069254    2022/10/06 14:42:43
+Iteration 18 avg joint log prob: -32194.936064069254
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-18_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.6231884057971016
+CER, keep punc, allow f->s: 4.6231884057971016
+CER, remove punc: 4.420289855072464
+CER, remove punc, allow f->s: 4.420289855072464
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.6231884057971016
+CER, keep punc, allow f->s: 4.6231884057971016
+CER, remove punc: 4.420289855072464
+CER, remove punc, allow f->s: 4.420289855072464
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 19    2022/10/06 14:42:43
+Training iteration 19 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:42:43
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:42:44
+Rebuilding cache    2022/10/06 14:42:44
+Rebuild emission cache: 22469ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:43:07
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: -1711ms
+
+???????????????????????- 
+??????????????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????????????????- 
+??????????????????- 
+????????????????????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-19_transcription.txt
+Update font parameters: 951ms
+Writing updated font to dataset\train\output/font/retrained_iter-19_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 19, batch 1: avg joint log prob: -32189.221285645945    2022/10/06 14:44:55
+Iteration 19 avg joint log prob: -32189.221285645945
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-19_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.6231884057971016
+CER, keep punc, allow f->s: 4.6231884057971016
+CER, remove punc: 4.420289855072464
+CER, remove punc, allow f->s: 4.420289855072464
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.6231884057971016
+CER, keep punc, allow f->s: 4.6231884057971016
+CER, remove punc: 4.420289855072464
+CER, remove punc, allow f->s: 4.420289855072464
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 20    2022/10/06 14:44:55
+Training iteration 20 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:44:55
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:44:56
+Rebuilding cache    2022/10/06 14:44:56
+Rebuild emission cache: 22383ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:45:19
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: -173ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????????????????- 
+??????????????????- 
+????????????????????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-20_transcription.txt
+Update font parameters: 1990ms
+Writing updated font to dataset\train\output/font/retrained_iter-20_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 20, batch 1: avg joint log prob: -32208.171618676963    2022/10/06 14:47:05
+Iteration 20 avg joint log prob: -32208.171618676963
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-20_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.507246376811594
+CER, keep punc, allow f->s: 4.507246376811594
+CER, remove punc: 4.304347826086956
+CER, remove punc, allow f->s: 4.304347826086956
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.507246376811594
+CER, keep punc, allow f->s: 4.507246376811594
+CER, remove punc: 4.304347826086956
+CER, remove punc, allow f->s: 4.304347826086956
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 21    2022/10/06 14:47:05
+Training iteration 21 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:47:05
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:47:06
+Rebuilding cache    2022/10/06 14:47:06
+Rebuild emission cache: 21050ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:47:27
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 25ms
+Decode: -299ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-21_transcription.txt
+Update font parameters: 569ms
+Writing updated font to dataset\train\output/font/retrained_iter-21_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 21, batch 1: avg joint log prob: -32043.12092572789    2022/10/06 14:49:12
+Iteration 21 avg joint log prob: -32043.12092572789
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-21_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.36231884057971
+CER, keep punc, allow f->s: 4.36231884057971
+CER, remove punc: 4.159420289855072
+CER, remove punc, allow f->s: 4.159420289855072
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.36231884057971
+CER, keep punc, allow f->s: 4.36231884057971
+CER, remove punc: 4.159420289855072
+CER, remove punc, allow f->s: 4.159420289855072
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 22    2022/10/06 14:49:12
+Training iteration 22 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:49:12
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:49:14
+Rebuilding cache    2022/10/06 14:49:14
+Rebuild emission cache: 21240ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:49:35
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 833ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+????????????????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-22_transcription.txt
+Update font parameters: 1749ms
+Writing updated font to dataset\train\output/font/retrained_iter-22_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 22, batch 1: avg joint log prob: -31949.562882134094    2022/10/06 14:51:18
+Iteration 22 avg joint log prob: -31949.562882134094
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-22_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.173913043478261
+CER, keep punc, allow f->s: 4.173913043478261
+CER, remove punc: 3.971014492753623
+CER, remove punc, allow f->s: 3.971014492753623
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.173913043478261
+CER, keep punc, allow f->s: 4.173913043478261
+CER, remove punc: 3.971014492753623
+CER, remove punc, allow f->s: 3.971014492753623
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 23    2022/10/06 14:51:18
+Training iteration 23 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:51:18
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:51:19
+Rebuilding cache    2022/10/06 14:51:19
+Rebuild emission cache: 21139ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:51:40
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 18ms
+Decode: -112ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-23_transcription.txt
+Update font parameters: 358ms
+Writing updated font to dataset\train\output/font/retrained_iter-23_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 23, batch 1: avg joint log prob: -31819.56362948827    2022/10/06 14:53:21
+Iteration 23 avg joint log prob: -31819.56362948827
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-23_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 24    2022/10/06 14:53:21
+Training iteration 24 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:53:21
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:53:22
+Rebuilding cache    2022/10/06 14:53:22
+Rebuild emission cache: 21134ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:53:43
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 179ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-24_transcription.txt
+Update font parameters: 289ms
+Writing updated font to dataset\train\output/font/retrained_iter-24_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 24, batch 1: avg joint log prob: -31828.528296808523    2022/10/06 14:55:24
+Iteration 24 avg joint log prob: -31828.528296808523
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-24_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 25    2022/10/06 14:55:24
+Training iteration 25 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:55:24
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:55:25
+Rebuilding cache    2022/10/06 14:55:25
+Rebuild emission cache: 21022ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:55:46
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 18ms
+Decode: 324ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-25_transcription.txt
+Update font parameters: 294ms
+Writing updated font to dataset\train\output/font/retrained_iter-25_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 25, batch 1: avg joint log prob: -31829.50697431974    2022/10/06 14:57:27
+Iteration 25 avg joint log prob: -31829.50697431974
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-25_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 26    2022/10/06 14:57:27
+Training iteration 26 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:57:27
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:57:28
+Rebuilding cache    2022/10/06 14:57:28
+Rebuild emission cache: 21132ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:57:49
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: -331ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-26_transcription.txt
+Update font parameters: 292ms
+Writing updated font to dataset\train\output/font/retrained_iter-26_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 26, batch 1: avg joint log prob: -31829.40809116773    2022/10/06 14:59:30
+Iteration 26 avg joint log prob: -31829.40809116773
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-26_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 27    2022/10/06 14:59:30
+Training iteration 27 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 14:59:30
+Batch: 0
+Initializing EmissionModel    2022/10/06 14:59:31
+Rebuilding cache    2022/10/06 14:59:31
+Rebuild emission cache: 21169ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 14:59:52
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 17ms
+Decode: -395ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-27_transcription.txt
+Update font parameters: 287ms
+Writing updated font to dataset\train\output/font/retrained_iter-27_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 27, batch 1: avg joint log prob: -31829.419745067877    2022/10/06 15:01:32
+Iteration 27 avg joint log prob: -31829.419745067877
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-27_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 28    2022/10/06 15:01:32
+Training iteration 28 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:01:32
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:01:33
+Rebuilding cache    2022/10/06 15:01:33
+Rebuild emission cache: 20978ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:01:54
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 280ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-28_transcription.txt
+Update font parameters: 296ms
+Writing updated font to dataset\train\output/font/retrained_iter-28_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 28, batch 1: avg joint log prob: -31829.338558296484    2022/10/06 15:03:35
+Iteration 28 avg joint log prob: -31829.338558296484
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-28_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 29    2022/10/06 15:03:35
+Training iteration 29 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:03:35
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:03:36
+Rebuilding cache    2022/10/06 15:03:36
+Rebuild emission cache: 21076ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:03:58
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 22ms
+Decode: -194ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-29_transcription.txt
+Update font parameters: 343ms
+Writing updated font to dataset\train\output/font/retrained_iter-29_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 29, batch 1: avg joint log prob: -31829.33668146543    2022/10/06 15:05:38
+Iteration 29 avg joint log prob: -31829.33668146543
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-29_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 30    2022/10/06 15:05:38
+Training iteration 30 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:05:38
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:05:39
+Rebuilding cache    2022/10/06 15:05:39
+Rebuild emission cache: 21130ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:06:00
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 18ms
+Decode: 444ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-30_transcription.txt
+Update font parameters: 305ms
+Writing updated font to dataset\train\output/font/retrained_iter-30_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 30, batch 1: avg joint log prob: -31829.26764712743    2022/10/06 15:07:42
+Iteration 30 avg joint log prob: -31829.26764712743
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-30_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 31    2022/10/06 15:07:42
+Training iteration 31 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:07:42
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:07:43
+Rebuilding cache    2022/10/06 15:07:43
+Rebuild emission cache: 21158ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:08:04
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: 905ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-31_transcription.txt
+Update font parameters: 342ms
+Writing updated font to dataset\train\output/font/retrained_iter-31_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 31, batch 1: avg joint log prob: -31829.259666065496    2022/10/06 15:09:45
+Iteration 31 avg joint log prob: -31829.259666065496
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-31_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 32    2022/10/06 15:09:45
+Training iteration 32 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:09:45
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:09:47
+Rebuilding cache    2022/10/06 15:09:47
+Rebuild emission cache: 21290ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:10:08
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: 1423ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-32_transcription.txt
+Update font parameters: 291ms
+Writing updated font to dataset\train\output/font/retrained_iter-32_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 32, batch 1: avg joint log prob: -31829.208060840887    2022/10/06 15:11:50
+Iteration 32 avg joint log prob: -31829.208060840887
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-32_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 33    2022/10/06 15:11:50
+Training iteration 33 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:11:50
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:11:51
+Rebuilding cache    2022/10/06 15:11:51
+Rebuild emission cache: 23132ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:12:14
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 185ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-33_transcription.txt
+Update font parameters: 379ms
+Writing updated font to dataset\train\output/font/retrained_iter-33_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 33, batch 1: avg joint log prob: -31829.164893249792    2022/10/06 15:13:55
+Iteration 33 avg joint log prob: -31829.164893249792
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-33_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 34    2022/10/06 15:13:55
+Training iteration 34 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:13:55
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:13:56
+Rebuilding cache    2022/10/06 15:13:56
+Rebuild emission cache: 21041ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:14:18
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 336ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-34_transcription.txt
+Update font parameters: 436ms
+Writing updated font to dataset\train\output/font/retrained_iter-34_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 34, batch 1: avg joint log prob: -31829.124648670477    2022/10/06 15:15:59
+Iteration 34 avg joint log prob: -31829.124648670477
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-34_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 35    2022/10/06 15:15:59
+Training iteration 35 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:15:59
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:16:00
+Rebuilding cache    2022/10/06 15:16:00
+Rebuild emission cache: 21134ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:16:21
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 18ms
+Decode: 1301ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-35_transcription.txt
+Update font parameters: 716ms
+Writing updated font to dataset\train\output/font/retrained_iter-35_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 35, batch 1: avg joint log prob: -31829.130088905615    2022/10/06 15:18:04
+Iteration 35 avg joint log prob: -31829.130088905615
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-35_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 36    2022/10/06 15:18:04
+Training iteration 36 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:18:04
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:18:05
+Rebuilding cache    2022/10/06 15:18:05
+Rebuild emission cache: 20960ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:18:26
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 18ms
+Decode: 600ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-36_transcription.txt
+Update font parameters: 1061ms
+Writing updated font to dataset\train\output/font/retrained_iter-36_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 36, batch 1: avg joint log prob: -31829.099877933782    2022/10/06 15:20:08
+Iteration 36 avg joint log prob: -31829.099877933782
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-36_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 37    2022/10/06 15:20:08
+Training iteration 37 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:20:08
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:20:09
+Rebuilding cache    2022/10/06 15:20:09
+Rebuild emission cache: 21239ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:20:30
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: 315ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-37_transcription.txt
+Update font parameters: 1075ms
+Writing updated font to dataset\train\output/font/retrained_iter-37_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 37, batch 1: avg joint log prob: -31829.106721977514    2022/10/06 15:22:12
+Iteration 37 avg joint log prob: -31829.106721977514
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-37_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 38    2022/10/06 15:22:12
+Training iteration 38 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:22:12
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:22:13
+Rebuilding cache    2022/10/06 15:22:13
+Rebuild emission cache: 21030ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:22:34
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 18ms
+Decode: 1324ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-38_transcription.txt
+Update font parameters: 1120ms
+Writing updated font to dataset\train\output/font/retrained_iter-38_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 38, batch 1: avg joint log prob: -31829.08008871488    2022/10/06 15:24:26
+Iteration 38 avg joint log prob: -31829.08008871488
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-38_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 39    2022/10/06 15:24:26
+Training iteration 39 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:24:26
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:24:27
+Rebuilding cache    2022/10/06 15:24:27
+Rebuild emission cache: 21875ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:24:49
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 39ms
+Decode: 520ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-39_transcription.txt
+Update font parameters: 1681ms
+Writing updated font to dataset\train\output/font/retrained_iter-39_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 39, batch 1: avg joint log prob: -31829.10273275785    2022/10/06 15:26:58
+Iteration 39 avg joint log prob: -31829.10273275785
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-39_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 40    2022/10/06 15:26:58
+Training iteration 40 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:26:58
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:26:59
+Rebuilding cache    2022/10/06 15:26:59
+Rebuild emission cache: 23383ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:27:22
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: 1950ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-40_transcription.txt
+Update font parameters: 1159ms
+Writing updated font to dataset\train\output/font/retrained_iter-40_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 40, batch 1: avg joint log prob: -31829.056470493597    2022/10/06 15:29:36
+Iteration 40 avg joint log prob: -31829.056470493597
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-40_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 41    2022/10/06 15:29:36
+Training iteration 41 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:29:36
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:29:37
+Rebuilding cache    2022/10/06 15:29:37
+Rebuild emission cache: 25985ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:30:03
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: 946ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-41_transcription.txt
+Update font parameters: 1212ms
+Writing updated font to dataset\train\output/font/retrained_iter-41_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 41, batch 1: avg joint log prob: -31829.067626098913    2022/10/06 15:32:25
+Iteration 41 avg joint log prob: -31829.067626098913
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-41_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 42    2022/10/06 15:32:25
+Training iteration 42 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:32:25
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:32:26
+Rebuilding cache    2022/10/06 15:32:26
+Rebuild emission cache: 26824ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:32:53
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: -224ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-42_transcription.txt
+Update font parameters: 1207ms
+Writing updated font to dataset\train\output/font/retrained_iter-42_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 42, batch 1: avg joint log prob: -31829.03848228864    2022/10/06 15:34:56
+Iteration 42 avg joint log prob: -31829.03848228864
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-42_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 43    2022/10/06 15:34:56
+Training iteration 43 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:34:56
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:34:57
+Rebuilding cache    2022/10/06 15:34:57
+Rebuild emission cache: 25068ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:35:22
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 21ms
+Decode: -189ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-43_transcription.txt
+Update font parameters: 1229ms
+Writing updated font to dataset\train\output/font/retrained_iter-43_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 43, batch 1: avg joint log prob: -31829.02718983106    2022/10/06 15:37:38
+Iteration 43 avg joint log prob: -31829.02718983106
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-43_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 44    2022/10/06 15:37:38
+Training iteration 44 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:37:38
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:37:39
+Rebuilding cache    2022/10/06 15:37:39
+Rebuild emission cache: 26251ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:38:05
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 22ms
+Decode: -1439ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-44_transcription.txt
+Update font parameters: 1341ms
+Writing updated font to dataset\train\output/font/retrained_iter-44_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 44, batch 1: avg joint log prob: -31829.021332840246    2022/10/06 15:40:29
+Iteration 44 avg joint log prob: -31829.021332840246
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-44_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 45    2022/10/06 15:40:29
+Training iteration 45 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:40:29
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:40:30
+Rebuilding cache    2022/10/06 15:40:30
+Rebuild emission cache: 25400ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:40:56
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 23ms
+Decode: -2090ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-45_transcription.txt
+Update font parameters: 1314ms
+Writing updated font to dataset\train\output/font/retrained_iter-45_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 45, batch 1: avg joint log prob: -31829.01711235456    2022/10/06 15:43:19
+Iteration 45 avg joint log prob: -31829.01711235456
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-45_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 46    2022/10/06 15:43:19
+Training iteration 46 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:43:19
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:43:20
+Rebuilding cache    2022/10/06 15:43:20
+Rebuild emission cache: 25866ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:43:46
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 23ms
+Decode: 1729ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-46_transcription.txt
+Update font parameters: 1356ms
+Writing updated font to dataset\train\output/font/retrained_iter-46_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 46, batch 1: avg joint log prob: -31829.015685180944    2022/10/06 15:46:09
+Iteration 46 avg joint log prob: -31829.015685180944
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-46_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 47    2022/10/06 15:46:09
+Training iteration 47 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:46:09
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:46:10
+Rebuilding cache    2022/10/06 15:46:10
+Rebuild emission cache: 25370ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:46:35
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 21ms
+Decode: 1592ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-47_transcription.txt
+Update font parameters: 1330ms
+Writing updated font to dataset\train\output/font/retrained_iter-47_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 47, batch 1: avg joint log prob: -31829.01317892484    2022/10/06 15:48:58
+Iteration 47 avg joint log prob: -31829.01317892484
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-47_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 48    2022/10/06 15:48:58
+Training iteration 48 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:48:58
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:48:59
+Rebuilding cache    2022/10/06 15:48:59
+Rebuild emission cache: 25456ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:49:24
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 22ms
+Decode: 1398ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-48_transcription.txt
+Update font parameters: 1286ms
+Writing updated font to dataset\train\output/font/retrained_iter-48_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 48, batch 1: avg joint log prob: -31829.01056490354    2022/10/06 15:51:46
+Iteration 48 avg joint log prob: -31829.01056490354
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-48_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 49    2022/10/06 15:51:46
+Training iteration 49 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:51:46
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:51:47
+Rebuilding cache    2022/10/06 15:51:47
+Rebuild emission cache: 25247ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:52:13
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 19ms
+Decode: -277ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-49_transcription.txt
+Update font parameters: 1257ms
+Writing updated font to dataset\train\output/font/retrained_iter-49_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 49, batch 1: avg joint log prob: -31829.008077720922    2022/10/06 15:54:20
+Iteration 49 avg joint log prob: -31829.008077720922
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-49_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Training iteration: 50    2022/10/06 15:54:20
+Training iteration 50 of 50, document 1 of 1:  dataset\train\ocular_training\901045_0007.png    2022/10/06 15:54:20
+Batch: 0
+Initializing EmissionModel    2022/10/06 15:54:21
+Rebuilding cache    2022/10/06 15:54:21
+Rebuild emission cache: 23968ms
+Estimated emission cache size: 0.559gb
+Done rebuilding cache    2022/10/06 15:54:45
+Constructing forwardTransitionModel
+Using OnlyOneLanguageCodeSwitchLM and CharacterNgramTransitionModelMarkovOffset
+Ready to run decoder
+Decoding..............Done running decoder
+Ready to run increment counts
+Increment counts: 20ms
+Decode: -514ms
+
+??????????????????????- 
+???????????????????- 
+?????????????????- 
+?????????????????- 
+????????????????????- 
+?????????????????????- 
+?????????????????- 
+?????????????????- 
+???????????????????????????????- 
+??????????????????- 
+??????????????????- 
+???????????????????- 
+???????????????????- 
+?????????????????????- 
+
+Writing transcription output to dataset\train\output/all_transcriptions/ocular_training/901045_0007_iter-50_transcription.txt
+Update font parameters: 1256ms
+Writing updated font to dataset\train\output/font/retrained_iter-50_batch-1.fontser
+Clearing font parameter statistics.
+Completed Batch: Iteration 50, batch 1: avg joint log prob: -31829.0077591937    2022/10/06 15:56:52
+Iteration 50 avg joint log prob: -31829.0077591937
+
+dataset\train\output/all_transcriptions/ocular_training/eval_iter-50_diplomatic.txt
+All evals:
+Document: dataset\train\ocular_training\901045_0007.png
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Macro-avg total eval:
+CER, keep punc  : 4.057971014492754
+CER, keep punc, allow f->s: 4.057971014492754
+CER, remove punc: 3.8550724637681157
+CER, remove punc, allow f->s: 3.8550724637681157
+WER, keep punc  : 14.0
+WER, keep punc, allow f->s: 14.0
+WER, remove punc: 14.0
+WER, remove punc, allow f->s: 14.0
+
+
+Evaluating dev data at the end of iteration 50    2022/10/06 15:56:52
+Training completed; saving models.
+Writing trained font to dataset\font\perseus-trained.fontser
+
+01:32:14 elapsed. Completed at 10/06/2022 15:56:54
+
+Process finished with exit code 0

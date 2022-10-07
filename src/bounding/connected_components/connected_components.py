@@ -13,16 +13,16 @@ def bound(img_in_dir, img_out_dir):
     Takes in a binararized image and returns
 
     Author: https://www.geeksforgeeks.org/python-opencv-connected-component-labeling-and-analysis/
-    :param img_in_dir: path to directory containing input images
-    :param img_out_dir: path to directory to output images
+    :param img_in_dir: glyph_path to directory containing input images
+    :param img_out_dir: glyph_path to directory to output images
     :return:
     """
     img_list = get_input_images(img_in_dir)
     set_output_dir(img_out_dir)
-    bounding_boxs = []
+    bounding_boxes = []
 
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path, "connected", invert=True)
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path, invert=True)
 
         # Apply the Component analysis function
         analysis = cv2.connectedComponentsWithStats(img, 8, cv2.CV_32S)
@@ -31,16 +31,16 @@ def bound(img_in_dir, img_out_dir):
         color_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
         imgY, imgX = np.shape(img)
 
-        # Merge bounding boxes with centroids in other boxes or that are fully in other boxs
+        # Merge bounding boxes with centroids in other boxes or that are fully in other boxes
         internal_centroids = get_internal_centroids(centroids, values)
         internal_regions = get_internal_regions(values)
 
         for i, (X, Y, W, H, A) in enumerate(values[1:], 1):
-            # skip bounding boxs with centroids in other boxs
+            # skip bounding boxes with centroids in other boxes
             if i in internal_regions or i in internal_centroids:
                 continue
 
-            bounding_boxs.append(tuple(X, Y, W, H, A))
+            bounding_boxes.append((X, Y, W, H, A))
 
             # Draw centroid
             centroid = np.array(np.floor(centroids[i]), int)
@@ -49,7 +49,7 @@ def bound(img_in_dir, img_out_dir):
                 for dy in range(-radius, radius + 1):
                     color_img[centroid[1] + dy][centroid[0] + dx] = CENTROID_COLOR
 
-            # Draw bounding boxs
+            # Draw bounding boxes
             # outset coords by 1 to not be inclusive of edges
             X, Y = max(X - 1, 0), max(Y - 1, 0)
             W, H = min(imgX - X - 1, W + 2), min(imgY - Y - 1, H + 2)
@@ -63,7 +63,7 @@ def bound(img_in_dir, img_out_dir):
                 color_img[Y + dy][X + W - 1] = BOUNDING_COLOR
 
         save_image(img_output, color_img)
-        return bounding_boxs
+        return bounding_boxes
 
 
 def get_internal_centroids(centroids, values):
@@ -71,7 +71,7 @@ def get_internal_centroids(centroids, values):
     :param centroids:
     :param values:
     :return: a list of the indexes/labels of all
-    the bounding boxs with centroids that are fully in another bounding box
+    the bounding boxes with centroids that are fully in another bounding box
     """
     to_remove = []
     for i, (cx, cy) in enumerate(centroids[1:], 1):
@@ -85,7 +85,7 @@ def get_internal_regions(values):
     """
     :param values:
     :return: a list of the indexes/labels of all
-    the bounding boxs that are fully in another bounding box
+    the bounding boxes that are fully in another bounding box
     """
     to_remove = []
     for i, (ax, ay, aw, ah, _) in enumerate(values[1:], 1):

@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from matplotlib import pyplot as plt, cm
 from torch.autograd import Variable as V
 
 from src.binarization.dp_linknet.networks.dplinknet import LinkNet34, DLinkNet34, DPLinkNet34
@@ -8,6 +9,7 @@ from src.util.dir_util import get_input_images, set_output_dir
 from src.util.img_util import load_image, save_image
 
 BATCHSIZE_PER_CARD = 32
+PREDICTION_THRESHOLD = 7.5
 
 
 class TTAFrame():
@@ -162,7 +164,7 @@ def run(img_in_dir, img_out_dir, *, tile_size=256, data_name="DIBCO", network_na
     solver.load(weights_dir + data_name.lower() + "_" + network_name.lower() + ".th")
     # FOR EACH IMAGE IN LIST
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path, network_name)
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path)
         # CONVERT TO PATCHES
         locations, patches = get_patches(img, tile_size, tile_size)
         # GENERATE MASK FOR EACH IMAGE
@@ -172,9 +174,13 @@ def run(img_in_dir, img_out_dir, *, tile_size=256, data_name="DIBCO", network_na
             masks.append(msk)
         # RECOMBINE IMAGES AND MASKS
         prediction = stitch_together(locations, masks, tuple(img.shape[0:2]), tile_size, tile_size)
+
+        plt.imshow(prediction, cmap=cm.jet)
+        plt.waitforbuttonpress()
+
         # BINARIZE
-        prediction[prediction >= 5.0] = 255
-        prediction[prediction < 5.0] = 0
+        prediction[prediction >= PREDICTION_THRESHOLD] = 255
+        prediction[prediction < PREDICTION_THRESHOLD] = 0
         # SAVE AS IMAGE
         save_image(img_output, prediction)
     # print("Finished!")

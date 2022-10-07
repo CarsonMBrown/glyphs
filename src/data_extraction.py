@@ -1,0 +1,375 @@
+import json
+import math
+import os.path
+from collections import defaultdict
+
+import cv2
+import numpy as np
+
+from src.util.glyph_util import glyph_to_name, glyph_to_glyph
+from src.util.img_util import plot_lines
+
+
+# Attributes of annotations:
+# * id
+# * image_id
+# * category_id
+# * bbox
+# ? tags
+# ? seg_id
+def ann_id(a):
+    return a["id"]
+
+
+def ann_img_id(a):
+    return a["image_id"]
+
+
+def ann_cat_id(a):
+    return a["category_id"]
+
+
+def ann_x(a):
+    return a["bbox"][0]
+
+
+def ann_y(a):
+    return a["bbox"][1]
+
+
+def ann_w(a):
+    return a["bbox"][2]
+
+
+def ann_h(a):
+    return a["bbox"][3]
+
+
+def ann_basetype(a):
+    return a["tags"]["BaseType"][0]
+
+
+def ann_footmarktype(a):
+    if "FootMarkType" in a["tags"]:
+        return a["tags"]["FootMarkType"][+0]
+    else:
+        return ""
+
+
+# Attributes of categories:
+# * id
+# * name
+def cat_id(c):
+    return c["id"]
+
+
+def cat_name(c):
+    return c["name"]
+
+
+# Attributes of images:
+# * id
+# * file_name
+def img_id(i):
+    return i["id"]
+
+
+def img_file(i):
+    return i["file_name"]
+
+
+class CocoReader:
+    def __init__(self, in_dir):
+        with open(os.path.join(in_dir, "HomerCompTrainingReadCoco.json"), encoding="utf-8") as json_file:
+            admin = json.load(json_file)
+        self.annotations = admin["annotations"]  # character bounding boxes
+        self.categories = admin["categories"]  # character types
+        self.images = admin["images"]  # images
+
+        self.id_to_ann = {}
+        for a in self.annotations:
+            self.id_to_ann[ann_id(a)] = a
+
+        self.id_to_cat = {}
+        for c in self.categories:
+            self.id_to_cat[cat_id(c)] = c
+
+        self.id_to_img = {}
+        for i in self.images:
+            self.id_to_img[img_id(i)] = i
+
+        self.img_to_ann = defaultdict(list)
+        for a in self.annotations:
+            self.img_to_ann[ann_img_id(a)].append(a)
+
+        self.name_to_ann = defaultdict(list)
+        for a in self.annotations:
+            id = ann_cat_id(a)
+            cat = self.id_to_cat[id]
+            name = cat_name(cat)
+            self.name_to_ann[name].append(a)
+
+    def img_ids(self):
+        return sorted(self.id_to_img.keys())
+
+    def ann_name(self, a):
+        return cat_name(self.id_to_cat[ann_cat_id(a)])
+
+    def ann_class(self, a):
+        return self.ann_name(a), ann_basetype(a), ann_footmarktype(a)
+
+    def names(self):
+        return sorted([cat_name(c) for c in self.categories])
+
+    def occurring_names(self):
+        return sorted(set([self.ann_name(a) for a in self.annotations]))
+
+    def occurring_classes(self):
+        return sorted(set([self.ann_class(a) for a in self.annotations]),
+                      key=lambda c: c[0] + " " + c[1] + " " + c[2])
+
+
+# Layout
+def vert_span(a):
+    return ann_y(a), ann_y(a) + ann_h(a)
+
+
+def vert_spans_overlap(s1, s2):
+    (l1, h1) = s1
+    (l2, h2) = s2
+    return h1 > l2 and h2 > l1
+
+
+def overlapping_vert_span(spans, s):
+    for i in range(len(spans)):
+        if vert_spans_overlap(spans[i], s):
+            return i
+    return -1
+
+
+def unify_vert_spans(s1, s2):
+    (l1, h1) = s1
+    (l2, h2) = s2
+    return min([l1, l2]), max([h1, h2])
+
+
+def divide_into_lines(ann):
+    spans = []
+    lines = defaultdict(list)
+    ann = sorted(ann, key=lambda a: ann_x(a))
+    for a in ann:
+        span = vert_span(a)
+        similar_index = overlapping_vert_span(spans, span)
+        if similar_index >= 0:
+            spans[similar_index] = unify_vert_spans(spans[similar_index], span)
+        else:
+            spans.append(span)
+            similar_index = len(spans) - 1
+        lines[similar_index].append(a)
+    return [lines[i] for i in sorted(lines.keys(), key=lambda l: spans[l][0])]
+
+
+def extract_glyphs(coco_dir, in_dir, out_dir):
+    coco = CocoReader(coco_dir)
+    for image in coco.images:
+        img_path = image["img_url"]
+        file_name = get_file_name(img_path)
+        img_extension = img_path[img_path.rindex("."):]
+        img = cv2.imread(os.path.join(in_dir, file_name + ".png"))
+        for annotation in get_annotations(coco, image):
+            glyph = cat_name(coco.id_to_cat[annotation["category_id"]])
+            tags = annotation["tags"]
+            base_type = tags["BaseType"][0]
+            if len(tags["BaseType"]) > 1:
+                print(tags)
+            foot_mark_type = None
+            if "FootMarkType" in tags:
+                foot_mark_type = tags["FootMarkType"][0]
+                if len(tags["FootMarkType"]) > 1:
+                    print(tags)
+
+            x, y, dx, dy = annotation["bbox"]
+            glyph_img = img[y:y + dy, x:x + dx]
+
+            glyph_path = os.path.join(out_dir, glyph_to_name(glyph))
+            if not os.path.exists(glyph_path):
+                os.mkdir(glyph_path)
+
+            glyph_file_name = os.path.join(glyph_path,
+                                           base_type + ("" if foot_mark_type is None else "-" + foot_mark_type)
+                                           + "-" + file_name + img_extension)
+            cv2.imwrite(glyph_file_name, glyph_img)
+
+
+def get_file_name(img_path):
+    file_name = img_path[img_path.rindex("/") + 1:img_path.rindex(".")]
+    return file_name
+
+
+def extract_text(coco_dir, in_dir, export_dir, show_images=False):
+    coco = CocoReader(coco_dir)
+    for image in coco.images:
+        img_path = image["img_url"]
+        img_name = get_file_name(img_path)
+        img = cv2.imread(os.path.join(in_dir, img_path))
+
+        centers, glyph_map = get_glyph_centers(image)
+        w_mean, _ = get_bbox_dim_means(image)
+        max_line_gap = 3 * w_mean
+        _, h_sigma = get_bbox_dim_sigmas(image)
+
+        lines = []
+        for c in sorted(centers, key=lambda x: x[0]):
+            new_line = True
+            for line in lines:
+                if c in line:
+                    new_line = False
+                    break
+            closest_points = [p for p in get_points_by_distance(c, centers, h_sigma)]
+            if new_line:
+                line = [c]
+            else:
+                lines.remove(line)
+            if new_line or line.index(c) == len(line) - 1:
+                expected_dy = 0 if new_line else np.average(
+                    [line[i][1] - line[i + 1][1] for i in range(len(line) - 1)])
+                right_closest = [p for p in
+                                 [p1 for p1 in closest_points if p1[1] - (expected_dy / h_sigma) < 2]
+                                 if p[2][0] > c[0] and p[2][0] - c[0] < max_line_gap]
+                if right_closest:
+                    line.append(right_closest[0][2])
+            lines.append(line)
+
+        lines = merge_lines(lines, max_line_gap)
+        if show_images:
+            plot_lines(cv2.imread(os.path.join(in_dir, img_path)), lines, wait=0)
+        with open(os.path.join(export_dir, img_name + ".txt"), encoding="UTF_8", mode="w") as f:
+            f.write("".join(lines_to_glyphs(lines, glyph_map)))
+
+
+def get_glyph_centers(coco, image):
+    glyph_centers = [(
+        get_bounding_box_center(*annotation["bbox"]),
+        glyph_to_glyph(cat_name(coco.id_to_cat[annotation["category_id"]])))
+        for annotation in get_annotations(image)
+    ]
+    glyph_map = {}
+    for gc in glyph_centers:
+        glyph_map[gc[0]] = gc[1]
+    return [gc[0] for gc in glyph_centers], glyph_map
+
+
+def get_bbox_dims(image):
+    # get bounding boxs
+    bboxs = np.array([annotation["bbox"] for annotation in get_annotations(image)])
+    # return lists of bbox width and height by rotating the list of bounding boxes
+    return bboxs.swapaxes(0, 1)[2:]
+
+
+def get_bbox_dim_means(image):
+    # get widths and heights of bboxes
+    ws, hs = get_bbox_dims(image)
+    # return means
+    return ws.mean(), hs.mean()
+
+
+def get_bbox_dim_sigmas(image):
+    # return std-devs
+    ws, hs = get_bbox_dims(image)
+    # get widths and heights of bboxes
+    return ws.std(), hs.std()
+
+
+def get_annotations(coco, image):
+    return [a for a in coco.annotations if a["image_id"] == image["id"]]
+
+
+def get_bounding_box_center(x, y, w, h):
+    return x + w // 2, y + h // 2
+
+
+def get_bbox_dist_and_angle_from_point(p1, p2):
+    return square_y_distance(p1, p2), abs(
+        math.degrees(math.atan((p1[1] - p2[1]) / (p1[0] - p2[0]))) if p1[0] != p2[0] else 0)
+
+
+def get_bbox_dist_and_dy_sigma_from_point(p1, p2, h_sigma):
+    return math.dist(p1, p2), abs(p1[1] - p2[1]) / h_sigma
+
+
+def square_y_distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
+
+
+def get_points_by_distance(p, ps, h_sigma):
+    return sorted([(*get_bbox_dist_and_dy_sigma_from_point(p, pn, h_sigma), pn) for pn in ps if p != pn],
+                  key=lambda z: z[0])
+
+
+def merge_lines(lines, max_line_gap):
+    # No do-while loops, so have to force it
+    merging = True
+    while merging:
+        merging = False
+        merged = []
+        new_lines = []
+        # Get centroids of each lines
+        centroids = np.array([get_centroid(line) for line in lines])
+        # get stddev of dy between adjacent lines
+        line_dy_sigma = np.std(get_deltas(sorted(centroids.swapaxes(0, 1)[1])))
+        line_centroid = list(zip(lines, centroids))
+
+        for i, (line1, centroid1) in enumerate(line_centroid):
+            if i in merged:
+                continue
+            new_line = line1
+            for j, (line2, centroid2) in enumerate(line_centroid[i + 1:], i + 1):
+                if j in merged:
+                    continue
+                if y_dist(centroid1, centroid2) / line_dy_sigma < .5 and \
+                        (x_dist(line1[0], line2[-1]) < max_line_gap or x_dist(line1[-1], line2[0]) < max_line_gap):
+                    new_line += line2
+                    merged += [i, j]
+                    merging = True
+            new_lines.append(sorted(new_line, key=lambda x: x[0]))
+        merged = []
+        lines = []
+        # merge lines that touch
+        for i, line1 in enumerate(new_lines):
+            if i in merged:
+                continue
+            new_line = line1
+            for j, line2 in enumerate(new_lines[i + 1:], i + 1):
+                if j in merged:
+                    continue
+                if not set(line1).isdisjoint(set(line2)):
+                    new_line = sorted(list(set(new_line).union(set(line2))), key=lambda x: x[0])
+                    merged += [i, j]
+                    merging = True
+            lines.append(new_line)
+    return lines
+
+
+def get_centroid(points):
+    points = np.array(points)
+    length = points.shape[0]
+    sum_x = np.sum(points[:, 0])
+    sum_y = np.sum(points[:, 1])
+    return sum_x / length, sum_y / length
+
+
+def get_deltas(vals):
+    return [vals[i] - vals[i + 1] for i in range(len(vals) - 1)]
+
+
+def x_dist(p1, p2):
+    return abs(p1[0] - p2[0])
+
+
+def y_dist(p1, p2):
+    return abs(p1[1] - p2[1])
+
+
+def lines_to_glyphs(lines, glyph_map):
+    lines.sort(key=lambda x: get_centroid(x)[1])
+    return [glyph_map[point] for line in lines for point in line]
