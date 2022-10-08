@@ -1,0 +1,134 @@
+\documentclass[12pt,a4paper,final]{article}
+\usepackage[a4paper, total={6in, 8.5in}]{geometry}
+\setcounter{secnumdepth}{0}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{sectsty}
+\allsectionsfont{\centering}
+\usepackage{textcomp}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\graphicspath{{../figures/}}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{forest}
+\usepackage{float}
+\usepackage{mathtools}
+\usepackage{todonotes}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage[style=numeric,sorting=nyt]{biblatex}
+\makeatletter
+\Hy@AtBeginDocument{
+  \def\@pdfborder{0 0 1}
+  \def\@pdfborderstyle{/S/U/W 1}
+}
+\makeatother
+\hypersetup{
+    colorlinks=true,
+    citecolor=black,
+    citebordercolor=black,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan
+}
+
+\urlstyle{same}
+
+\newcommand{\code}{\texttt}
+\renewcommand{\O}[1]{$\mathcal{O}(#1)$}
+\renewcommand{\o}[1]{$o(#1)$}
+\newcommand{\T}[1]{$\Theta(#1)$}
+\newcommand{\W}[1]{$\Omega(#1)$}
+\newcommand{\w}[1]{$\omega(#1)$}
+\newcommand{\command}[1]{\\\\\code{#1}\\\\\noindent}
+
+\newcommand\qed{$\blacksquare$}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+
+\addbibresource{{../bibliography.bib}}
+
+\newcommand{\practicalInfoVar}{CS5199 - Context Survey}
+\newcommand{\titleVar}{Thesis Skeleton, Context Survey, \& Work Plan}
+\newcommand{\subTitleVar}{\\}
+\newcommand{\dateVar}{October 14, 2022}
+\newcommand{\matricNumberVar}{180008859}
+
+\begin{document}
+\title{\practicalInfoVar:\\\titleVar\subTitleVar}
+\author{\matricNumberVar}
+\date{\dateVar}
+\maketitle
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\practicalInfoVar}
+\rhead{| \matricNumberVar}
+\rfoot{Page \thepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\setlength{\parskip}{1em}
+
+\section{Proposed Thesis Skeleton}
+\todo{}
+% table of contents with all the chapter and section headings. These will form the skeleton of your thesis and ensure that your report is properly structured;
+\begin{itemize}[label={}]
+  \item Abstract
+  \item Acknowledgements
+  \item Declaration
+  \item Table of Contents
+  \item Introduction
+  \item Context Survey
+  \item - Binarization
+  \item - Noise
+  \item - Glyph Grouping
+  \item - Classification
+  \item - Existing Methodologies
+  \item Objectives
+  \item - Primary
+  \item - Secondary
+  \item Design / Implementation
+  \item - [Section for each method attempted]
+  \item Evaluation
+  \item - [Section for each method attempted]
+  \item Conclusion
+  \item References
+  \item Appendix
+\end{itemize}
+
+\newpage
+\section{Context Survey}
+% a mostly complete review of related work (literature review). This is normally 5-10 pages long and will include citations to most important papers on this topic and explain how they relate to the task;
+\subsection{Binarization / Filtering}
+\todo{}
+
+\subsection{Noise Reduction}
+\todo{}
+
+\subsection{Glyph Grouping / Line Formation}
+\todo{}
+
+\subsection{Classification}
+\todo{}
+
+\subsection{Existing Methods}
+\todo{}
+
+\newpage
+\section{Work Plan}
+\todo{}
+% a work plan for the rest of your dissertation period (week-by-week) indicating the main tasks and objectives you will need to tackle and when you will be doing this. This is usually in the form of a table, a Gantt chart, or similar.
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}
