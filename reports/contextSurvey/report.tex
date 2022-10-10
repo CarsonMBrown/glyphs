@@ -109,28 +109,23 @@
 \section{Context Survey}
 % a mostly complete review of related work (literature review). This is normally 5-10 pages long and will include citations to most important papers on this topic and explain how they relate to the task;
 \subsection{Binarization}
-\todo{}
 As many of the most common, commercial, and competitive optical character recognition (OCR) models and methods require or work better with a binarized image \cite{Gupta, Smith, Bar-Yosef2005, Bar-Yosef2007} (also called a bi-level image), it is important to explore binarization as a method to improve the results of the pipeline.
 Various methods are utilized for binarization of historical manuscripts, including thresholding \cite{Bar-Yosef2005, Bar-Yosef2007}, pixel clustering \cite{Bera}, and convolutional neural networks (CNNs) \cite{Dhali2019, Dhali2020, Xiong}. In each of these methods, the goal is the same, to separate the markings on the document from the rest of the image. This usually involves generating a second image where the ink is marked by a black pixel, with the rest of the image being white.
 
-In the case of papyrus, this is not a trival task, requiring techniques to have both high precision and recall to generate useful bi-level images to pass to further steps of the OCR pipeline. The strongest methods for binarization are able to not only differentiate ink from papyrus, but also extranious text markings such as ruler marks and annotations added by historians as well as elements in the image that are either edited in after the image is taken or elements other than the papyrus.
+In the case of papyrus, this is not a trivial task, requiring techniques to have both high precision and recall to generate useful bi-level images to pass to further steps of the OCR pipeline. The strongest methods for binarization are able to not only differentiate ink from papyrus, but also extraneous text markings such as ruler marks and annotations added by historians as well as elements in the image that are either edited in after the image is taken or elements other than the papyrus.
 
-The moth
+Bera et al.\cite{Bera} propose an approach to binarization that involves using clustering algorithms such fuzzy C-means, K-medoids and K-means++ to form clusters of pixels into groups representing foreground and background elements. This method also makes use of normalization, to remove noise and shadow, and thresholding, maximizing inter cluster distance and minimizing inter cluster distance, thus generating very specific clusters. Pixels are labeled by the clusters and then the final output is determined by a decision algorithm that takes in the labels from the three clustering algorithms. This approach generates an F-measure result of $76.84$ and a peak signal to noise ratios of $15.31$, both measured against the 2018 DIBCO (Document Image Binarization COntest) dataset\cite{DIBCO2018}.
 
-Bar-Yosef (2005)\cite{Bar-Yosef2005} and Bar-Yosef et al. (2007)\cite{Bar-Yosef2005} both utilze thresholding, with Bar-Yosef et al. expanding on the work done by Bar-Yosef by eroding characters to generate 'structuring elements' for each glyph, unique elements of glyphs that can be overlayed over the binarized text to identify characters of each glyph class.
+Dhali et al.\cite{Dhali2019} and Xiong et al.\cite{Xiong} both utilize CNNs for this task using manually annotated data in combination with transfer learning to retrain existing models to generate new networks with F-measure results of $86.7$ and $92.81$ respectively and peak signal to noise ratios of $21.3$ and $17.56$ respectively (all measured against DIBCO'18). While it has a lower F-measure on the whole of the DIBCO'18 dataset, the network proposed by Dhali et al., BiNet, was trained more specifically on degraded manuscripts and is shown to also be able to remove the extraneous elements from the image including rulers, machine-printed color-calibrators, and picture frames.
 
-Bera et al.\cite{Bera} propose an approach to binarization that involves using clustering algorithms such fuzzy C-means, K-medioids and K-means++ to form clusers of pixels into groups representing foreground and background elements. This method also makes use of normalization, to remove noise and shadow, and thresholding, maximizing inter cluster distance and minimizing inter cluster distance, thus generating very specific clusters. Pixels are labeled by the clusters and then the final output is determined by a decision algorithm that takes in the labels from the three clustering algorithms. This approach generates an F-measure result of $76.84$ and a peak signal to noise ratios of $15.31$.
-
-Dhali et al.\cite{Dhali2019} and Xiong et al.\cite{Xiong} both utilize CNNs for this task using manually annotated data in combination with transfer learning to retrain existing models to generate new networks with F-measure results of $86.7$ and $92.81$ respectively and peak signal to noise ratios of $21.3$ and $17.56$ respectively. The network proposed by Dhali et al., BiNet, is shown to also be able to remove the extranious elements from the image including rulers, machine-printed color-calibrators, and picture frames.
-
-\subsection{Noise Reduction}
-\todo{MAYBE REMOVE?}
+By combining and contrasting these methods against each other, a high quality, bi-level representation can be generated that can be passed to the next step of an OCR pipeline to bound and classify each glyph with more accuracy than would be expected with an unaltered image.
 
 \subsection{Glyph Grouping / Line Formation}
 \todo{}
 
 \subsection{Classification}
-\todo{}
+
+Bar-Yosef (2005)\cite{Bar-Yosef2005} and Bar-Yosef et al. (2007)\cite{Bar-Yosef2005} both utilize thresholding, with Bar-Yosef et al. expanding on the work done by Bar-Yosef by eroding characters to generate 'structuring elements' for each glyph, unique elements of glyphs that can be overlaid over the binarized text to identify characters of each glyph class. Using  this method, Bar-Yosef et al. were able to achieve an accuracy of $94.65\%$ on a test set of 1477 aleph characters over 22 Hebrew documents.
 
 \subsection{Existing Methods}
 \todo{}
