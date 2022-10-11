@@ -6,13 +6,15 @@ from src.util.dir_util import get_input_images, set_output_dir
 from src.util.img_util import load_image, save_image
 
 
-def scale(img_in_dir, img_out_dir, max_w, max_h):
+def scale(img_in_dir, img_out_dir, max_w, max_h, binarize=False):
     img_list = get_input_images(img_in_dir)
     set_output_dir(img_out_dir)
 
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path)
-        w, h, _ = img.shape
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path, skip_existing=False)
+        if img is None:
+            continue
+        h, w, _ = img.shape
         # if image size less than max size, do nothing
         if w > max_w or h > max_h:
             if w / max_w >= h / max_h:

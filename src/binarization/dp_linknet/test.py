@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-from matplotlib import pyplot as plt, cm
 from torch.autograd import Variable as V
 
 from src.binarization.dp_linknet.networks.dplinknet import LinkNet34, DLinkNet34, DPLinkNet34
@@ -164,7 +163,9 @@ def run(img_in_dir, img_out_dir, *, tile_size=256, data_name="DIBCO", network_na
     solver.load(weights_dir + data_name.lower() + "_" + network_name.lower() + ".th")
     # FOR EACH IMAGE IN LIST
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path)
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path, skip_existing=True)
+        if img is None:
+            continue
         # CONVERT TO PATCHES
         locations, patches = get_patches(img, tile_size, tile_size)
         # GENERATE MASK FOR EACH IMAGE
@@ -174,9 +175,6 @@ def run(img_in_dir, img_out_dir, *, tile_size=256, data_name="DIBCO", network_na
             masks.append(msk)
         # RECOMBINE IMAGES AND MASKS
         prediction = stitch_together(locations, masks, tuple(img.shape[0:2]), tile_size, tile_size)
-
-        plt.imshow(prediction, cmap=cm.jet)
-        plt.waitforbuttonpress()
 
         # BINARIZE
         prediction[prediction >= PREDICTION_THRESHOLD] = 255

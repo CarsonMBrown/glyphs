@@ -16,12 +16,14 @@ color_pallet = [
 ]
 
 
-def load_image(img_in_dir, img_out_dir, img_path, *, gray_scale=False, invert=False):
+def load_image(img_in_dir, img_out_dir, img_path, *, skip_existing=True, gray_scale=False, invert=False):
     print("Now processing image:", img_path)
     file_name, file_extension = os.path.splitext(img_path)
     img_input = os.path.join(img_in_dir, img_path)
     img_output = os.path.join(img_out_dir, file_name + ".png")
     # LOAD IMAGE
+    if os.path.exists(img_output) and skip_existing:
+        return None, img_output
     img = cv2.imread(img_input)
     if gray_scale or invert:
         img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
