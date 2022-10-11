@@ -1,14 +1,23 @@
 TODO:
   ASK MJ ABOUT THOUGHTS ON GROUPING LINES
+    hoff transform
+    layout analysis
+  accuracy
+    blue scores
+
+  image distortion model
+    force bbox height
+
+  use bounding box collision
+
   Ocular on printed Greek
   Generate accuracy model for:
     bounding boxes - see if contest code has?
     ground truth text, by character and/or total?
-  explore getting alex net working
-  get probabalistic model working for bbox size and location
+  explore getting AlexNet working
+  get probabilistic model working for bbox size and location
     train on existing bboxes
-    explore getting separation/combiniation of boxes working based on probabalistic model
-  Get better binarization using high/low pass filters
+    explore getting separation/combination of boxes working based on probabilistic model
 
 DONE
   Ocular with more iters and/or more images
