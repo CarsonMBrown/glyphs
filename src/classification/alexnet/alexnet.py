@@ -3,8 +3,14 @@ from PIL import Image
 from torchvision import transforms
 from torchvision.models import AlexNet_Weights
 
-model = torch.hub.load('pytorch/vision:v0.10.0', 'alexnet', weights=AlexNet_Weights.IMAGENET1K_V1)
-model.eval()
+activation = {}
+
+
+def get_activation(name):
+    def hook(model, model_in, model_out):
+        activation[name] = model_out.detach().tolist()
+
+    return hook
 
 
 def classify(image):
@@ -28,10 +34,18 @@ def classify(image):
     # move the input and model to GPU for speed if available
     if torch.cuda.is_available():
         input_batch = input_batch.to('cuda')
-        model.to('cuda')
+        alex_net.to('cuda')
 
     with torch.no_grad():
-        output = model(input_batch)
+        alex_net(input_batch)
 
-    # Tensor of shape 1000, with confidence scores over Imagenet's 1000 classes
-    return output[0].tolist()
+    return activation['fc6'][0]
+
+
+# instantiate the model
+alex_net = torch.hub.load('pytorch/vision:v0.10.0', 'alexnet', weights=AlexNet_Weights.IMAGENET1K_V1)
+alex_net.eval()
+
+# register the forward hook
+model_children = list(alex_net.children())
+model_children[2][0].register_forward_hook(get_activation('fc6'))
