@@ -1,12 +1,13 @@
 TODO:
-  MJ thoughts on line grouping
-    hough transform
-    layout analysis
   accuracy
     blue scores
 
-  image distortion model
+  image distortion model (only if bboxes can be tight)
     force bbox height
+
+  MJ thoughts on line grouping
+    hough transform
+    layout analysis
 
   use bounding box collision
 

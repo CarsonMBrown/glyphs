@@ -11,7 +11,7 @@ def get_input_images(img_in_dir, *, by_dir=False, verbose=True):
         for dir_path, dirs, files in os.walk(img_in_dir):
             for filename in files:
                 file_path = os.path.join(dir_path, filename)
-                if file_path.endswith('.png') or file_path.endswith(".jpg"):
+                if file_path.lower().endswith('.png') or file_path.lower().endswith(".jpg"):
                     img_files.append(file_path.removeprefix(img_in_dir)[1:])
         return img_files
     # else return images in dict with dir name as key to list

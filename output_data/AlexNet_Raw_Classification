@@ -1,0 +1,79 @@
+Training AlexNet Random Forest
+C:\Users\Carson Brown\.conda\envs\glyphs\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+              precision    recall  f1-score   support
+
+           0       0.11      0.20      0.14       122
+           1       0.00      0.00      0.00        38
+           2       0.50      0.02      0.03        61
+           3       0.11      0.05      0.07        86
+           4       0.13      0.27      0.17       122
+           5       0.13      0.15      0.14       100
+           6       0.09      0.02      0.03        60
+           7       0.17      0.55      0.26       109
+           8       0.20      0.03      0.06        91
+           9       0.18      0.02      0.04        86
+          10       0.19      0.05      0.08        93
+          11       0.09      0.19      0.12       113
+          12       0.21      0.04      0.06        84
+          13       0.10      0.09      0.10       113
+          14       0.00      0.00      0.00        56
+          15       0.18      0.17      0.17        95
+          16       0.00      0.00      0.00        10
+          17       0.12      0.16      0.14       100
+          18       0.11      0.11      0.11       107
+          19       0.19      0.30      0.23       109
+          20       0.00      0.00      0.00        69
+          21       0.14      0.08      0.10        98
+          22       0.00      0.00      0.00        23
+          23       0.00      0.00      0.00        20
+
+    accuracy                           0.14      1965
+   macro avg       0.12      0.10      0.09      1965
+weighted avg       0.14      0.14      0.11      1965
+
+0.2376590330788804
+0.3104325699745547
+C:\Users\Carson Brown\.conda\envs\glyphs\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+C:\Users\Carson Brown\.conda\envs\glyphs\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Training AlexNet GMM
+0.07854396776396388
+0.005572450284787617
+Training AlexNet KNN
+C:\Users\Carson Brown\.conda\envs\glyphs\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+              precision    recall  f1-score   support
+
+           0       0.09      0.12      0.10       122
+           1       0.20      0.03      0.05        38
+           2       0.10      0.02      0.03        61
+           3       0.05      0.03      0.04        86
+           4       0.09      0.15      0.11       122
+           5       0.12      0.10      0.11       100
+           6       0.03      0.02      0.02        60
+           7       0.15      0.55      0.24       109
+           8       0.04      0.02      0.03        91
+           9       0.11      0.07      0.09        86
+          10       0.08      0.02      0.03        93
+          11       0.10      0.15      0.12       113
+          12       0.00      0.00      0.00        84
+          13       0.11      0.10      0.10       113
+          14       0.00      0.00      0.00        56
+          15       0.06      0.05      0.05        95
+          16       0.00      0.00      0.00        10
+          17       0.10      0.20      0.13       100
+          18       0.07      0.09      0.08       107
+          19       0.13      0.11      0.12       109
+          20       0.11      0.01      0.03        69
+          21       0.13      0.06      0.08        98
+          22       0.00      0.00      0.00        23
+          23       0.00      0.00      0.00        20
+
+    accuracy                           0.10      1965
+   macro avg       0.08      0.08      0.07      1965
+weighted avg       0.09      0.10      0.08      1965
+
+0.19185750636132315
+0.2564885496183206
