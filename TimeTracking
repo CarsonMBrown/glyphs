@@ -26,3 +26,14 @@ Week 5:
   Wednesday: Context Survey
   Thursday: Context Survey + AlexNet
   Friday: DOG + POI + adaptive dbscan
+
+Week 6:
+  Monday: Poi
+  Tues: fix test-train split, record results for alexnet similarity
+  Wednesday: record results for top 2 and 3 accuracy on alexnet
+  Thurs: attempt ocular again with mono-glyph img training (ocular error on transcription again)
+  attempt alexnet again with singular templates for each base type for each glyph
+  Fri: Hyper param tweaking for alexnet similarity
+
+Week 7:
+  Mon: Look into POI Line generation and Start YOLO5 work

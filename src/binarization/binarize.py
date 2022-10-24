@@ -46,10 +46,10 @@ def clustering(img_in_dir, img_out_dir):
     pass
 
 
-def cnn(img_in_dir, img_out_dir):
+def cnn(img_in_dir, img_out_dir, threshold=5):
     """
     :param img_in_dir: path to directory containing input images
     :param img_out_dir: path to directory to output images
     :return: None
     """
-    test.run(img_in_dir, img_out_dir)
+    test.run(img_in_dir, img_out_dir, threshold=threshold)

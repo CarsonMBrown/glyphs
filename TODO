@@ -9,8 +9,6 @@ TODO:
     hough transform
     layout analysis
 
-  use bounding box collision
-
   Ocular on printed Greek
   Generate accuracy model for:
     bounding boxes - see if contest code has?

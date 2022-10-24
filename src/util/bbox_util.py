@@ -33,9 +33,21 @@ def pascal_to_coco(bbox):
 
 def coco_to_pascal(bbox):
     """
-    Converts bounding box in pascal format to coco format.
+    Converts bounding box in coco format to pascal format.
     :param bbox: bounding box in coco format (x_min, y_min, width, height)
     :return: bounding box in pascal format (x_min, y_min, x_max, y_max)
     """
     x_min, y_min, width, height = bbox
     return x_min, y_min, x_min + width, y_min + height
+
+
+def coco_to_yolo(bbox, img_size):
+    """
+    Converts bounding box in coco format to yolo format.
+    :param bbox: bounding box in coco format (x_min, y_min, width, height)
+    :param img_size: size of image (x, y) in pixels
+    :return: bounding box in pascal format (x_min, y_min, x_max, y_max)
+    """
+    x_min, y_min, width, height = bbox
+    img_x, img_y = img_size
+    return (x_min + width / 2) / img_x, (y_min + height / 2) / img_y, width / img_x, height / img_y

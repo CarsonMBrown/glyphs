@@ -1,7 +1,11 @@
-glyphs = [
+glyph_look_a_likes = [
     '.', 'Ⲁ', 'Β', 'Γ', 'Δ', 'Ⲉ', 'Ζ', 'Η', 'Θ',
     'Ι', 'Κ', 'Ⲗ', 'Ⲙ', 'Ν', 'Ⲝ', 'Ο', 'Π',
     'Ρ', 'Ϲ', 'Τ', 'Υ', 'Ⲫ', 'Χ', 'Ⲯ', 'ω']
+glyphs = [
+    '.', 'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ',
+    'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π',
+    'Ρ', 'Ϲ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω']
 glyph_map = {
     "Α": "Ⲁ",
     "Ε": "Ⲉ",
@@ -34,12 +38,14 @@ def name_to_glyph(name):
             return glyphs[i]
 
 
-def glyph_to_name(glyph):
-    if glyph in glyph_map:
-        glyph = glyph_map[glyph]
+def glyph_to_name(glyph, *, look_a_like_glyphs=False):
+    if look_a_like_glyphs:
+        if glyph in glyph_map:
+            glyph = glyph_map[glyph]
     for i, g in enumerate(glyphs):
         if glyph == g:
             return names[i]
+    print(glyph)
 
 
 def glyph_to_glyph(glyph):
@@ -52,3 +58,7 @@ def glyph_to_glyph(glyph):
         return glyph
     if glyph in glyph_map:
         return glyph_map[glyph]
+
+
+def get_classes_as_glyphs():
+    return [name_to_glyph(n) for n in sorted(names[1:])]

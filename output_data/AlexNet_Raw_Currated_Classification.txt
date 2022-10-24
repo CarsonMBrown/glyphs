@@ -1,0 +1,42 @@
+"C:\Users\Carson Brown\.conda\envs\glyphs\python.exe" "C:/Users/Carson Brown/git/glyphs/src/main.py"
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Image input directory: dataset\glyphs\templates\raw
+Reading AlexNet Data From Disk
+Image input directory: dataset\glyphs\raw
+Reading AlexNet Data From Disk
+Training AlexNet KNN
+              precision    recall  f1-score   support
+
+       alpha       0.72      0.01      0.02      3783
+        beta       0.01      0.54      0.02       179
+         chi       1.00      0.01      0.01       473
+       delta       1.00      0.01      0.01      1100
+     epsilon       0.17      0.29      0.22      4081
+         eta       0.83      0.00      0.01      1462
+       gamma       1.00      0.01      0.01       497
+        iota       0.80      0.00      0.00      3134
+       kappa       1.00      0.00      0.01      1109
+      lambda       0.16      0.01      0.02      1212
+          mu       0.82      0.01      0.01      1215
+          nu       0.24      0.56      0.34      3027
+       omega       0.31      0.02      0.04      1052
+     omicron       1.00      0.00      0.00      3343
+         phi       1.00      0.01      0.02       402
+          pi       0.07      0.11      0.09      1213
+         psi       1.00      0.08      0.15        36
+         rho       0.16      0.48      0.24      1562
+       sigma       0.28      0.05      0.09      2552
+         tau       0.80      0.00      0.01      2015
+       theta       0.71      0.01      0.02       610
+     upsilon       0.29      0.03      0.05      1350
+          xi       0.01      0.29      0.02       103
+        zeta       0.38      0.07      0.12        86
+
+    accuracy                           0.12     35596
+   macro avg       0.57      0.11      0.06     35596
+weighted avg       0.56      0.12      0.08     35596
+
+0.16454095965838858
+0.19799977525564671
+
+Process finished with exit code 0

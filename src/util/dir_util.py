@@ -1,4 +1,28 @@
 import os
+import random
+from math import ceil
+
+
+def split_eval_data(train_img_dir, train_label_dir, eval_img_dir, eval_label_dir, eval_percentage=.3, seed=0):
+    """
+    Given a directory containing train images, extracts some of those images to an eval directory
+    :param train_img_dir:
+    :param train_label_dir:
+    :param eval_img_dir:
+    :param eval_label_dir:
+    :param eval_percentage:
+    :param seed:
+    :return:
+    """
+    random.seed(seed)
+    imgs = get_input_images(train_img_dir)
+    random.shuffle(imgs)
+    for i in imgs[:ceil(len(imgs) * eval_percentage)]:
+        img_name, img_extension = split_image_name_extension(i)
+        os.rename(os.path.join(train_img_dir, img_name + img_extension),
+                  os.path.join(eval_img_dir, img_name + img_extension))
+        os.rename(os.path.join(train_label_dir, img_name + ".txt"),
+                  os.path.join(eval_label_dir, img_name + ".txt"))
 
 
 def get_input_images(img_in_dir, *, by_dir=False, verbose=True):
@@ -36,3 +60,13 @@ def clean_dir(temp_dir):
     for i in img_list:
         os.remove(os.path.join(temp_dir, i))
     print("Cleared directory:", temp_dir)
+
+
+def get_file_name(img_path):
+    if "/" in img_path:
+        return img_path[img_path.rindex("/") + 1:img_path.rindex(".")]
+    return img_path[:img_path.rindex(".")]
+
+
+def split_image_name_extension(img_path):
+    return get_file_name(img_path), img_path[img_path.rindex("."):]

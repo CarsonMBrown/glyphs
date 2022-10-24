@@ -6,6 +6,8 @@ from collections import defaultdict
 import cv2
 import numpy as np
 
+from src.util.bbox_util import coco_to_yolo
+from src.util.dir_util import split_image_name_extension
 from src.util.glyph_util import glyph_to_name, glyph_to_glyph
 from src.util.img_util import plot_lines
 
@@ -169,41 +171,106 @@ def divide_into_lines(ann):
     return [lines[i] for i in sorted(lines.keys(), key=lambda l: spans[l][0])]
 
 
-def extract_glyphs(coco_dir, in_dir, out_dir):
+def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_filter=[],
+                   glyphs_per_footmark_type_limit=None):
     coco = CocoReader(coco_dir)
-    for image in coco.images:
-        img_path = image["img_url"]
-        file_name = get_file_name(img_path)
-        img_extension = img_path[img_path.rindex("."):]
-        img = cv2.imread(os.path.join(in_dir, file_name + ".png"))
-        for annotation in get_annotations(coco, image):
-            glyph = cat_name(coco.id_to_cat[annotation["category_id"]])
+    glyphs_per_footmark_type = {}
+    for img, img_name, img_extension, _, annotations in get_image_and_data(coco, in_dir):
+        for glyph_count, annotation in enumerate(annotations):
+            glyph = annotation_to_glyph(annotation, coco)
             tags = annotation["tags"]
             base_type = tags["BaseType"][0]
-            if len(tags["BaseType"]) > 1:
-                print(tags)
+            if quality_filter and base_type not in quality_filter:
+                continue
             foot_mark_type = None
             if "FootMarkType" in tags:
                 foot_mark_type = tags["FootMarkType"][0]
                 if len(tags["FootMarkType"]) > 1:
                     print(tags)
+            if glyphs_per_footmark_type_limit is not None:
+                if glyph not in glyphs_per_footmark_type:
+                    glyphs_per_footmark_type[glyph] = {}
+                if foot_mark_type not in glyphs_per_footmark_type[glyph]:
+                    glyphs_per_footmark_type[glyph][foot_mark_type] = 1
+                else:
+                    glyphs_per_footmark_type[glyph][foot_mark_type] += 1
+                if glyphs_per_footmark_type_limit < glyphs_per_footmark_type[glyph][foot_mark_type]:
+                    continue
 
             x, y, dx, dy = annotation["bbox"]
             glyph_img = img[y:y + dy, x:x + dx]
 
-            glyph_path = os.path.join(out_dir, glyph_to_name(glyph))
-            if not os.path.exists(glyph_path):
-                os.mkdir(glyph_path)
+            output_file_name = base_type + (
+                "" if foot_mark_type is None else "-" + foot_mark_type) + "-" + img_name + str(glyph_count)
 
-            glyph_file_name = os.path.join(glyph_path,
-                                           base_type + ("" if foot_mark_type is None else "-" + foot_mark_type)
-                                           + "-" + file_name + img_extension)
-            cv2.imwrite(glyph_file_name, glyph_img)
+            if ocular_format:
+                glyph_path = out_dir
+            else:
+                glyph_path = os.path.join(out_dir, glyph_to_name(glyph))
+                if not os.path.exists(glyph_path):
+                    os.mkdir(glyph_path)
+
+            glyph_file_name = os.path.join(glyph_path, output_file_name)
+            if ocular_format:
+                with open(glyph_file_name + ".txt", mode="w", encoding="UTF_8") as f:
+                    f.write(glyph)
+
+            cv2.imwrite(glyph_file_name + img_extension, glyph_img)
 
 
-def get_file_name(img_path):
-    file_name = img_path[img_path.rindex("/") + 1:img_path.rindex(".")]
-    return file_name
+def generate_yolo_labels(coco_dir, out_dir):
+    coco = CocoReader(coco_dir)
+    labels = set()
+    # First pass, get all classes that actually appear
+    for img_name, img_extension, _, annotations in get_image_data(coco):
+        for annotation in annotations:
+            glyph = glyph_to_name(annotation_to_glyph(annotation, coco))
+            labels.add(glyph)
+    labels = list(sorted(labels))
+    label_map = {}
+    for i, l in enumerate(labels):
+        label_map[l] = i
+        print(f"{i}: {l}")
+    # Second pass, make all label files
+    for img_name, img_extension, img_size, annotations in get_image_data(coco):
+        with open(os.path.join(out_dir, img_name + ".txt"), mode="w") as f:
+            for annotation in annotations:
+                glyph = glyph_to_name(annotation_to_glyph(annotation, coco))
+                bbox_cx, bbox_cy, bbox_dx, bbox_dy = coco_to_yolo(annotation["bbox"], img_size)
+                f.write(f"{label_map[glyph]} {bbox_cx} {bbox_cy} {bbox_dx} {bbox_dy} \n")
+
+
+def annotation_to_glyph(annotation, coco):
+    return cat_name(coco.id_to_cat[annotation["category_id"]])
+
+
+def get_image_data(coco):
+    """
+    :param coco:
+    :return: (img_name, img_extension, annotations) for each image in the coco passed in
+    """
+    return [
+        (*split_image_name_extension(image["img_url"]),
+         (image["width"], image["height"]),
+         get_annotations(coco, image))
+        for image in coco.images]
+
+
+def get_image_and_data(coco, in_dir):
+    """
+    :param coco:
+    :param in_dir:
+    :return: (img, img_name, img_extension, image_size, annotations) for each image in the coco passed in,
+    with each img being taken from the in_dir
+    """
+    image_data = get_image_data(coco)
+    imgs = []
+    for img_name, img_extension, _, _ in image_data:
+        if os.path.exists(os.path.join(in_dir, img_name + img_extension)):
+            imgs.append(cv2.imread(os.path.join(in_dir, img_name + img_extension)))
+        else:
+            imgs.append(cv2.imread(os.path.join(in_dir, img_name + ".png")))
+    return [(imgs[i], *image_data[i]) for i in len(image_data)]
 
 
 def extract_text(coco_dir, in_dir, export_dir, show_images=False):
@@ -259,42 +326,12 @@ def get_glyph_centers(coco, image):
     return [gc[0] for gc in glyph_centers], glyph_map
 
 
-def get_bbox_dims(image):
-    # get bounding boxs
-    bboxs = np.array([annotation["bbox"] for annotation in get_annotations(image)])
-    # return lists of bbox width and height by rotating the list of bounding boxes
-    return bboxs.swapaxes(0, 1)[2:]
-
-
-def get_bbox_dim_means(image):
-    # get widths and heights of bboxes
-    ws, hs = get_bbox_dims(image)
-    # return means
-    return ws.mean(), hs.mean()
-
-
-def get_bbox_dim_sigmas(image):
-    # return std-devs
-    ws, hs = get_bbox_dims(image)
-    # get widths and heights of bboxes
-    return ws.std(), hs.std()
-
-
 def get_annotations(coco, image):
     return [a for a in coco.annotations if a["image_id"] == image["id"]]
 
 
 def get_bounding_box_center(x, y, w, h):
     return x + w // 2, y + h // 2
-
-
-def get_bbox_dist_and_angle_from_point(p1, p2):
-    return square_y_distance(p1, p2), abs(
-        math.degrees(math.atan((p1[1] - p2[1]) / (p1[0] - p2[0]))) if p1[0] != p2[0] else 0)
-
-
-def get_bbox_dist_and_dy_sigma_from_point(p1, p2, h_sigma):
-    return math.dist(p1, p2), abs(p1[1] - p2[1]) / h_sigma
 
 
 def square_y_distance(p1, p2):
@@ -373,3 +410,33 @@ def y_dist(p1, p2):
 def lines_to_glyphs(lines, glyph_map):
     lines.sort(key=lambda x: get_centroid(x)[1])
     return [glyph_map[point] for line in lines for point in line]
+
+
+def get_bbox_dims(image):
+    # get bounding boxs
+    bboxs = np.array([annotation["bbox"] for annotation in get_annotations(image)])
+    # return lists of bbox width and height by rotating the list of bounding boxes
+    return bboxs.swapaxes(0, 1)[2:]
+
+
+def get_bbox_dist_and_angle_from_point(p1, p2):
+    return square_y_distance(p1, p2), abs(
+        math.degrees(math.atan((p1[1] - p2[1]) / (p1[0] - p2[0]))) if p1[0] != p2[0] else 0)
+
+
+def get_bbox_dist_and_dy_sigma_from_point(p1, p2, h_sigma):
+    return math.dist(p1, p2), abs(p1[1] - p2[1]) / h_sigma
+
+
+def get_bbox_dim_means(image):
+    # get widths and heights of bboxes
+    ws, hs = get_bbox_dims(image)
+    # return means
+    return ws.mean(), hs.mean()
+
+
+def get_bbox_dim_sigmas(image):
+    # return std-devs
+    ws, hs = get_bbox_dims(image)
+    # get widths and heights of bboxes
+    return ws.std(), hs.std()

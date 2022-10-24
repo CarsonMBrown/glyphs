@@ -1,16 +1,8 @@
 import torch
+import torch.nn as nn
 from PIL import Image
 from torchvision import transforms
 from torchvision.models import AlexNet_Weights
-
-activation = {}
-
-
-def get_activation(name):
-    def hook(model, model_in, model_out):
-        activation[name] = model_out.detach().tolist()
-
-    return hook
 
 
 def classify(image):
@@ -37,15 +29,12 @@ def classify(image):
         alex_net.to('cuda')
 
     with torch.no_grad():
-        alex_net(input_batch)
+        output = alex_net(input_batch)
 
-    return activation['fc6'][0]
+    return output.tolist()[0]
 
 
 # instantiate the model
 alex_net = torch.hub.load('pytorch/vision:v0.10.0', 'alexnet', weights=AlexNet_Weights.IMAGENET1K_V1)
+alex_net.classifier = nn.Sequential(*[alex_net.classifier[i] for i in range(1)])
 alex_net.eval()
-
-# register the forward hook
-model_children = list(alex_net.children())
-model_children[2][0].register_forward_hook(get_activation('fc6'))

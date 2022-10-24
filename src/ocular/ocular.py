@@ -60,12 +60,6 @@ def train_font(training_document_dir, output_dir, *, gsm=False, overwrite=False,
         )
 
 
-def init_ocular(training_document_dir, output_dir, gsm=False, overwrite=False, num_iters=50):
-    init_lang_model(overwrite=overwrite)
-    init_font(overwrite=overwrite)
-    train_font(training_document_dir, output_dir, gsm=gsm, overwrite=overwrite, num_iters=num_iters)
-
-
 def transcribe(training_document_dir, output_dir):
     print("Transcribing With Ocular")
     os.system(
@@ -77,3 +71,9 @@ def transcribe(training_document_dir, output_dir):
         f'-inputFontPath {LANGUAGE_MODEL_TRAINED_FONT} '
         f'-outputPath {output_dir}'
     )
+
+
+def init_ocular(training_document_dir, output_dir, gsm=False, overwrite=False, num_iters=50):
+    init_lang_model(overwrite=overwrite)
+    init_font(overwrite=overwrite)
+    train_font(training_document_dir, output_dir, gsm=gsm, overwrite=overwrite, num_iters=num_iters)

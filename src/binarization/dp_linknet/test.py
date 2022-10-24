@@ -1,4 +1,5 @@
 import numpy as np
+import sklearn
 import torch
 from torch.autograd import Variable as V
 
@@ -8,7 +9,6 @@ from src.util.dir_util import get_input_images, set_output_dir
 from src.util.img_util import load_image, save_image
 
 BATCHSIZE_PER_CARD = 32
-PREDICTION_THRESHOLD = 7.5
 
 
 class TTAFrame():
@@ -132,11 +132,13 @@ class TTAFrame():
         self.net.load_state_dict(torch.load(path))
 
 
-def run(img_in_dir, img_out_dir, *, tile_size=256, data_name="DIBCO", network_name="DPLinkNet34",
+def run(img_in_dir, img_out_dir, *, threshold=7.5, tile_size=256, data_name="DIBCO", network_name="DPLinkNet34",
         weights_dir="weights/dp-linknet/"):
     """
+
     :param img_in_dir: path to directory containing input images
     :param img_out_dir: path to directory to output images
+    :param threshold: int to threshold on int, None to not threshold
     :param tile_size:
     :param data_name: DIBCO | BICKLEYDIARY
     :param network_name: DPLinkNet34 | DLinkNet34 | LinkNet34
@@ -176,9 +178,12 @@ def run(img_in_dir, img_out_dir, *, tile_size=256, data_name="DIBCO", network_na
         # RECOMBINE IMAGES AND MASKS
         prediction = stitch_together(locations, masks, tuple(img.shape[0:2]), tile_size, tile_size)
 
-        # BINARIZE
-        prediction[prediction >= PREDICTION_THRESHOLD] = 255
-        prediction[prediction < PREDICTION_THRESHOLD] = 0
+        # BINARIZE if threshold exists
+        if threshold is not None:
+            prediction[prediction >= threshold] = 255
+            prediction[prediction < threshold] = 0
+        else:
+            prediction = sklearn.preprocessing.minmax_scale(prediction, (0, 255))
         # SAVE AS IMAGE
         save_image(img_output, prediction)
     # print("Finished!")
