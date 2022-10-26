@@ -218,26 +218,31 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
             cv2.imwrite(glyph_file_name + img_extension, glyph_img)
 
 
-def generate_yolo_labels(coco_dir, out_dir):
+def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):
     coco = CocoReader(coco_dir)
     labels = set()
     # First pass, get all classes that actually appear
     for img_name, img_extension, _, annotations in get_image_data(coco):
         for annotation in annotations:
             glyph = glyph_to_name(annotation_to_glyph(annotation, coco))
-            labels.add(glyph)
-    labels = list(sorted(labels))
-    label_map = {}
-    for i, l in enumerate(labels):
-        label_map[l] = i
-        print(f"{i}: {l}")
+            if not mono_class:
+                labels.add(glyph)
+    if not mono_class:
+        labels = list(sorted(labels))
+        label_map = {}
+        for i, l in enumerate(labels):
+            label_map[l] = i
+            print(f"{i}: {l}")
     # Second pass, make all label files
     for img_name, img_extension, img_size, annotations in get_image_data(coco):
         with open(os.path.join(out_dir, img_name + ".txt"), mode="w") as f:
             for annotation in annotations:
                 glyph = glyph_to_name(annotation_to_glyph(annotation, coco))
                 bbox_cx, bbox_cy, bbox_dx, bbox_dy = coco_to_yolo(annotation["bbox"], img_size)
-                f.write(f"{label_map[glyph]} {bbox_cx} {bbox_cy} {bbox_dx} {bbox_dy} \n")
+                if not mono_class:
+                    f.write(f"{label_map[glyph]} {bbox_cx} {bbox_cy} {bbox_dx} {bbox_dy} \n")
+                else:
+                    f.write(f"{0} {bbox_cx} {bbox_cy} {bbox_dx} {bbox_dy} \n")
 
 
 def annotation_to_glyph(annotation, coco):

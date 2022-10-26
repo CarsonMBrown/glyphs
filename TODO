@@ -2,6 +2,8 @@ TODO:
   accuracy
     blue scores
 
+  kl diverivenge
+
   image distortion model (only if bboxes can be tight)
     force bbox height
 

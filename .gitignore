@@ -49,6 +49,9 @@ report.out
 *.run.xml
 *.tdo
 *.out
+*.lof
+*.lot
+*blx.bib
 
 # Savile Row
 *.info
@@ -72,3 +75,4 @@ report.out
 dataset/*
 HomerComp*
 perseus/*
+runs/*
