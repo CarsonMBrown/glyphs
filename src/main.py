@@ -10,8 +10,11 @@ import os.path
 #     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs",
 #     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs\\lib\\site-packages"
 # ]
-from src import data_extraction
-from src.util import dir_util
+import cv2
+
+from src.bounding.yolo import yolo
+from src.evaluation.bbox_eval import remove_bbox_outliers
+from src.util.img_util import plot_bboxes
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -59,8 +62,8 @@ ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificia
 
 # binarize.cnn(INPUT_DIR, CONFIDENCE_DIR, threshold=None)
 
-data_extraction.generate_yolo_labels(COCO_TRAINING_DIR, TRAIN_LABEL_MONO_BINARY_DIR, mono_class=True)
-dir_util.split_eval_data(TRAIN_IMAGE_MONO_BINARY_DIR, TRAIN_LABEL_MONO_BINARY_DIR, EVAL_IMAGE_MONO_BINARY_DIR, EVAL_LABEL_MONO_BINARY_DIR)
+# data_extraction.generate_yolo_labels(COCO_TRAINING_DIR, TRAIN_LABEL_MONO_BINARY_DIR, mono_class=True)
+# dir_util.split_eval_data(TRAIN_IMAGE_MONO_BINARY_DIR, TRAIN_LABEL_MONO_BINARY_DIR, EVAL_IMAGE_MONO_BINARY_DIR, EVAL_LABEL_MONO_BINARY_DIR)
 
 
 # data_extraction.extract_glyphs(COCO_TRAINING_DIR,1)
@@ -77,5 +80,8 @@ dir_util.split_eval_data(TRAIN_IMAGE_MONO_BINARY_DIR, TRAIN_LABEL_MONO_BINARY_DI
 # templates_vector, template_class = classify.alex_init(ARTIFICIAL_TEMPLATE_GLYPHS_DIR, overwrite=True)
 # all_vectors, all_classes = classify.alex_init(BINARIZED_GLYPHS_DIR)
 # classify.alex_knn(templates_vector, template_class, all_vectors, all_classes)
-
-# yolo.train_yolo(os.path.join(DATASET_DIR, "yolov5_raw.yml"), 1)
+ 
+img = cv2.imread(
+    r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
+bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
+plot_bboxes(img, remove_bbox_outliers(bboxes))

@@ -70,3 +70,24 @@ def plot_lines(img, lines, *, wait=0):
             img = cv2.circle(img, line[0], 1, color=color, thickness=5)
     cv2.imshow("", img)
     cv2.waitKey(wait)
+
+
+def plot_bboxes(img, bboxes, *, wait=0, color=None):
+    """
+    Given an image and a list of bounding boxes in pascal form (x_min, y_min, x_max, y_max),
+    plot each bounding box as a rect with a random color.
+    Edits image in place.
+    :param img:
+    :param bboxes:
+    :param color:
+    :param wait:
+    :return:
+    """
+    for x_min, y_min, x_max, y_max in bboxes:
+        img = cv2.rectangle(img, (x_min, y_min), (x_max, y_max),
+                            color=random_color() if color is None else color,
+                            thickness=2)
+    if wait is None or wait >= 0:
+        cv2.imshow("", img)
+        cv2.waitKey(wait)
+    return img
