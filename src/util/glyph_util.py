@@ -62,3 +62,7 @@ def glyph_to_glyph(glyph):
 
 def get_classes_as_glyphs():
     return [name_to_glyph(n) for n in sorted(names[1:])]
+
+
+def get_classes_as_glyph_names():
+    return [n for n in sorted(names[1:])]

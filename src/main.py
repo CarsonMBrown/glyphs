@@ -80,7 +80,7 @@ ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificia
 # templates_vector, template_class = classify.alex_init(ARTIFICIAL_TEMPLATE_GLYPHS_DIR, overwrite=True)
 # all_vectors, all_classes = classify.alex_init(BINARIZED_GLYPHS_DIR)
 # classify.alex_knn(templates_vector, template_class, all_vectors, all_classes)
- 
+
 img = cv2.imread(
     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
 bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
