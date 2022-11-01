@@ -6,6 +6,9 @@ glyphs = [
     '.', 'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ',
     'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π',
     'Ρ', 'Ϲ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω']
+required_map = {
+    "Σ": "Ϲ"
+}
 glyph_map = {
     "Α": "Ⲁ",
     "Ε": "Ⲉ",
@@ -48,16 +51,29 @@ def glyph_to_name(glyph, *, look_a_like_glyphs=False):
     print(glyph)
 
 
-def glyph_to_glyph(glyph):
+def glyph_to_glyph(glyph, *, alternative_glyphs=True):
     """
     Converts greek letters to the form found in the manuscripts
     :param glyph: glyph to convert
+    :param alternative_glyphs: if true, allow alternative glyphs from glyph map
     :return:
     """
     if glyph in glyphs:
         return glyph
-    if glyph in glyph_map:
+    if glyph in required_map:
+        return required_map[glyph]
+    if alternative_glyphs and glyph in glyph_map:
         return glyph_map[glyph]
+
+
+def glyph_to_index(glyph, *, look_a_like_glyphs=False):
+    if look_a_like_glyphs:
+        if glyph in glyph_map:
+            glyph = glyph_map[glyph]
+    for i, g in enumerate(glyphs):
+        if glyph == g:
+            return i
+    print(glyph)
 
 
 def get_classes_as_glyphs():

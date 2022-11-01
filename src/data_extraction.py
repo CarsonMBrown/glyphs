@@ -1,3 +1,4 @@
+import csv
 import json
 import math
 import os.path
@@ -7,7 +8,7 @@ import cv2
 import numpy as np
 
 from src.util.bbox_util import coco_to_yolo
-from src.util.dir_util import split_image_name_extension
+from src.util.dir_util import split_image_name_extension, get_file_name
 from src.util.glyph_util import glyph_to_name, glyph_to_glyph
 from src.util.img_util import plot_lines
 
@@ -175,9 +176,14 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
                    glyphs_per_footmark_type_limit=None):
     coco = CocoReader(coco_dir)
     glyphs_per_footmark_type = {}
+
+    metadata = [("image", "class", "origin_image", "base_type", "foot_mark_type")]
+
     for img, img_name, img_extension, _, annotations in get_image_and_data(coco, in_dir):
         for glyph_count, annotation in enumerate(annotations):
             glyph = annotation_to_glyph(annotation, coco)
+            if glyph_to_name(glyph) == "period":
+                continue
             tags = annotation["tags"]
             base_type = tags["BaseType"][0]
             if quality_filter and base_type not in quality_filter:
@@ -210,12 +216,20 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
                 if not os.path.exists(glyph_path):
                     os.mkdir(glyph_path)
 
-            glyph_file_name = os.path.join(glyph_path, output_file_name)
+            full_glyph_image_path = os.path.join(glyph_path, output_file_name)
             if ocular_format:
-                with open(glyph_file_name + ".txt", mode="w", encoding="UTF_8") as f:
-                    f.write(glyph)
+                with open(full_glyph_image_path + ".txt", mode="w", encoding="UTF_8") as meta_file:
+                    meta_file.write(glyph)
 
-            cv2.imwrite(glyph_file_name + img_extension, glyph_img)
+            cv2.imwrite(full_glyph_image_path + img_extension, glyph_img)
+            metadata.append((os.path.join(glyph_to_name(glyph), output_file_name + img_extension),
+                             glyph,
+                             img_name,
+                             base_type,
+                             foot_mark_type
+                             ))
+    with open(os.path.join(out_dir, "meta.csv"), mode="w", encoding="UTF_8", newline='') as meta_file:
+        csv.writer(meta_file).writerows(metadata)
 
 
 def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):
@@ -273,9 +287,11 @@ def get_image_and_data(coco, in_dir):
     for img_name, img_extension, _, _ in image_data:
         if os.path.exists(os.path.join(in_dir, img_name + img_extension)):
             imgs.append(cv2.imread(os.path.join(in_dir, img_name + img_extension)))
-        else:
+        elif os.path.exists(os.path.join(in_dir, img_name + ".png")):
             imgs.append(cv2.imread(os.path.join(in_dir, img_name + ".png")))
-    return [(imgs[i], *image_data[i]) for i in len(image_data)]
+        else:
+            imgs.append(None)
+    return [(imgs[i], *image_data[i]) for i in range(len(image_data)) if imgs[i] is not None]
 
 
 def extract_text(coco_dir, in_dir, export_dir, show_images=False):

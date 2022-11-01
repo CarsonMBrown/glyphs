@@ -1,25 +1,15 @@
 import os.path
 
-# sys.path.insert(0, "C:\\Users\\Carson Brown\\git\\glyphs")
-#
-# sys.path = [
-#     "C:\\Users\\Carson Brown\\git\\glyphs",
-#     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs\\python310.zip",
-#     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs\\DLLs",
-#     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs\\lib",
-#     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs",
-#     "C:\\Users\\Carson Brown\\.conda\\envs\\glyphs\\lib\\site-packages"
-# ]
-import cv2
-
-from src.bounding.yolo import yolo
-from src.evaluation.bbox_eval import remove_bbox_outliers
-from src.util.img_util import plot_bboxes
+from src.classification.rnn import rnn
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
 LABEL_DIR = os.path.join(DATASET_DIR, "labels")
 GLYPH_DIR = os.path.join(DATASET_DIR, "glyphs")
+
+ALL_IMAGE_DIR = os.path.join(IMAGE_DIR, "all")
+ALL_RAW_DIR = os.path.join(ALL_IMAGE_DIR, "raw")
+ALL_BINARIZED_DIR = os.path.join(ALL_IMAGE_DIR, "binarized")
 
 TRAIN_IMAGE_DIR = os.path.join(IMAGE_DIR, "train")
 TRAIN_IMAGE_MONO_RAW_DIR = os.path.join(TRAIN_IMAGE_DIR, "mono", "raw")
@@ -38,8 +28,8 @@ EVAL_LABEL_MONO_BINARY_DIR = os.path.join(EVAL_LABEL_DIR, "mono", "binarized")
 TEST_IMAGE_DIR = os.path.join(IMAGE_DIR, "test")
 TEST_LABEL_DIR = os.path.join(LABEL_DIR, "test")
 
-TRAIN_IMAGE_RAW_DIR = os.path.join(TRAIN_IMAGE_DIR, "raw")
-EVAL_IMAGE_RAW_DIR = os.path.join(EVAL_IMAGE_DIR, "raw")
+TRAIN_RAW_DIR = os.path.join(TRAIN_IMAGE_DIR, "raw")
+EVAL_RAW_DIR = os.path.join(EVAL_IMAGE_DIR, "raw")
 TRAIN_BINARIZED_DIR = os.path.join(TRAIN_IMAGE_DIR, "binarized")
 EVAL_BINARIZED_DIR = os.path.join(EVAL_IMAGE_DIR, "binarized")
 
@@ -47,7 +37,11 @@ COCO_TRAINING_DIR = os.path.join("HomerCompTraining")
 COCO_TESTING_DIR = os.path.join("HomerCompTesting")
 
 RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "raw")
+TRAIN_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw")
+EVAL_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "raw")
 BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "binarized")
+TRAIN_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "binarized")
+EVAL_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "binarized")
 
 RAW_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "raw")
 BINARIZED_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "binarized")
@@ -60,28 +54,35 @@ ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificia
 # RAW_OCULAR_GLYPHS_DIR = os.path.join(GLYPH_DIR, "ocular", "raw")
 # BINARIZED_OCULAR_GLYPHS_DIR = os.path.join(GLYPH_DIR, "ocular", "binarized")
 
-# binarize.cnn(INPUT_DIR, CONFIDENCE_DIR, threshold=None)
 
-# data_extraction.generate_yolo_labels(COCO_TRAINING_DIR, TRAIN_LABEL_MONO_BINARY_DIR, mono_class=True)
-# dir_util.split_eval_data(TRAIN_IMAGE_MONO_BINARY_DIR, TRAIN_LABEL_MONO_BINARY_DIR, EVAL_IMAGE_MONO_BINARY_DIR, EVAL_LABEL_MONO_BINARY_DIR)
+if __name__ == '__main__':
+    # data_extraction.generate_yolo_labels(COCO_TRAINING_DIR, TRAIN_LABEL_MONO_BINARY_DIR, mono_class=True)
+    # dir_util.split_eval_data(TRAIN_IMAGE_MONO_BINARY_DIR,
+    #                          TRAIN_LABEL_MONO_BINARY_DIR,
+    #                          EVAL_IMAGE_MONO_BINARY_DIR,
+    #                          EVAL_LABEL_MONO_BINARY_DIR)
 
+    # data_extraction.extract_glyphs(COCO_TRAINING_DIR,
+    #                                TRAIN_IMAGE_MONO_RAW_DIR,
+    #                                TRAIN_RAW_GLYPHS_DIR)
+    # data_extraction.extract_glyphs(COCO_TRAINING_DIR,
+    #                                EVAL_IMAGE_MONO_RAW_DIR,
+    #                                EVAL_RAW_GLYPHS_DIR)
 
-# data_extraction.extract_glyphs(COCO_TRAINING_DIR,1)
-#                                INPUT_DIR,
-#                                RAW_TEMPLATE_GLYPHS_DIR,
-#                                quality_filter=["bt1"],
-#                                glyphs_per_footmark_type_limit=1)
-# data_extraction.extract_glyphs(COCO_TRAINING_DIR,
-#                                BINARIZED_DIR,
-#                                BINARIZED_TEMPLATE_GLYPHS_DIR,
-#                                quality_filter=["bt1"],
-#                                glyphs_per_footmark_type_limit=1)
+    # Best = Epoch99
+    model = rnn.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
+                            os.path.join(GLYPH_DIR, "meta.csv"),
+                            TRAIN_BINARIZED_GLYPHS_DIR,
+                            EVAL_BINARIZED_GLYPHS_DIR,
+                            epochs=150, batch_size=16, resume=True, start_epoch=51)
 
-# templates_vector, template_class = classify.alex_init(ARTIFICIAL_TEMPLATE_GLYPHS_DIR, overwrite=True)
-# all_vectors, all_classes = classify.alex_init(BINARIZED_GLYPHS_DIR)
-# classify.alex_knn(templates_vector, template_class, all_vectors, all_classes)
+    # binarize.cnn(INPUT_DIR, CONFIDENCE_DIR, threshold=None)
 
-img = cv2.imread(
-    r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
-bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
-plot_bboxes(img, remove_bbox_outliers(bboxes))
+    # templates_vector, template_class = alex_init(ARTIFICIAL_TEMPLATE_GLYPHS_DIR)
+    # all_vectors, all_classes = alex_init(BINARIZED_GLYPHS_DIR)
+    # alex_knn(templates_vector, template_class, all_vectors, all_classes)
+
+    # img = cv2.imread(
+    #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
+    # bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
+    # plot_bboxes(img, remove_bbox_outliers(bboxes))

@@ -35,7 +35,9 @@ with open(output_data_dir, mode="w", encoding="UTF_8") as output:
                 full_text = re.sub(character_blacklist, "", full_text).upper()
                 full_text = strip_accents(full_text)
                 full_text = re.sub(character_blacklist, "", full_text)
-                cleaned_text = [glyph_to_glyph(i) for i in full_text]
+                cleaned_text = [glyph_to_glyph(i, alternative_glyphs=False) for i in full_text]
+                if None in cleaned_text:
+                    continue
                 output.write("".join(cleaned_text))
         except TypeError:
             continue

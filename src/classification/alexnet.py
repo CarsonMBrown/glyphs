@@ -2,10 +2,12 @@ import os.path
 import pickle
 from math import floor
 
+import numpy as np
 import torch
 import torch.nn as nn
 from PIL import Image
 from matplotlib import pyplot as plt
+from scipy.spatial import distance
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import adjusted_mutual_info_score, mutual_info_score, classification_report, \
     top_k_accuracy_score, confusion_matrix, ConfusionMatrixDisplay
@@ -90,11 +92,18 @@ def alex_forest(train_vectors, train_truth, test_vectors, test_truth):
     print(top_k_accuracy_score(test_truth, probs, k=3))
 
 
+def alex_distance(v1, v2):
+    v1_n = v1 / np.linalg.norm(v1)
+    v2_n = v2 / np.linalg.norm(v2)
+    return distance.euclidean(v1_n, v2_n)
+
+
 def alex_knn(train_vectors, train_truth, test_vectors, test_truth):
     print("Training AlexNet KNN")
-    clf = KNeighborsClassifier(n_neighbors=5, weights="distance")
+    clf = KNeighborsClassifier(n_neighbors=5, metric=alex_distance, weights="distance")
     clf.fit(train_vectors, train_truth)
 
+    print("Evaluating AlexNet KNN")
     predictions = clf.predict(test_vectors)
     probs = clf.predict_proba(test_vectors)
     print(classification_report(test_truth, predictions))
