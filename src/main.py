@@ -1,8 +1,10 @@
 import os.path
+from functools import partial
 
+from src.classification.markov import markov
 from src.classification.vector_learning import nn_factory
 from src.classification.vector_learning.linear import Linear
-from src.classification.vector_learning.linear_to_lstm import LinearToLSTM
+from src.util.glyph_util import get_classes_as_glyphs
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -71,43 +73,6 @@ if __name__ == '__main__':
     #                                EVAL_IMAGE_MONO_RAW_DIR,
     #                                EVAL_RAW_GLYPHS_DIR)
 
-    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
-                           os.path.join(GLYPH_DIR, "meta.csv"),
-                           TRAIN_BINARIZED_GLYPHS_DIR,
-                           EVAL_BINARIZED_GLYPHS_DIR,
-                           LinearToLSTM,
-                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=False,
-                           name="binarized")
-
-    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
-                           os.path.join(GLYPH_DIR, "meta.csv"),
-                           TRAIN_RAW_GLYPHS_DIR,
-                           EVAL_RAW_GLYPHS_DIR,
-                           LinearToLSTM,
-                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=False, name="raw")
-
-    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
-                           os.path.join(GLYPH_DIR, "meta.csv"),
-                           TRAIN_BINARIZED_GLYPHS_DIR,
-                           EVAL_BINARIZED_GLYPHS_DIR,
-                           Linear,
-                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True,
-                           name="binarized")
-
-    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
-                           os.path.join(GLYPH_DIR, "meta.csv"),
-                           TRAIN_RAW_GLYPHS_DIR,
-                           EVAL_RAW_GLYPHS_DIR,
-                           Linear,
-                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True, name="raw")
-
-    # model = cnn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
-    #                                 os.path.join(GLYPH_DIR, "meta.csv"),
-    #                                 TRAIN_BINARIZED_GLYPHS_DIR,
-    #                                 EVAL_BINARIZED_GLYPHS_DIR,
-    #                                 AlexNet,
-    #                                 epochs=50, batch_size=32, resume=False, start_epoch=0)
-
     # binarize.cnn(INPUT_DIR, CONFIDENCE_DIR, threshold=None)
 
     # templates_vector, template_class = alex_init(ARTIFICIAL_TEMPLATE_GLYPHS_DIR)
@@ -117,4 +82,36 @@ if __name__ == '__main__':
     # img = cv2.imread(
     #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
     # bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
-    # plot_bboxes(img, remove_bbox_outliers(bboxes))
+    # plot_bboxes(img, remove_bbox_outliers(bboxes), color=(0, 0, 0), wait=None)
+    # plot_bboxes(img, get_bbox_outliers(bboxes), color=(0, 0, 255), wait=None)
+    # cv2.imwrite(os.path.join("output_data", "eval_image_bounding", "P_Hamb_graec_665.png"), img)
+
+    lang_file = os.path.join(DATASET_DIR, "perseus_mini.txt")
+    meta_data = os.path.join(GLYPH_DIR, "meta.csv")
+
+    # nn_factory.train_model(lang_file, meta_data,
+    #                        TRAIN_BINARIZED_GLYPHS_DIR, EVAL_BINARIZED_GLYPHS_DIR,
+    #                        LinearToLSTM,
+    #                        epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=False,
+    #                        name="binarized")
+
+    # nn_factory.train_model(lang_file, meta_data,
+    #                                TRAIN_BINARIZED_GLYPHS_DIR, EVAL_BINARIZED_GLYPHS_DIR,
+    #                                Linear,
+    #                                epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True,
+    #                                name="binarized")
+
+    # cnn_factory.train_model(lang_file, meta_data,
+    #                                 TRAIN_BINARIZED_GLYPHS_DIR, EVAL_BINARIZED_GLYPHS_DIR,
+    #                                 AlexNet,
+    #                                 epochs=50, batch_size=32, resume=False, start_epoch=0)
+
+    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
+                                                                   EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
+    model, _ = nn_factory.load_model(Linear, name="binarized", load_epoch=10, dataset=eval_dataset, resume=False)
+    markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"), get_classes_as_glyphs())
+    avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(
+        model,
+        eval_dataloader,
+        prediction_modifier=partial(markov.pseudo_viterbi, markov_chain))
+    print(avg_precision, avg_recall, avg_fscore)

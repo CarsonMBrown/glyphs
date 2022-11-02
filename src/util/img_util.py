@@ -87,7 +87,7 @@ def plot_bboxes(img, bboxes, *, wait=0, color=None):
         img = cv2.rectangle(img, (x_min, y_min), (x_max, y_max),
                             color=random_color() if color is None else color,
                             thickness=2)
-    if wait is None or wait >= 0:
+    if wait is not None and wait >= 0:
         cv2.imshow("", img)
         cv2.waitKey(wait)
     return img

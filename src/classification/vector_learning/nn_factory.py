@@ -11,42 +11,115 @@ from src.util.torch_dataloader import VectorLoader
 SAVE_PATH = os.path.join("weights", "nn")
 
 
-def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
-                batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None):
-    # Load validation set for model init, not loading train set yet
-    validation_set = VectorLoader(lang_file, annotations_file, validation_data_path)
-    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, num_workers=num_workers,
-                                                    shuffle=shuffle)
+def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size=None, resume=False):
+    if dataset is not None:
+        model = model_class(dataset.get_vector_size(), 24).cuda()
+    elif input_size is not None:
+        model = model_class(input_size, 24).cuda()
+    else:
+        return None
 
-    print("Input Vector Size:", validation_set.get_vector_size())
-    model = model_class(validation_set.get_vector_size(), 24).cuda()
+    model_path, save_file = get_model_path(load_epoch, model, name)
 
+    if os.path.exists(save_file):
+        model.load_state_dict(torch.load(save_file))
+        if not resume:
+            model.eval()
+        return model, model_path
+    return None, model_path
+
+
+def get_model_path(load_epoch, model, name):
     model_path = os.path.join(SAVE_PATH, model.get_name())
     if not os.path.exists(model_path):
         os.mkdir(model_path)
+    save_file = ""
     if name is None:
-        save_file = os.path.join(model_path, "epoch_" + str(start_epoch) + ".pt")
+        save_file = os.path.join(model_path, "rnn_" + str(load_epoch) + ".pt")
     if name is not None:
         model_path = os.path.join(model_path, name)
         if not os.path.exists(model_path):
             os.mkdir(model_path)
-        save_file = os.path.join(model_path, "epoch_" + str(start_epoch) + ".pt")
+        save_file = os.path.join(model_path, "rnn_" + str(load_epoch) + ".pt")
+    return model_path, save_file
 
-    if os.path.exists(save_file):
-        print("LOADING MODEL FROM FILE")
-        model.load_state_dict(torch.load(save_file))
-        if not resume:
-            model.eval()
-            return model
-        else:
-            print("RESUMING FROM LOADED FILE")
 
-    print("TRAINING MODEL")
+def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=None):
+    """
+
+    :param model:
+    :param validation_loader:
+    :param loss_fn:
+    :param prediction_modifier:
+    :return: avg_precision, avg_recall, avg_fscore, (avg_v_loss if loss_fn is not None)
+    """
+    model.train(False)
+    running_v_loss, running_precision, running_recall, running_fscore = 0.0, 0.0, 0.0, 0.0
+    i = 0
+    for i, v_data in enumerate(validation_loader):
+        with torch.no_grad():
+            # Every data instance is an input + label pair
+            v_inputs, v_labels = v_data
+
+            #  move the input and model to GPU for speed if available
+            if torch.cuda.is_available():
+                v_inputs = v_inputs.to('cuda')
+                v_labels = v_labels.to('cuda')
+
+            v_outputs = model(v_inputs)
+
+            if loss_fn is not None:
+                v_loss = loss_fn(v_outputs, v_labels)
+                running_v_loss += v_loss
+
+            v_outputs = v_outputs.cpu()
+            if prediction_modifier is not None:
+                predictions = prediction_modifier(v_outputs)
+            else:
+                predictions = np.argmax(v_outputs, axis=1)
+            v_labels = v_labels.cpu()
+
+            precision, recall, fscore, _ = \
+                precision_recall_fscore_support(v_labels, predictions, average='weighted', zero_division=0)
+            running_precision += precision
+            running_recall += recall
+            running_fscore += fscore
+
+    avg_v_loss = running_v_loss / (i + 1)
+    avg_precision, avg_recall, avg_fscore = running_precision / (i + 1), running_recall / (
+            i + 1), running_fscore / (i + 1)
+
+    if loss_fn is not None:
+        return avg_precision, avg_recall, avg_fscore, avg_v_loss
+    else:
+        return avg_precision, avg_recall, avg_fscore
+
+
+def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
+                batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None):
+    # Load validation set for model init, not loading train set yet
+    validation_set, validation_loader = generate_dataloader(lang_file, annotations_file, validation_data_path,
+                                                            batch_size=batch_size, num_workers=num_workers,
+                                                            shuffle=shuffle)
+
+    print("Input Vector Size:", validation_set.get_vector_size())
+
+    model, model_path = None, ""
+    if resume:
+        model, model_path = load_model(model_class,
+                                       name=name,
+                                       load_epoch=start_epoch,
+                                       dataset=validation_set,
+                                       resume=resume)
+    if model is None:
+        if resume:
+            print("Could not load model...")
+        model = model_class(validation_set.get_vector_size(), 24).cuda()
+        model_path, _ = get_model_path(start_epoch, model, name)
 
     # Load training set after model init and potential load as it may be much larger than validation set
-    training_set = VectorLoader(lang_file, annotations_file, training_data_path)
-    training_loader = torch.utils.data.DataLoader(training_set, batch_size=batch_size, num_workers=num_workers,
-                                                  shuffle=shuffle)
+    training_set, training_loader = generate_dataloader(lang_file, annotations_file, training_data_path,
+                                                        batch_size=batch_size, num_workers=num_workers, shuffle=shuffle)
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=.9)
@@ -64,38 +137,9 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         model.train(True)
         avg_loss = train_one_epoch(epoch, training_loader, optimizer, model, loss_fn, writer)
 
-        # We don't need gradients on to do reporting
-        model.train(False)
+        avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
+            model, validation_loader, loss_fn=loss_fn)
 
-        running_v_loss, running_precision, running_recall, running_fscore = 0.0, 0.0, 0.0, 0.0
-        i = 0
-        for i, v_data in enumerate(validation_loader):
-            with torch.no_grad():
-                # Every data instance is an input + label pair
-                v_inputs, v_labels = v_data
-
-                #  move the input and model to GPU for speed if available
-                if torch.cuda.is_available():
-                    v_inputs = v_inputs.to('cuda')
-                    v_labels = v_labels.to('cuda')
-
-                v_outputs = model(v_inputs)
-
-                v_loss = loss_fn(v_outputs, v_labels)
-                running_v_loss += v_loss
-
-                predictions = np.argmax(v_outputs.cpu(), axis=1)
-                v_labels = v_labels.cpu()
-
-                precision, recall, fscore, _ = \
-                    precision_recall_fscore_support(v_labels, predictions, average='weighted', zero_division=0)
-                running_precision += precision
-                running_recall += recall
-                running_fscore += fscore
-
-        avg_v_loss = running_v_loss / (i + 1)
-        avg_precision, avg_recall, avg_fscore = running_precision / (i + 1), running_recall / (
-                i + 1), running_fscore / (i + 1)
         print(f'LOSS train {avg_loss} valid {avg_v_loss}')
         print(f'PRECISION {avg_precision} RECALL {avg_recall} FSCORE {avg_fscore}')
 
@@ -110,6 +154,14 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
         model.eval()
     return model
+
+
+def generate_dataloader(lang_file, annotations_file, data_path, *, batch_size=32, num_workers=0,
+                        shuffle=False):
+    training_set = VectorLoader(lang_file, annotations_file, data_path)
+    training_loader = torch.utils.data.DataLoader(training_set, batch_size=batch_size, num_workers=num_workers,
+                                                  shuffle=shuffle)
+    return training_set, training_loader
 
 
 def classify(model, vector):

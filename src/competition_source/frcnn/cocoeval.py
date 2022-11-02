@@ -7,6 +7,9 @@ from collections import defaultdict
 from pycocotools import mask as maskUtils
 import copy
 
+import src.util.bbox_util
+
+
 class COCOeval:
     # Interface for evaluating detection on the Microsoft COCO dataset.
     #
@@ -186,7 +189,7 @@ class COCOeval:
 
         # compute iou between each dt and gt region
         iscrowd = [int(o['iscrowd']) for o in gt]
-        ious = maskUtils.iou(d,g,iscrowd)
+        ious = src.util.bbox_util.iou(d, g, iscrowd)
         return ious
 
     def computeOks(self, imgId, catId):
