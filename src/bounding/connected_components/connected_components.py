@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from src.util.dir_util import get_input_images, set_output_dir
+from src.util.dir_util import get_input_img_paths, set_output_dir
 from src.util.img_util import load_image, save_image
 
 BOUNDING_COLOR = [0, 0, 255]
@@ -17,7 +17,7 @@ def bound(img_in_dir, img_out_dir):
     :param img_out_dir: glyph_path to directory to output images
     :return:
     """
-    img_list = get_input_images(img_in_dir)
+    img_list = get_input_img_paths(img_in_dir)
     set_output_dir(img_out_dir)
     bounding_boxes = []
 

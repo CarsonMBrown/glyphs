@@ -10,7 +10,7 @@ def run(img_in_dir, img_out_dir):
     :param img_out_dir: glyph_path to directory to output images
     :return: None
     """
-    img_list = get_input_images(img_in_dir)
+    img_list = get_input_img_paths(img_in_dir)
     set_output_dir(img_out_dir)
 
     for img_path in img_list:

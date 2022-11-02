@@ -1,9 +1,5 @@
-self.hidden_size = 50
-self.lstm = nn.LSTM(input_size, self.hidden_size, num_layers=3, bidirectional=True)
-self.label = nn.Sequential(
-    nn.Dropout(p=.1),
-    nn.Linear(self.hidden_size * 2, output_size)
-)
+SimpleLSTM
+
 Image input directory: dataset\glyphs\eval\binarized
 Reading AlexNet Data From Disk
 Input Vector Size: 9216

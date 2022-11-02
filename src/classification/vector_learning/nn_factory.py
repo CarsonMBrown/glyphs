@@ -2,64 +2,39 @@ import os
 
 import numpy as np
 import torch
-import torch.nn as nn
 from sklearn.metrics import precision_recall_fscore_support
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from torchvision import transforms
 
-from src.util.torch_dataloader import CustomImageDataset
+from src.util.torch_dataloader import VectorLoader
 
-SAVE_FILE = os.path.join("weights", "rnn", "rnn.pt")
-
-
-class RNN(nn.Module):
-    def __init__(self, input_size, output_size):
-        super().__init__()
-        self.hidden_size = 100
-        self.lstm = nn.LSTM(input_size, self.hidden_size, num_layers=4, bidirectional=True, dropout=0.1)
-        self.label = nn.Sequential(
-            nn.ReLU(),
-            nn.Dropout(p=.1),
-            nn.Linear(self.hidden_size * 2, self.hidden_size),
-            nn.ReLU(),
-            nn.Linear(self.hidden_size, output_size)
-        )
-
-    def forward(self, input_tensors):
-        x, _ = self.lstm(input_tensors)
-        return self.label(x)
+SAVE_PATH = os.path.join("weights", "nn")
 
 
-class AddGaussianNoise(object):
-    def __init__(self, mean=0., std=1.):
-        self.std = std
-        self.mean = mean
-
-    def __call__(self, tensor):
-        return tensor + torch.randn(tensor.size()) * self.std + self.mean
-
-    def __repr__(self):
-        return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)
-
-
-transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize(0.5, 0.5)])
-
-
-def train_model(lang_file, annotations_file, training_data_path, validation_data_path, *, epochs=300, batch_size=8,
-                num_workers=1, resume=False, start_epoch=0):
+def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
+                batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None):
     # Load validation set for model init, not loading train set yet
-    validation_set = CustomImageDataset(lang_file, annotations_file, validation_data_path)
-    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, num_workers=num_workers)
+    validation_set = VectorLoader(lang_file, annotations_file, validation_data_path)
+    validation_loader = torch.utils.data.DataLoader(validation_set, batch_size=batch_size, num_workers=num_workers,
+                                                    shuffle=shuffle)
 
     print("Input Vector Size:", validation_set.get_vector_size())
-    model = RNN(validation_set.get_vector_size(), 24).cuda()
+    model = model_class(validation_set.get_vector_size(), 24).cuda()
 
-    if os.path.exists(SAVE_FILE):
+    model_path = os.path.join(SAVE_PATH, model.get_name())
+    if not os.path.exists(model_path):
+        os.mkdir(model_path)
+    if name is None:
+        save_file = os.path.join(model_path, "epoch_" + str(start_epoch) + ".pt")
+    if name is not None:
+        model_path = os.path.join(model_path, name)
+        if not os.path.exists(model_path):
+            os.mkdir(model_path)
+        save_file = os.path.join(model_path, "epoch_" + str(start_epoch) + ".pt")
+
+    if os.path.exists(save_file):
         print("LOADING MODEL FROM FILE")
-        model.load_state_dict(torch.load(SAVE_FILE))
+        model.load_state_dict(torch.load(save_file))
         if not resume:
             model.eval()
             return model
@@ -69,11 +44,12 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     print("TRAINING MODEL")
 
     # Load training set after model init and potential load as it may be much larger than validation set
-    training_set = CustomImageDataset(lang_file, annotations_file, training_data_path)
-    training_loader = torch.utils.data.DataLoader(training_set, batch_size=batch_size, num_workers=num_workers)
+    training_set = VectorLoader(lang_file, annotations_file, training_data_path)
+    training_loader = torch.utils.data.DataLoader(training_set, batch_size=batch_size, num_workers=num_workers,
+                                                  shuffle=shuffle)
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=.9)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -81,7 +57,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     # Initializing in a separate cell, so we can easily add more epochs to the same run
     writer = SummaryWriter('runs/lstm')
 
-    for epoch in range(start_epoch, start_epoch + epochs):
+    for epoch in range(start_epoch, epochs):
         print('EPOCH {}:'.format(epoch))
 
         # Make sure gradient tracking is on, and do a pass over the data
@@ -129,9 +105,10 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
                            {'Training': avg_loss, 'Validation': avg_v_loss},
                            epoch)
         writer.flush()
-        torch.save(model.state_dict(), os.path.join("weights", "rnn", f"rnn{epoch}.pt"))
+        torch.save(model.state_dict(),
+                   os.path.join(model_path, "rnn_" + str(epoch) + ".pt"))
 
-    model.eval()
+        model.eval()
     return model
 
 

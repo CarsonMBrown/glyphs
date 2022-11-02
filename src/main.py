@@ -1,6 +1,8 @@
 import os.path
 
-from src.classification.rnn import rnn
+from src.classification.vector_learning import nn_factory
+from src.classification.vector_learning.linear import Linear
+from src.classification.vector_learning.linear_to_lstm import LinearToLSTM
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -69,12 +71,42 @@ if __name__ == '__main__':
     #                                EVAL_IMAGE_MONO_RAW_DIR,
     #                                EVAL_RAW_GLYPHS_DIR)
 
-    # Best = Epoch99
-    model = rnn.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
-                            os.path.join(GLYPH_DIR, "meta.csv"),
-                            TRAIN_BINARIZED_GLYPHS_DIR,
-                            EVAL_BINARIZED_GLYPHS_DIR,
-                            epochs=150, batch_size=16, resume=True, start_epoch=51)
+    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
+                           os.path.join(GLYPH_DIR, "meta.csv"),
+                           TRAIN_BINARIZED_GLYPHS_DIR,
+                           EVAL_BINARIZED_GLYPHS_DIR,
+                           LinearToLSTM,
+                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=False,
+                           name="binarized")
+
+    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
+                           os.path.join(GLYPH_DIR, "meta.csv"),
+                           TRAIN_RAW_GLYPHS_DIR,
+                           EVAL_RAW_GLYPHS_DIR,
+                           LinearToLSTM,
+                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=False, name="raw")
+
+    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
+                           os.path.join(GLYPH_DIR, "meta.csv"),
+                           TRAIN_BINARIZED_GLYPHS_DIR,
+                           EVAL_BINARIZED_GLYPHS_DIR,
+                           Linear,
+                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True,
+                           name="binarized")
+
+    nn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
+                           os.path.join(GLYPH_DIR, "meta.csv"),
+                           TRAIN_RAW_GLYPHS_DIR,
+                           EVAL_RAW_GLYPHS_DIR,
+                           Linear,
+                           epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True, name="raw")
+
+    # model = cnn_factory.train_model(os.path.join(DATASET_DIR, "perseus_mini.txt"),
+    #                                 os.path.join(GLYPH_DIR, "meta.csv"),
+    #                                 TRAIN_BINARIZED_GLYPHS_DIR,
+    #                                 EVAL_BINARIZED_GLYPHS_DIR,
+    #                                 AlexNet,
+    #                                 epochs=50, batch_size=32, resume=False, start_epoch=0)
 
     # binarize.cnn(INPUT_DIR, CONFIDENCE_DIR, threshold=None)
 

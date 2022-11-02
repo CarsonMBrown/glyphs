@@ -5,12 +5,12 @@ import numpy as np
 import pytesseract
 from PIL import Image
 
-from src.util.dir_util import get_input_images, set_output_dir
+from src.util.dir_util import get_input_img_paths, set_output_dir
 from src.util.img_util import load_image
 
 
 def tesseract(img_in_dir, img_out_dir):
-    img_list = get_input_images(img_in_dir)
+    img_list = get_input_img_paths(img_in_dir)
     set_output_dir(img_out_dir)
 
     for img_path in img_list:

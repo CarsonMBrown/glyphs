@@ -16,7 +16,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from torchvision import transforms
 from torchvision.models import AlexNet_Weights
 
-from src.util.dir_util import get_input_images
+from src.util.dir_util import get_input_img_paths
 from src.util.glyph_util import get_classes_as_glyphs
 
 KNOWN_VECTOR_FILE = "alexnet_vectors.pickle"
@@ -53,7 +53,7 @@ def classify(image):
 
 
 def alex_init(categories_path, *, write=True, overwrite=False):
-    category_dict = get_input_images(categories_path, by_dir=True)
+    category_dict = get_input_img_paths(categories_path, by_dir=True)
     vectors = {}
     full_vector_path = os.path.join(categories_path, KNOWN_VECTOR_FILE)
     if overwrite or not os.path.exists(full_vector_path):

@@ -1,0 +1,259 @@
+"C:\Users\Carson Brown\.conda\envs\glyphs\python.exe" "C:/Users/Carson Brown/git/glyphs/src/main.py"
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Image input directory: dataset\glyphs\eval\binarized
+Reading AlexNet Data From Disk
+Input Vector Size: 9216
+TRAINING MODEL
+Image input directory: dataset\glyphs\train\binarized
+Reading AlexNet Data From Disk
+Training set has 113259 instances
+EPOCH 0:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 2.791321277618408
+PRECISION 0.03650896642942704 RECALL 0.12778954802259887 FSCORE 0.04883890113388256
+EPOCH 1:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 2.071615219116211
+PRECISION 0.22759632980340008 RECALL 0.35339625064201335 FSCORE 0.25457707341697217
+EPOCH 2:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.44193434715271
+PRECISION 0.5861899981835111 RECALL 0.5910631741140216 FSCORE 0.5564306502690409
+EPOCH 3:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.1902990341186523
+PRECISION 0.707303921924552 RECALL 0.6773537814586543 FSCORE 0.6654439148718891
+EPOCH 4:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.0790345668792725
+PRECISION 0.7418937218864385 RECALL 0.7064145159219312 FSCORE 0.6975228934345634
+EPOCH 5:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.126960277557373
+PRECISION 0.7556532460398985 RECALL 0.7035864470980996 FSCORE 0.7018723683338851
+EPOCH 6:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.1837315559387207
+PRECISION 0.7483994638933718 RECALL 0.7084513032871084 FSCORE 0.7016607908558634
+EPOCH 7:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.1583824157714844
+PRECISION 0.7522172125436154 RECALL 0.7096839689265537 FSCORE 0.7054381310754914
+EPOCH 8:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.196595549583435
+PRECISION 0.7428277876245287 RECALL 0.7097417501284027 FSCORE 0.7010159749381358
+EPOCH 9:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.2495079040527344
+PRECISION 0.7548936827796738 RECALL 0.713193374422188 FSCORE 0.7082452964913379
+EPOCH 10:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.2574621438980103
+PRECISION 0.7497337482089873 RECALL 0.7103059193631227 FSCORE 0.7043838133763958
+EPOCH 11:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.2579604387283325
+PRECISION 0.7574446257113082 RECALL 0.7085211222393425 FSCORE 0.7066827339657544
+EPOCH 12:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.2752922773361206
+PRECISION 0.7486869314232916 RECALL 0.7036482408834103 FSCORE 0.6998815660639695
+EPOCH 13:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.2920799255371094
+PRECISION 0.7490957063573589 RECALL 0.709007447354905 FSCORE 0.7034160971195974
+EPOCH 14:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.3634599447250366
+PRECISION 0.7525547329122521 RECALL 0.704856028505393 FSCORE 0.7026991519513537
+EPOCH 15:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4512194395065308
+PRECISION 0.7523721046344191 RECALL 0.6970627889060091 FSCORE 0.6958219902314557
+EPOCH 16:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.37544846534729
+PRECISION 0.7538257903770341 RECALL 0.7015015087313816 FSCORE 0.7013318192801588
+EPOCH 17:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4447133541107178
+PRECISION 0.7447153008342088 RECALL 0.6985386171032357 FSCORE 0.6951750783535249
+EPOCH 18:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.3972498178482056
+PRECISION 0.756503280318824 RECALL 0.7083798793014894 FSCORE 0.7064487387783612
+EPOCH 19:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.486398696899414
+PRECISION 0.7475949940919493 RECALL 0.6985827555213149 FSCORE 0.6963459307404045
+EPOCH 20:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4780893325805664
+PRECISION 0.7528793212976199 RECALL 0.7049916538263996 FSCORE 0.7026373281021933
+EPOCH 21:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4879915714263916
+PRECISION 0.7444624733640888 RECALL 0.6980964304057524 FSCORE 0.694833250224588
+EPOCH 22:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4869935512542725
+PRECISION 0.7478438080232305 RECALL 0.6992624871597329 FSCORE 0.6969494405891868
+EPOCH 23:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4947214126586914
+PRECISION 0.755773087258785 RECALL 0.7010464817668207 FSCORE 0.7015884132381961
+EPOCH 24:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5214354991912842
+PRECISION 0.7439169365288266 RECALL 0.6999317860811505 FSCORE 0.6952234398298479
+EPOCH 25:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.4987869262695312
+PRECISION 0.7520501928969877 RECALL 0.7025118772470468 FSCORE 0.700879853575554
+EPOCH 26:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5115076303482056
+PRECISION 0.7513497757539065 RECALL 0.7051497496147919 FSCORE 0.7024689195888022
+EPOCH 27:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5721298456192017
+PRECISION 0.7498468852289017 RECALL 0.6979816705187467 FSCORE 0.6971291197348964
+EPOCH 28:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.547723412513733
+PRECISION 0.7473173115334143 RECALL 0.7006050975860298 FSCORE 0.698122994778926
+EPOCH 29:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5506807565689087
+PRECISION 0.7498611582430419 RECALL 0.7007623908577298 FSCORE 0.6987221277416304
+EPOCH 30:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5947265625
+PRECISION 0.7526850103511926 RECALL 0.7014228620955316 FSCORE 0.7006039181810332
+EPOCH 31:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5535492897033691
+PRECISION 0.751759830574715 RECALL 0.7007094247560349 FSCORE 0.6999833093133511
+EPOCH 32:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5872282981872559
+PRECISION 0.7500133692274839 RECALL 0.6992721173600411 FSCORE 0.6981363591358611
+EPOCH 33:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.64645516872406
+PRECISION 0.7400168334245392 RECALL 0.6952803993323061 FSCORE 0.6912125343576585
+EPOCH 34:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5568139553070068
+PRECISION 0.7513149650000807 RECALL 0.7046465716486903 FSCORE 0.7020688273470547
+EPOCH 35:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6280912160873413
+PRECISION 0.7388371163715433 RECALL 0.6899653312788906 FSCORE 0.6873010334418427
+EPOCH 36:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6363192796707153
+PRECISION 0.7396199054839162 RECALL 0.6991372945557267 FSCORE 0.6935072483267638
+EPOCH 37:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.5973248481750488
+PRECISION 0.7498485654186122 RECALL 0.701158031587057 FSCORE 0.6995159251062115
+EPOCH 38:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.627291202545166
+PRECISION 0.7540930214294883 RECALL 0.7018546160760144 FSCORE 0.7017618410500961
+EPOCH 39:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.619386911392212
+PRECISION 0.747682906611005 RECALL 0.7007286851566513 FSCORE 0.6980983854097315
+EPOCH 40:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6004528999328613
+PRECISION 0.7529524805663553 RECALL 0.7031025295326143 FSCORE 0.701852646859919
+EPOCH 41:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6608645915985107
+PRECISION 0.749654731842232 RECALL 0.6989864214175655 FSCORE 0.6978163094357399
+EPOCH 42:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.633958339691162
+PRECISION 0.7448828137738338 RECALL 0.6973821905495634 FSCORE 0.6950924778720389
+EPOCH 43:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.603267788887024
+PRECISION 0.7456337369227993 RECALL 0.7006034925526451 FSCORE 0.6966269119390995
+EPOCH 44:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6249022483825684
+PRECISION 0.7499028575836034 RECALL 0.7006018875192604 FSCORE 0.6991909282386584
+EPOCH 45:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6874128580093384
+PRECISION 0.7480411949651875 RECALL 0.703198831535696 FSCORE 0.6995503073778822
+EPOCH 46:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6359318494796753
+PRECISION 0.7407071796200488 RECALL 0.7003819979455572 FSCORE 0.6943704610350516
+EPOCH 47:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6909599304199219
+PRECISION 0.7444740875639969 RECALL 0.6999510464817668 FSCORE 0.6961390839676387
+EPOCH 48:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6373083591461182
+PRECISION 0.7421486846241862 RECALL 0.698484045968156 FSCORE 0.6942044899879207
+EPOCH 49:
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+LOSS train 0.0 valid 1.6750794649124146
+PRECISION 0.7486931534753299 RECALL 0.703878563174114 FSCORE 0.7002312345095838

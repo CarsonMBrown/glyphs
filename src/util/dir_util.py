@@ -1,6 +1,9 @@
 import os
+import pickle
 import random
 from math import ceil
+
+import cv2
 
 
 def split_eval_data(train_img_dir, train_label_dir, eval_img_dir, eval_label_dir, eval_percentage=.3, seed=0):
@@ -15,7 +18,7 @@ def split_eval_data(train_img_dir, train_label_dir, eval_img_dir, eval_label_dir
     :return:
     """
     random.seed(seed)
-    imgs = get_input_images(train_img_dir)
+    imgs = get_input_img_paths(train_img_dir)
     random.shuffle(imgs)
     for i in imgs[:ceil(len(imgs) * eval_percentage)]:
         img_name, img_extension = split_image_name_extension(i)
@@ -25,7 +28,7 @@ def split_eval_data(train_img_dir, train_label_dir, eval_img_dir, eval_label_dir
                   os.path.join(eval_label_dir, img_name + ".txt"))
 
 
-def get_input_images(img_in_dir, *, by_dir=False, verbose=True):
+def get_input_img_paths(img_in_dir, *, by_dir=False, verbose=True):
     # set directory for input
     if verbose:
         print("Image input directory:", img_in_dir)
@@ -44,8 +47,38 @@ def get_input_images(img_in_dir, *, by_dir=False, verbose=True):
     category_dict = {}
     for c in categories:
         category_dict[c] = [os.path.join(img_in_dir, c, p) for p in
-                            get_input_images(os.path.join(img_in_dir, c), verbose=False)]
+                            get_input_img_paths(os.path.join(img_in_dir, c), verbose=False)]
     return category_dict
+
+
+IMAGE_LIST_CACHE_FILE_NAME = "img_list.pickle"
+BY_DIR_IMAGE_CACHE_FILE_NAME = "img_dict.pickle"
+
+
+def get_input_imgs(img_in_dir, *, by_dir=False, verbose=True, cache=True):
+    paths = get_input_img_paths(img_in_dir, by_dir=by_dir, verbose=verbose)
+    if by_dir:
+        cache_path = os.path.join(img_in_dir, BY_DIR_IMAGE_CACHE_FILE_NAME)
+        if os.path.exists(cache_path):
+            with open(cache_path, mode="rb") as f:
+                return pickle.load(f)
+        img_dict = {}
+        for c in paths.keys():
+            img_dict[c] = [cv2.imread(img_path) for img_path in paths[c]]
+        if cache:
+            with open(cache_path, mode="wb") as f:
+                pickle.dump(img_dict, f)
+        return img_dict
+    else:
+        cache_path = os.path.join(img_in_dir, IMAGE_LIST_CACHE_FILE_NAME)
+        if os.path.exists(cache_path):
+            with open(cache_path, mode="rb") as f:
+                return pickle.load(f)
+        img_list = [cv2.imread(os.path.join(img_in_dir, img_path)) for img_path in paths]
+        if cache:
+            with open(cache_path, mode="wb") as f:
+                pickle.dump(img_list, f)
+        return img_list
 
 
 def set_output_dir(img_out_dir):
@@ -56,7 +89,7 @@ def set_output_dir(img_out_dir):
 
 
 def clean_dir(temp_dir):
-    img_list = get_input_images(temp_dir)
+    img_list = get_input_img_paths(temp_dir)
     for i in img_list:
         os.remove(os.path.join(temp_dir, i))
     print("Cleared directory:", temp_dir)
