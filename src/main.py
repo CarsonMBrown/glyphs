@@ -1,10 +1,8 @@
 import os.path
-from functools import partial
 
-from src.classification.markov import markov
+from src.classification.cnn_learning.resnext_lstm import ResNetLSTM
 from src.classification.vector_learning import nn_factory
-from src.classification.vector_learning.linear import Linear
-from src.util.glyph_util import get_classes_as_glyphs
+from src.util.torch_dataloader import ImageLoader
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -86,7 +84,7 @@ if __name__ == '__main__':
     # plot_bboxes(img, get_bbox_outliers(bboxes), color=(0, 0, 255), wait=None)
     # cv2.imwrite(os.path.join("output_data", "eval_image_bounding", "P_Hamb_graec_665.png"), img)
 
-    lang_file = os.path.join(DATASET_DIR, "perseus_mini.txt")
+    lang_file = os.path.join(DATASET_DIR, "perseus_micro.txt")
     meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
     # nn_factory.train_model(lang_file, meta_data,
@@ -101,17 +99,23 @@ if __name__ == '__main__':
     #                                epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True,
     #                                name="binarized")
 
-    # cnn_factory.train_model(lang_file, meta_data,
-    #                                 TRAIN_BINARIZED_GLYPHS_DIR, EVAL_BINARIZED_GLYPHS_DIR,
-    #                                 AlexNet,
-    #                                 epochs=50, batch_size=32, resume=False, start_epoch=0)
+    nn_factory.train_model(lang_file, meta_data,
+                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                           ResNetLSTM,
+                           epochs=25, batch_size=8, resume=False, start_epoch=0, loader=ImageLoader,
+                           transform=ResNetLSTM.preprocess)
 
-    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
-                                                                   EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
-    model, _ = nn_factory.load_model(Linear, name="binarized", load_epoch=10, dataset=eval_dataset, resume=False)
-    markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"), get_classes_as_glyphs())
-    avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(
-        model,
-        eval_dataloader,
-        prediction_modifier=partial(markov.pseudo_viterbi, markov_chain))
-    print(avg_precision, avg_recall, avg_fscore)
+    # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
+    #                                                                EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
+    # # model, _ = nn_factory.load_model(LinearToLSTM, name="binarized", load_epoch=9, dataset=eval_dataset, resume=False)
+    # markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"), get_classes_as_glyphs(),
+    #                                         cache_path=os.path.join("dataset", "perseus.markov"))
+    #
+    # avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="weighted", seed=0)
+    # print(avg_precision, avg_recall, avg_fscore)
+    # avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="macro", seed=0)
+    # print(avg_precision, avg_recall, avg_fscore)
+
+# baseline 0.6739440639269405 0.6785102739726028 0.6678652968036538
+# Evaluating weights...
+# 0.0 0.6672374429223744 0.670804794520548 0.6614440639269411

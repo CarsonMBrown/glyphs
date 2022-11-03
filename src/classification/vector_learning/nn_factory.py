@@ -1,4 +1,5 @@
 import os
+import random
 
 import numpy as np
 import torch
@@ -20,6 +21,8 @@ def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size
         return None
 
     model_path, save_file = get_model_path(load_epoch, model, name)
+
+    print("path exists", os.path.exists(save_file))
 
     if os.path.exists(save_file):
         model.load_state_dict(torch.load(save_file))
@@ -44,15 +47,19 @@ def get_model_path(load_epoch, model, name):
     return model_path, save_file
 
 
-def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=None):
+def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=None, average="weighted", seed=None):
     """
 
     :param model:
     :param validation_loader:
     :param loss_fn:
     :param prediction_modifier:
+    :param average:
+    :param seed:
     :return: avg_precision, avg_recall, avg_fscore, (avg_v_loss if loss_fn is not None)
     """
+    if seed is not None:
+        random.seed(seed)
     model.train(False)
     running_v_loss, running_precision, running_recall, running_fscore = 0.0, 0.0, 0.0, 0.0
     i = 0
@@ -80,7 +87,7 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
             v_labels = v_labels.cpu()
 
             precision, recall, fscore, _ = \
-                precision_recall_fscore_support(v_labels, predictions, average='weighted', zero_division=0)
+                precision_recall_fscore_support(v_labels, predictions, average=average, zero_division=0)
             running_precision += precision
             running_recall += recall
             running_fscore += fscore
@@ -96,11 +103,12 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
 
 
 def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
-                batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None):
+                batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None,
+                loader=VectorLoader, transform=None):
     # Load validation set for model init, not loading train set yet
     validation_set, validation_loader = generate_dataloader(lang_file, annotations_file, validation_data_path,
                                                             batch_size=batch_size, num_workers=num_workers,
-                                                            shuffle=shuffle)
+                                                            shuffle=shuffle, loader=loader, transform=transform)
 
     print("Input Vector Size:", validation_set.get_vector_size())
 
@@ -119,7 +127,10 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     # Load training set after model init and potential load as it may be much larger than validation set
     training_set, training_loader = generate_dataloader(lang_file, annotations_file, training_data_path,
-                                                        batch_size=batch_size, num_workers=num_workers, shuffle=shuffle)
+                                                        batch_size=batch_size, num_workers=num_workers, shuffle=shuffle,
+                                                        loader=loader, transform=transform)
+
+    torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=.9)
@@ -157,16 +168,11 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
 
 def generate_dataloader(lang_file, annotations_file, data_path, *, batch_size=32, num_workers=0,
-                        shuffle=False):
-    training_set = VectorLoader(lang_file, annotations_file, data_path)
+                        shuffle=False, loader=VectorLoader, transform=None):
+    training_set = loader(lang_file, annotations_file, data_path, transform=transform)
     training_loader = torch.utils.data.DataLoader(training_set, batch_size=batch_size, num_workers=num_workers,
                                                   shuffle=shuffle)
     return training_set, training_loader
-
-
-def classify(model, vector):
-    _, predicted = torch.max(model(vector), 1)
-    return predicted
 
 
 def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn, tb_writer):
@@ -200,8 +206,8 @@ def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn, tb_
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 10000 == 9999:
-            last_loss = running_loss / 10000  # loss per batch
+        if i % 1000 == 999:
+            last_loss = running_loss / 1000  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(training_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)

@@ -1,17 +1,26 @@
 import math
+import os.path
+import pickle
 
+import numpy as np
 from torch import softmax
 
 from src.classification.markov.viterbi import viterbi
 
 
-def init_markov_chain(lang_file, hidden_states, log=False):
+def init_markov_chain(lang_file, hidden_states, *, cache_path=None, log=False):
     """
     :param lang_file:
     :param hidden_states:
+    :param cache_path:
     :param log: 
     :return: hidden_states, initial_probabilities, transmit_probabilities
     """
+
+    if cache_path is not None and os.path.exists(cache_path):
+        print("Reading Markov Chain From Disk...")
+        with open(cache_path, mode="rb") as f:
+            return pickle.load(f)
     print("Initializing Markov Chain...")
 
     initial_probabilities = {}
@@ -43,6 +52,10 @@ def init_markov_chain(lang_file, hidden_states, log=False):
         initial_probabilities[s1] /= len(glyphs)
         if log:
             initial_probabilities[s1] = math.log(initial_probabilities[s1])
+
+    if cache_path is not None:
+        with open(cache_path, mode="wb") as f:
+            pickle.dump((hidden_states, initial_probabilities, transmit_probabilities), f)
 
     return hidden_states, initial_probabilities, transmit_probabilities
 
@@ -76,6 +89,18 @@ def pseudo_viterbi(markov_chain, observations):
     return viterbi(pseudo_observations, hidden_states, initial_probabilities, transmit_probabilities, pseudo_emit_probs)
 
 
-def interpolated_markov(markov_chain, observations, init_prob_weight=0, n_gram_prob_weight=.5):
+def interpolated_markov(markov_chain, observations, *, init_prob_weight=0, n_gram_prob_weight=.5):
     hidden_states, initial_probabilities, transmit_probabilities = markov_chain
-    pass
+    for i in range(len(observations)):
+        observations[i] = softmax(observations[i], dim=0)
+    observations *= 1000
+    for i, i_state in enumerate(hidden_states):
+        observations[0, i] = observations[0, i] + (init_prob_weight * initial_probabilities[i_state])
+    for o in range(1, len(observations)):
+        for i, i_state in enumerate(hidden_states):
+            for j, j_state in enumerate(hidden_states):
+                observations[o, j] = observations[o, j] + \
+                                     (n_gram_prob_weight * transmit_probabilities[i_state][j_state] *
+                                      observations[o - 1, i])
+
+    return np.argmax(observations, axis=1)
