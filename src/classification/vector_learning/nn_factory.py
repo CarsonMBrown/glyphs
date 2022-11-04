@@ -133,7 +133,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=.9)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))

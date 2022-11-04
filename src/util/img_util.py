@@ -46,7 +46,7 @@ def random_color(in_order=True):
         return randint(0, 256), randint(0, 256), randint(0, 256)
 
 
-def plot_lines(img, lines, *, wait=0):
+def plot_lines(img, lines, *, wait=0, sort=True):
     """
     Given an image and a list of lists of points,
     plot each list of points as a line with a random color
@@ -59,7 +59,8 @@ def plot_lines(img, lines, *, wait=0):
     color_index = -1
 
     # Sort lines by y component of first point in first line
-    lines.sort(key=lambda x: x[0][1])
+    if sort:
+        lines.sort(key=lambda x: x[0][1])
 
     for line in lines:
         color = random_color()

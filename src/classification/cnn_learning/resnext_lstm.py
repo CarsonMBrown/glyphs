@@ -1,11 +1,11 @@
 from torch import nn
 from torchvision import transforms
-from torchvision.models import resnext101_64x4d, resnext50_32x4d
+from torchvision.models import resnext50_32x4d, ResNeXt50_32X4D_Weights
 
 
 class ResNetLSTM(nn.Module):
     preprocess = transforms.Compose([
-        transforms.RandomAffine(degrees=10, translate=(.1, .1), shear=10),
+        transforms.RandomAffine(degrees=15, translate=(.2, .2), shear=15),
         transforms.Resize(256),
         transforms.RandomCrop(224),
         transforms.RandomAdjustSharpness(.5, .5),
@@ -16,10 +16,10 @@ class ResNetLSTM(nn.Module):
 
     def __init__(self, input_size, output_size):
         super().__init__()
-        self.resnext = resnext50_32x4d()
+        self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
         # self.resnext = resnext101_64x4d()
         self.resnext.fc = nn.Sequential(
-            nn.LSTM(2048, output_size, num_layers=3, bidirectional=True, dropout=0.1),
+            nn.LSTM(self.resnext.fc.in_features, output_size, num_layers=1, bidirectional=True, dropout=0.1),
         )
         self.classifier = nn.Linear(output_size * 2, output_size)
 

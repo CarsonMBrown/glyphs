@@ -1,8 +1,12 @@
 import os.path
 
-from src.classification.cnn_learning.resnext_lstm import ResNetLSTM
-from src.classification.vector_learning import nn_factory
-from src.util.torch_dataloader import ImageLoader
+import cv2
+
+from src.bounding.yolo import yolo
+from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
+from src.line_recognition import bbox_connection
+from src.util.bbox_util import bbox_center
+from src.util.img_util import plot_bboxes, plot_lines
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -79,31 +83,36 @@ if __name__ == '__main__':
 
     # img = cv2.imread(
     #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
-    # bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
-    # plot_bboxes(img, remove_bbox_outliers(bboxes), color=(0, 0, 0), wait=None)
-    # plot_bboxes(img, get_bbox_outliers(bboxes), color=(0, 0, 255), wait=None)
-    # cv2.imwrite(os.path.join("output_data", "eval_image_bounding", "P_Hamb_graec_665.png"), img)
+    img = cv2.imread(
+        r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\PSI_XIV_1377r.jpg")
+    bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
+    valid_boxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
 
-    lang_file = os.path.join(DATASET_DIR, "perseus_micro.txt")
-    meta_data = os.path.join(GLYPH_DIR, "meta.csv")
+    lines, (over_size_bboxes, duplicate_bboxes) = bbox_connection.link_bboxes(bboxes)
+    overlay = img.copy()
+
+    plot_bboxes(img, valid_boxes, color=(0, 0, 0), wait=None)
+
+    plot_bboxes(overlay, over_size_bboxes, color=(0, 0, 255), wait=None)
+    plot_bboxes(overlay, duplicate_bboxes, color=(0, 165, 255), wait=None)
+
+    alpha = .5
+    img = cv2.addWeighted(overlay, alpha, img, 1 - alpha, 0)
+
+    line_centers = []
+    for line in lines:
+        line_centers.append([bbox_center(bbox) for bbox in line])
+
+    plot_lines(img, line_centers)
+
+    # lang_file = os.path.join(DATASET_DIR, "perseus_micro.txt")
+    # meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
     # nn_factory.train_model(lang_file, meta_data,
-    #                        TRAIN_BINARIZED_GLYPHS_DIR, EVAL_BINARIZED_GLYPHS_DIR,
-    #                        LinearToLSTM,
-    #                        epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=False,
-    #                        name="binarized")
-
-    # nn_factory.train_model(lang_file, meta_data,
-    #                                TRAIN_BINARIZED_GLYPHS_DIR, EVAL_BINARIZED_GLYPHS_DIR,
-    #                                Linear,
-    #                                epochs=50, batch_size=32, resume=False, start_epoch=0, shuffle=True,
-    #                                name="binarized")
-
-    nn_factory.train_model(lang_file, meta_data,
-                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-                           ResNetLSTM,
-                           epochs=25, batch_size=8, resume=False, start_epoch=0, loader=ImageLoader,
-                           transform=ResNetLSTM.preprocess)
+    #                        TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+    #                        ResNetLSTM,
+    #                        epochs=125, batch_size=8, resume=True, start_epoch=99, loader=ImageLoader,
+    #                        transform=ResNetLSTM.preprocess)
 
     # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
     #                                                                EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
@@ -113,9 +122,5 @@ if __name__ == '__main__':
     #
     # avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="weighted", seed=0)
     # print(avg_precision, avg_recall, avg_fscore)
-    # avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="macro", seed=0)
+    # avg_precision, avg_recall, avg_1fscore = nn_factory.eval_model(model, eval_dataloader, average="macro", seed=0)
     # print(avg_precision, avg_recall, avg_fscore)
-
-# baseline 0.6739440639269405 0.6785102739726028 0.6678652968036538
-# Evaluating weights...
-# 0.0 0.6672374429223744 0.670804794520548 0.6614440639269411

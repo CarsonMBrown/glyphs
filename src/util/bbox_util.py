@@ -68,7 +68,7 @@ def coco_to_yolo(bbox, img_size):
     return (x_min + width / 2) / img_x, (y_min + height / 2) / img_y, width / img_x, height / img_y
 
 
-def bboxes_to_images(bboxes, img):
+def bboxes_to_crops(bboxes, img):
     """
     Converts a list of pascal formatted bounding boxes to a list of images
     :param bboxes: pascal formatted bounding boxes to convert to images
@@ -80,10 +80,10 @@ def bboxes_to_images(bboxes, img):
 
 def bbox_center(bbox):
     """
-    :return: the center of a pascal formatted (x_min, y_min, x_max, y_max) bounding box
+    :return: the center (x,y) of a pascal formatted (x_min, y_min, x_max, y_max) bounding box
     """
     x_min, y_min, x_max, y_max = bbox
-    return (x_max - x_min), (y_max - y_min)
+    return (x_min + x_max) // 2, (y_min + y_max) // 2
 
 
 def bbox_intersection_angle(bbox1, bbox2):
@@ -126,8 +126,8 @@ def dimensional_iou(bbox1, bbox2):
     x_min1, y_min1, x_max1, y_max1 = bbox1
     x_min2, y_min2, x_max2, y_max2 = bbox2
     inter_x, inter_y = pascal_intersections(bbox1, bbox2)
-    union_x = (linear_intersection(x_max1, x_max2, x_min1, x_min2) - inter_x)
-    union_y = (linear_intersection(y_max1, y_max2, y_min1, y_min2) - inter_y)
+    union_x = (linear_combined_area(x_max1, x_max2, x_min1, x_min2) - inter_x)
+    union_y = (linear_combined_area(y_max1, y_max2, y_min1, y_min2) - inter_y)
     return (inter_x / union_x), (inter_y / union_y)
 
 
@@ -149,5 +149,34 @@ def point_in_bbox(point, bbox, *, dimension_wise=False, allow_border=True):
     return in_x and in_y
 
 
-def linear_intersection(max1, max2, min1, min2):
+def linear_combined_area(max1, max2, min1, min2):
+    """
+    Returns union + intersection between two lines
+    :param max1:
+    :param max2:
+    :param min1:
+    :param min2:
+    :return:
+    """
     return max1 + max2 - min1 - min2
+
+
+def relative_edge_distance(bbox1, bbox2):
+    """
+    Returns the x and y distances between the edges of two bboxes (pascal) as the
+    percentage of the mean width/height of the two bounding boxes. Only defined for non-intersecting boxes
+    :param bbox1:
+    :param bbox2:
+    :return:
+    """
+    x_min1, y_min1, x_max1, y_max1 = bbox1
+    x_min2, y_min2, x_max2, y_max2 = bbox2
+    avg_width = (x_max1 + x_max2 - x_min1 - x_min2)
+    avg_height = (y_max1 + y_max2 - y_min1 - y_min2)
+    x_dist = max(x_min2 - x_max1, x_min1 - x_max2) / avg_width
+    y_dist = max(y_min2 - y_max1, y_min1 - y_max2) / avg_height
+    return x_dist, y_dist
+
+
+def relative_center_distance():
+    pass

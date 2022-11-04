@@ -35,7 +35,7 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200):
             # generate pascal bounding box inset within window to allow for removal of edge boxes
             valid_bbox_window = (
                 dx + window_step if dx != 0 else dx,
-                dy + window_step if dy != 0 else dx,
+                dy + window_step if dy != 0 else dy,
                 window_x_max - window_step if window_x_max != x_max else x_max,
                 window_y_max - window_step if window_y_max != y_max else y_max
             )
