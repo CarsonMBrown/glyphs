@@ -104,11 +104,13 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
 
 def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
                 batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None,
-                loader=VectorLoader, transform=None):
+                loader=VectorLoader, transforms=None):
     # Load validation set for model init, not loading train set yet
+    if transforms is None:
+        transforms = [None]
     validation_set, validation_loader = generate_dataloader(lang_file, annotations_file, validation_data_path,
                                                             batch_size=batch_size, num_workers=num_workers,
-                                                            shuffle=shuffle, loader=loader, transform=transform)
+                                                            shuffle=shuffle, loader=loader, transform=transforms[0])
 
     print("Input Vector Size:", validation_set.get_vector_size())
 
@@ -128,18 +130,22 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     # Load training set after model init and potential load as it may be much larger than validation set
     training_set, training_loader = generate_dataloader(lang_file, annotations_file, training_data_path,
                                                         batch_size=batch_size, num_workers=num_workers, shuffle=shuffle,
-                                                        loader=loader, transform=transform)
+                                                        loader=loader, transform=transforms[-1])
 
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0004, momentum=0.8)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.85)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
 
     # Initializing in a separate cell, so we can easily add more epochs to the same run
     writer = SummaryWriter('runs/lstm')
+
+    if resume:
+        start_epoch += 1
 
     for epoch in range(start_epoch, epochs):
         print('EPOCH {}:'.format(epoch))
@@ -164,6 +170,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
                    os.path.join(model_path, "rnn_" + str(epoch) + ".pt"))
 
         model.eval()
+        scheduler.step()
     return model
 
 

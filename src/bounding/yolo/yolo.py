@@ -1,10 +1,13 @@
-import numpy as np
+import os.path
+
+import cv2
 import torch
 
 from src.evaluation.bbox_eval import get_unique_bboxes
-from src.util.bbox_util import bbox_inside
-
+from src.util.bbox_util import BBox
 # Load pre-trained model using given coco data and using yolov5x
+from src.util.img_util import plot_bboxes
+
 model = torch.hub.load('ultralytics/yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt', trust_repo=True)
 
 
@@ -18,13 +21,17 @@ def find_glyphs(img):
     return model(img)
 
 
-def sliding_glyph_window(img, *, window_size=800, window_step=200):
+def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=None):
     """
     :param img: img to get bboxes from (IN RGB)
     :param window_size: size of the sliding window to use
     :param window_step: step to take between windows
-    :return: returns a list of bounding boxes in pascal form (x_min, y_min, x_max, y_max)
+    :param export_path: if not None, the draws each sliding window to this path as an image
+    :return: returns a list of bounding boxes
     """
+    if export_path is not None:
+        os.makedirs(export_path, exist_ok=True)
+
     y_max, x_max, _ = img.shape
     bboxes = []
     for dx in range(0, max(x_max - window_size, 1), window_step):
@@ -32,19 +39,29 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200):
             # extend window to fit edges of image to prevent narrow or short slices
             window_x_max = x_max if dx + window_step + window_size >= x_max else dx + window_size
             window_y_max = y_max if dy + window_step + window_size >= y_max else dy + window_size
-            # generate pascal bounding box inset within window to allow for removal of edge boxes
-            valid_bbox_window = (
-                dx + window_step if dx != 0 else dx,
-                dy + window_step if dy != 0 else dy,
+            # generate bounding box inset within window to allow for removal of edge boxes
+            valid_bbox_window = BBox(
+                dx + window_step if dx != 0 else 0,
+                dy + window_step if dy != 0 else 0,
                 window_x_max - window_step if window_x_max != x_max else x_max,
                 window_y_max - window_step if window_y_max != y_max else y_max
             )
             # get bboxes fully contained by the window
-            bboxes += [
-                bbox for bbox in
-                get_bounding_boxes(find_glyphs(img[dy:window_y_max, dx:window_x_max]), offset_x=dx, offset_y=dy)
-                if bbox_inside(bbox, valid_bbox_window)
-            ]
+            potential_bboxes = get_bounding_boxes(find_glyphs(img[dy:window_y_max, dx:window_x_max]),
+                                                  offset_x=dx,
+                                                  offset_y=dy)
+            valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
+            bboxes += valid_bboxes
+
+            if export_path is not None:
+                window = BBox(dx, dy, window_x_max, window_y_max)
+                temp_img = cv2.cvtColor(img.copy(), cv2.COLOR_RGB2BGR)
+
+                plot_bboxes(temp_img, [window], color=(255, 0, 0), wait=None)
+                plot_bboxes(temp_img, [valid_bbox_window], color=(0, 255, 0), wait=None)
+                plot_bboxes(temp_img, potential_bboxes, color=(0, 0, 255), wait=None)
+                plot_bboxes(temp_img, bboxes, color=(0, 0, 0), wait=None)
+                cv2.imwrite(os.path.join(export_path, f"window_{dx}_{dy}.png"), temp_img)
 
     return get_unique_bboxes(bboxes)
 
@@ -58,8 +75,8 @@ def results_to_list(result):
 
 
 def get_bounding_boxes(result, *, offset_x=0, offset_y=0):
-    """returns a list of bounding boxes in pascal form (x_min, y_min, x_max, y_max)"""
-    return [tuple(np.array([min_x + offset_x, min_y + offset_y, max_x + offset_x, max_y + offset_y], int))
+    """returns a list of bounding boxes"""
+    return [BBox(min_x + offset_x, min_y + offset_y, max_x + offset_x, max_y + offset_y)
             for min_x, min_y, max_x, max_y, _, _, _ in results_to_list(result)]
 
 

@@ -4,12 +4,19 @@ from torchvision.models import resnext50_32x4d, ResNeXt50_32X4D_Weights
 
 
 class ResNetLSTM(nn.Module):
-    preprocess = transforms.Compose([
-        transforms.RandomAffine(degrees=15, translate=(.2, .2), shear=15),
+    transform_train = transforms.Compose([
+        transforms.RandomAffine(degrees=10, translate=(.1, .1), shear=10),
         transforms.Resize(256),
         transforms.RandomCrop(224),
-        transforms.RandomAdjustSharpness(.5, .5),
-        transforms.RandomAdjustSharpness(2, .5),
+        transforms.RandomAdjustSharpness(2, 1),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    transform_classify = transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.RandomAdjustSharpness(2, 1),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
@@ -29,4 +36,4 @@ class ResNetLSTM(nn.Module):
 
     @staticmethod
     def get_name():
-        return "resnext_lstm"
+        return "resnext_lstm_sharp2"

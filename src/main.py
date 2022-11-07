@@ -5,7 +5,6 @@ import cv2
 from src.bounding.yolo import yolo
 from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
 from src.line_recognition import bbox_connection
-from src.util.bbox_util import bbox_center
 from src.util.img_util import plot_bboxes, plot_lines
 
 DATASET_DIR = "dataset"
@@ -81,11 +80,12 @@ if __name__ == '__main__':
     # all_vectors, all_classes = alex_init(BINARIZED_GLYPHS_DIR)
     # alex_knn(templates_vector, template_class, all_vectors, all_classes)
 
-    # img = cv2.imread(
-    #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
     img = cv2.imread(
-        r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\PSI_XIV_1377r.jpg")
-    bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), window_size=800)
+        r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
+    # img = cv2.imread(
+    #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\PSI_XIV_1377r.jpg")
+    bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
     valid_boxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
 
     lines, (over_size_bboxes, duplicate_bboxes) = bbox_connection.link_bboxes(bboxes)
@@ -101,22 +101,23 @@ if __name__ == '__main__':
 
     line_centers = []
     for line in lines:
-        line_centers.append([bbox_center(bbox) for bbox in line])
+        line_centers.append([bbox.center for bbox in line])
 
     plot_lines(img, line_centers)
 
     # lang_file = os.path.join(DATASET_DIR, "perseus_micro.txt")
     # meta_data = os.path.join(GLYPH_DIR, "meta.csv")
-
+    #
     # nn_factory.train_model(lang_file, meta_data,
     #                        TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
     #                        ResNetLSTM,
-    #                        epochs=125, batch_size=8, resume=True, start_epoch=99, loader=ImageLoader,
-    #                        transform=ResNetLSTM.preprocess)
+    #                        epochs=100, batch_size=8, resume=False, start_epoch=0, loader=ImageLoader,
+    #                        transforms=[ResNetLSTM.transform_train, ResNetLSTM.transform_classify])
 
     # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
     #                                                                EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
-    # # model, _ = nn_factory.load_model(LinearToLSTM, name="binarized", load_epoch=9, dataset=eval_dataset, resume=False)
+    # model, _ = nn_factory.load_model(
+    #     LinearToLSTM, name="binarized", load_epoch=9, dataset=eval_dataset, resume=False)
     # markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"), get_classes_as_glyphs(),
     #                                         cache_path=os.path.join("dataset", "perseus.markov"))
     #

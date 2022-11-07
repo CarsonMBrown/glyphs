@@ -1,11 +1,9 @@
 import numpy as np
 from numpy import mean
 
-from src.util.bbox_util import iou
-
 
 def mean_iou(bbox, bboxes):
-    return mean([iou(bbox, bbox2) for bbox2 in bboxes])
+    return mean([bbox.iou(other) for other in bboxes])
 
 
 def get_unique_bboxes(bboxes, iou_threshold=.8):
@@ -14,7 +12,7 @@ def get_unique_bboxes(bboxes, iou_threshold=.8):
     for i, a in enumerate(bboxes):
         duplicate = False
         for b in bboxes[i + 1:]:
-            if iou(a, b) > iou_threshold:
+            if a.iou(b) > iou_threshold:
                 duplicate = True
         if not duplicate:
             unique_bboxes.append(a)
@@ -34,9 +32,9 @@ def remove_bbox_outliers(bboxes, *, x_min_percent=.5, x_max_percent=2, y_min_per
     """
     dx_mean, dy_mean = get_mean_dimensions(bboxes)
     return [
-        (x_min, y_min, x_max, y_max) for x_min, y_min, x_max, y_max in bboxes if
-        dx_mean * x_min_percent <= (x_max - x_min) <= dx_mean * x_max_percent or
-        dy_mean * y_min_percent <= (y_max - y_min) <= dy_mean * y_max_percent
+        bbox for bbox in bboxes if
+        dx_mean * x_min_percent <= (bbox.x_max - bbox.x_min) <= dx_mean * x_max_percent or
+        dy_mean * y_min_percent <= (bbox.y_max - bbox.y_min) <= dy_mean * y_max_percent
     ]
 
 
@@ -51,16 +49,12 @@ def get_bbox_outliers(bboxes, *, x_min_percent=.5, x_max_percent=2, y_min_percen
     :param y_max_percent:
     :return:
     """
-    dx_mean, dy_mean = get_mean_dimensions(bboxes)
-    return [
-        (x_min, y_min, x_max, y_max) for x_min, y_min, x_max, y_max in bboxes if
-        not (dx_mean * x_min_percent <= (x_max - x_min) <= dx_mean * x_max_percent) and
-        not (dy_mean * y_min_percent <= (y_max - y_min) <= dy_mean * y_max_percent)
-    ]
+    non_outliers = remove_bbox_outliers(bboxes, x_min_percent=x_min_percent, x_max_percent=x_max_percent,
+                                        y_min_percent=y_min_percent, y_max_percent=y_max_percent)
+    return [bbox for bbox in bboxes if bbox not in non_outliers]
 
 
 def get_mean_dimensions(bboxes):
     dx_mean, dy_mean = mean(
-        np.array([[x_max - x_min, y_max - y_min] for x_min, y_min, x_max, y_max in bboxes]).transpose(),
-        axis=1)
+        np.array([[bbox.x_max - bbox.x_min, bbox.y_max - bbox.y_min] for bbox in bboxes]).transpose(), axis=1)
     return dx_mean, dy_mean

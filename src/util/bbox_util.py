@@ -1,152 +1,165 @@
 import math
 
-
-def pascal_area(bbox):
-    """
-    get area of pascal bbox area (x_min, y_min, x_max, y_max)
-    :param bbox: bounding box in pascal form (x_min, y_min, x_max, y_max)
-    :return:
-    """
-    x_min, y_min, x_max, y_max = bbox
-    return (x_max - x_min + 1) * (y_max - y_min + 1)
+import numpy as np
 
 
-def pascal_intersections(bbox1, bbox2):
-    """
-    get intersection of the x and y dimensions between two pascal bboxes (x_min, y_min, x_max, y_max)
-    :param bbox1: bbox in pascal form
-    :param bbox2: bbox in pascal form
-    :return:
-    """
-    inter_min_x, inter_max_x = max(bbox1[0], bbox2[0]), min(bbox1[2], bbox2[2])
-    inter_min_y, inter_max_y = max(bbox1[1], bbox2[1]), min(bbox1[3], bbox2[3])
-    return max(0, inter_max_x - inter_min_x + 1), max(0, inter_max_y - inter_min_y + 1)
+class BBox:
+    def __init__(self, x_min, y_min, x_max, y_max):
+        """Creates a bounding box using the pascal format."""
+        self.x_min = int(x_min)
+        self.y_min = int(y_min)
+        self.x_max = int(x_max)
+        self.y_max = int(y_max)
+        self.width = x_max - x_min
+        self.height = y_max - y_min
+        self.area = (self.width + 1) * (self.height + 1)
+        self.center = int((x_min + x_max) // 2), int((y_min + y_max) // 2)
+        self.probabilities = None
 
+    @staticmethod
+    def from_coco(x_min, y_min, width, height):
+        return BBox(x_min, y_min, x_min + width, y_min + height)
 
-def bbox_inside(bbox1, bbox2):
-    """
-    checks if for two pascal bboxes (x_min, y_min, x_max, y_max), the first in inside the second
-    :param bbox1:
-    :param bbox2:
-    :return: True if bbox1 is fully contained by bbox2, False otherwise,
-    allowing the case in which the bounding boxes have the same edge(s)
-    """
-    x_min1, y_min1, x_max1, y_max1 = bbox1
-    x_min2, y_min2, x_max2, y_max2 = bbox2
-    return x_min1 >= x_min2 and y_min1 >= y_min2 and x_max1 <= x_max2 and y_max1 <= y_max2
+    def pascal(self):
+        return self.x_min, self.y_min, self.x_max, self.y_max
 
+    def coco(self):
+        return self.x_min, self.y_min, self.width, self.height
 
-def pascal_to_coco(bbox):
-    """
-    Converts bounding box in pascal format to coco format.
-    :param bbox: bounding box in pascal format (x_min, y_min, x_max, y_max)
-    :return: bounding box in coco format (x_min, y_min, width, height)
-    """
-    x_min, y_min, x_max, y_max = bbox
-    return x_min, y_min, x_max - x_min, y_max - y_min
+    def yolo(self, img_size):
+        img_x, img_y = img_size
+        return (
+            (self.x_min + self.width / 2) / img_x,
+            (self.y_min + self.height / 2) / img_y,
+            self.width / img_x,
+            self.height / img_y
+        )
 
+    def add_class_probabilities(self, probabilities):
+        self.probabilities = probabilities
 
-def coco_to_pascal(bbox):
-    """
-    Converts bounding box in coco format to pascal format.
-    :param bbox: bounding box in coco format (x_min, y_min, width, height)
-    :return: bounding box in pascal format (x_min, y_min, x_max, y_max)
-    """
-    x_min, y_min, width, height = bbox
-    return x_min, y_min, x_min + width, y_min + height
+    def get_class_probabilities(self):
+        return self.probabilities
 
+    def get_class(self):
+        if self.probabilities is None:
+            return None
+        return np.argmax(self.probabilities)
 
-def coco_to_yolo(bbox, img_size):
-    """
-    Converts bounding box in coco format to yolo format.
-    :param bbox: bounding box in coco format (x_min, y_min, width, height)
-    :param img_size: size of image (x, y) in pixels
-    :return: bounding box in pascal format (x_min, y_min, x_max, y_max)
-    """
-    x_min, y_min, width, height = bbox
-    img_x, img_y = img_size
-    return (x_min + width / 2) / img_x, (y_min + height / 2) / img_y, width / img_x, height / img_y
+    def intersections(self, other: "BBox"):
+        """Return the intersection of the x and y dimensions between two bboxes"""
+        if not isinstance(other, BBox):
+            raise TypeError
+
+        inter_min_x, inter_max_x = max(self.x_min, other.x_min), min(self.x_max, other.x_max)
+        inter_min_y, inter_max_y = max(self.y_min, other.y_min), min(self.y_max, other.y_max)
+        return max(0, inter_max_x - inter_min_x + 1), max(0, inter_max_y - inter_min_y + 1)
+
+    def is_inside(self, other: "BBox"):
+        """Return True if this bbox is contained in the other bbox, False otherwise,
+        allowing the case in which the bounding boxes have the same edge(s)."""
+        if not isinstance(other, BBox):
+            raise TypeError
+        return self.x_min >= other.x_min and self.y_min >= other.y_min and self.x_max <= other.x_max and self.y_max <= other.y_max
+
+    def contains_point(self, point, *, dimension_wise=False, allow_border=True):
+        """
+        Checks if the given point is inside the bounding box,
+        by default allowing for points on the border to be considered inside.
+        :param point: (x,y)
+        :param dimension_wise: if true will return a pair of bools representing if the point is contained in the x dim
+         of the bounding box, and if the point is contained in the y dim of the bounding box
+        :param allow_border: if a point on the border is contained
+        :return: a bool representing if the point is contained in the bounding box
+        """
+        x, y = point
+        in_x = (self.x_min <= x <= self.x_max) if allow_border else (self.x_min < x < self.x_max)
+        in_y = (self.y_min <= y <= self.y_max) if allow_border else (self.y_min < y < self.y_max)
+        if dimension_wise:
+            return in_x, in_y
+        return in_x and in_y
+
+    def contains_center(self, other: "BBox", *, dimension_wise=False, allow_border=True):
+        if not isinstance(other, BBox):
+            raise TypeError
+        return self.contains_point(other.center, dimension_wise=dimension_wise, allow_border=allow_border)
+
+    def iou(self, other: "BBox"):
+        """
+        AKA Pascal VOC method.
+        Returns the cardinality of the intersection of the bounding boxes
+        over the cardinality of the union of the bounding boxes
+        :return: |truth region ∩ predicted region| / |truth region ∪ predicted region|
+        """
+        if not isinstance(other, BBox):
+            raise TypeError
+        inter_x, inter_y = self.intersections(other)
+        intersection_area = inter_x * inter_y
+        IoU = intersection_area / (self.area + other.area - intersection_area)
+        return IoU
+
+    def dimensional_iou(self, other: "BBox"):
+        """
+        A modified version of intersection over union, AKA Pascal VOC method.
+        Returns the cardinality of the intersection of the bounding boxes
+        over the cardinality of the union of the bounding boxes for both the x and y dimensions
+        :return: the iou for the x and y dimensions as a tuple (x,y)
+        """
+        inter_x, inter_y = self.intersections(other)
+        union_x = (linear_combined_area(self.x_max, other.x_max, self.x_min, other.x_min) - inter_x)
+        union_y = (linear_combined_area(self.y_max, other.y_max, self.y_min, other.y_min) - inter_y)
+        return (inter_x / union_x), (inter_y / union_y)
+
+    def get_intersection_angle(self, other: "BBox"):
+        """Return the angle (in degrees) between the two bounding box centers"""
+        if not isinstance(other, BBox):
+            raise TypeError
+
+        (x1, y1), (x2, y2) = self.center, other.center
+        dot_product = x1 * x2 + y1 * y2
+        cosine_angle = dot_product / (math.sqrt(x1 * x1 + y1 * y1) * math.sqrt(x2 * x2 + y2 * y2))
+        return math.degrees(math.acos(cosine_angle))
+
+    def relative_edge_distance(self, other):
+        """Returns the x and y distances (dx,dy) between the edges of two bboxes as the
+        percentage of the mean width/height of the two bounding boxes.
+        Only defined for non-intersecting boxes."""
+        mean_width = (self.x_max + other.x_max - self.x_min - other.x_min)
+        mean_height = (self.y_max + other.y_max - self.y_min - other.y_min)
+        x_dist = max(other.x_min - self.x_max, self.x_min - other.x_max) / mean_width
+        y_dist = max(other.y_min - self.y_max, self.y_min - other.y_max) / mean_height
+        return x_dist, y_dist
+
+    def crop(self, img):
+        return img[self.y_min:self.y_max + 1, self.x_min:self.y_max + 1]
+
+    def __lt__(self, other):
+        return self.x_min < other.x_min or (self.x_min == other.x_min and self.y_min > other.y_min)
+
+    def __gt__(self, other):
+        return self.x_min > other.x_min or (self.x_min == other.x_min and self.y_min < other.y_min)
+
+    def __le__(self, other):
+        return self.x_min >= other.x_min or (self.x_min == other.x_min and self.y_min <= other.y_min)
+
+    def __ge__(self, other):
+        return self.x_min >= other.x_min or (self.x_min == other.x_min and self.y_min <= other.y_min)
+
+    def __eq__(self, other):
+        return self.x_min == other.x_min and self.center == other.center and self.area == self.area
+
+    def __repr__(self):
+        return str(self.pascal())
 
 
 def bboxes_to_crops(bboxes, img):
     """
-    Converts a list of pascal formatted bounding boxes to a list of images
-    :param bboxes: pascal formatted bounding boxes to convert to images
+    Converts a list of bounding boxes to a list of images
+    :param bboxes: bounding boxes to convert to images
     :param img: img to crop from
     :return: list of images
     """
-    return [img[min_y:max_y, min_x:max_x] for min_x, min_y, max_x, max_y in bboxes]
-
-
-def bbox_center(bbox):
-    """
-    :return: the center (x,y) of a pascal formatted (x_min, y_min, x_max, y_max) bounding box
-    """
-    x_min, y_min, x_max, y_max = bbox
-    return (x_min + x_max) // 2, (y_min + y_max) // 2
-
-
-def bbox_intersection_angle(bbox1, bbox2):
-    """
-    Returns the angle between bounding boxes
-    :param bbox1:
-    :param bbox2:
-    :return:
-    """
-    (x1, y1), (x2, y2) = bbox_center(bbox1), bbox_center(bbox2)
-    dot_product = x1 * x2 + y1 * y2
-    cosine_angle = dot_product / (math.sqrt(x1 * x1 + y1 * y1) * math.sqrt(x2 * x2 + y2 * y2))
-    return math.degrees(math.acos(cosine_angle))
-
-
-def iou(bbox1, bbox2):
-    """
-    AKA Pascal VOC method, taking bounding boxes in coco format.
-    Returns the cardinality of the intersection of the bounding boxes
-    over the cardinality of the union of the bounding boxes
-    :param bbox1: bbox in pascal format  (x_min, y_min, x_max, y_max)
-    :param bbox2: bbox in pascal format  (x_min, y_min, x_max, y_max)
-    :return: |truth region ∩ predicted region| / |truth region ∪ predicted region|
-    """
-    inter_x, inter_y = pascal_intersections(bbox1, bbox2)
-    intersection_area = inter_x * inter_y
-    IoU = intersection_area / (pascal_area(bbox1) + pascal_area(bbox2) - intersection_area)
-    return IoU
-
-
-def dimensional_iou(bbox1, bbox2):
-    """
-    A modified version of intersection over union, AKA Pascal VOC method, taking bounding boxes in pascal format.
-    Returns the cardinality of the intersection of the bounding boxes
-    over the cardinality of the union of the bounding boxes for both the x and y dimensions
-    :param bbox1:  bbox in pascal format  (x_min, y_min, x_max, y_max)
-    :param bbox2: bbox in pascal format  (x_min, y_min, x_max, y_max)
-    :return:
-    """
-    x_min1, y_min1, x_max1, y_max1 = bbox1
-    x_min2, y_min2, x_max2, y_max2 = bbox2
-    inter_x, inter_y = pascal_intersections(bbox1, bbox2)
-    union_x = (linear_combined_area(x_max1, x_max2, x_min1, x_min2) - inter_x)
-    union_y = (linear_combined_area(y_max1, y_max2, y_min1, y_min2) - inter_y)
-    return (inter_x / union_x), (inter_y / union_y)
-
-
-def point_in_bbox(point, bbox, *, dimension_wise=False, allow_border=True):
-    """
-    :param point: (x,y)
-    :param bbox: bbox in pascal format  (x_min, y_min, x_max, y_max)
-    :param dimension_wise: if true will return a pair of bools representing if the point is contained in the x dim
-     of the bounding box, and if the point is contained in the y dim of the bounding box
-    :param allow_border: if a point on the border is contained
-    :return: a bool representing if the point is contained in the bounding box
-    """
-    x, y = point
-    x_min, y_min, x_max, y_max = bbox
-    in_x = (x_min <= x <= x_max) if allow_border else (x_min < x < x_max)
-    in_y = (y_min <= y <= y_max) if allow_border else (y_min < y < y_max)
-    if dimension_wise:
-        return in_x, in_y
-    return in_x and in_y
+    return [bbox.crop(img) for bbox in bboxes]
 
 
 def linear_combined_area(max1, max2, min1, min2):
@@ -159,24 +172,3 @@ def linear_combined_area(max1, max2, min1, min2):
     :return:
     """
     return max1 + max2 - min1 - min2
-
-
-def relative_edge_distance(bbox1, bbox2):
-    """
-    Returns the x and y distances between the edges of two bboxes (pascal) as the
-    percentage of the mean width/height of the two bounding boxes. Only defined for non-intersecting boxes
-    :param bbox1:
-    :param bbox2:
-    :return:
-    """
-    x_min1, y_min1, x_max1, y_max1 = bbox1
-    x_min2, y_min2, x_max2, y_max2 = bbox2
-    avg_width = (x_max1 + x_max2 - x_min1 - x_min2)
-    avg_height = (y_max1 + y_max2 - y_min1 - y_min2)
-    x_dist = max(x_min2 - x_max1, x_min1 - x_max2) / avg_width
-    y_dist = max(y_min2 - y_max1, y_min1 - y_max2) / avg_height
-    return x_dist, y_dist
-
-
-def relative_center_distance():
-    pass

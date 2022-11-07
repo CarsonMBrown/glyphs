@@ -76,3 +76,4 @@ dataset/*
 HomerComp*
 perseus/*
 runs/*
+output_data/sliding_window*
