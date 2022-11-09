@@ -1,6 +1,4 @@
-\section{Context Survey}
-% a mostly complete review of related work (literature review). This is normally 5-10 pages long and will include citations to most important papers on this topic and explain how they relate to the task;
-\subsection{Binarization}
+\section{Binarization}
 As many of the most common, commercial, and competitive optical character recognition (OCR) models and methods require or work better with a binarized image \cite{Gupta, SmithTesseract, SmithLines, Bar-Yosef2005, Bar-Yosef2007} (also called a bi-level image), it is important to explore binarization as a method to improve the results of the pipeline.
 Various methods are utilized for binarization of historical manuscripts, including thresholding \cite{Bar-Yosef2005, Bar-Yosef2007}, pixel clustering \cite{Bera}, and convolutional neural networks (CNNs) \cite{Dhali2019, Dhali2020, Xiong}. In each of these methods, the goal is the same, to separate the original markings (ink) on the document from the rest of the image. This usually involves generating a second image where the ink is marked by a black pixel, with the rest of the image being white.
 
@@ -14,7 +12,7 @@ Dhali et al.\cite{Dhali2019} and Xiong et al.\cite{Xiong} both utilize CNNs for 
 
 By combining and contrasting these methods against each other, a high quality, bi-level representation can be generated that can be passed to the next step of an OCR pipeline to bound and classify each glyph with potentially more accuracy than would be possible with an unaltered image.
 
-\subsection{Glyph Grouping / Bounding Boxes}
+\section{Glyph Grouping / Bounding Boxes}
 Precise bounding boxes are key to the success of every classification method, as removing noise from the edges of the glyphs to increase the signal-to-noise ratio of the image being input into the classification algorithm. Similarly, to utilize a language model to help assist in classification, or to generate document level transcriptions, a method for converting a list of bounding boxes into pairs or larger collections of neighboring glyphs is required.
 
 A method proposed by Garz et al.\cite{Garz2012, Garz2011} utilizes points of interest to find the spaces between lines, which requires no binarization, and can be performed on the source image without first generating bounding boxes, which allows this method to generate potential bounding boxes by detecting clusters of points of interest (generated using Difference of Gaussian \cite{Lowe}). These points of interest are then used to generate bounding boxes using Density-Based Spatial Clustering of Applications with Noise (DBSCAN) \cite{Ester}, which in the work proposed by Garz et al.\cite{Garz2012, Garz2011} requires a manual estimation of neighborhood size to create clusters. However, it could be possible to automatically estimate this distance using a more basic bounding-box finding algorithm or the analytical approach suggested by \cite{Daszykowski}. Points of interest are also utilized to generate lines by splitting the image on the lines of lowest energy (farthest from the points of interest), weighting horizonal movement as lower energy than vertical movement.
@@ -28,7 +26,7 @@ Another potential bounding method that could be explored is utilizing binarizati
 
 Other potential sources for line finding are Tesseract\cite{SmithTesseract} and Ocular\cite{Berg-Kirkpatrick}. Tesseract is a popular OCR engine with the ability to perform line finding \cite{SmithLines} using blobs on images that can be skewed, meaning the image quality is not lost due to warping the images the images to allow for more sensitive techniques to be performed.
 
-\subsection{Classification}
+\section{Classification}
 Once the glyphs are bounded, they need to be classified. This can be done utilizing many methods, some of which could be combined to improve the results.
 These methods include utilizing transfer learning and image similarity \cite{Vadicamo, Yuan}, CNN based classification \cite{Yousefi, Haliassos, Swindall}, freeman chains \cite{Althobaiti}, probabilistic models \cite{Berg-Kirkpatrick}, and image deformation \cite{Nederhof, Keysers, Tabin, Gass}. While not all of the methods require binarized images to work, these methods may still be improved by precise binarization, as it would remove the need for the model to handle the noise added by the papyrus itself and any degradation of the papyrus.
 
@@ -41,7 +39,7 @@ Similar to the above methods, using Freeman chain encoding could allow for found
 
 Finally, several approaches to CNN based classifcation are suggested by Yousefi et al.\cite{Yousefi}, Haliassos et al.\cite{Haliassos}, and Swindall et al.\cite{Swindall}. Yousefi et al. suggest the use of LSTM Networks on non-binarized images, achieving accuracies of less than $1\%$ on greyscale images. However, Yousefi et al. worked with images with very low noise, and thus had significantly more well-formed letters than could be expected on papyrus. For results on datasets closer to what could be expected from ancient papyrus, Haliassos et al.\cite{Haliassos} suggest using Support Vector Machines (SVMs) to classify images of glyphs using Histogram of Ordered Gradients (HOG) features and CNNs to classify glyphs on ancient papyrus, achieving accuracies of $88.71\%$ and $95.77\%$ respectively, with Swindall et al.\cite{Swindall} achieving similar CNN-based results on papyrus with an accuracy of $92.73\%$
 
-\subsection{Croudsourced Transcriptions}
+\section{Croudsourced Transcriptions}
 A large portion of the research in ancient Greek manuscript OCR has been done utilizing crowdsourced citizen science, allowing papyrologists and non-papyrologists alike to annotate ancient Greek manuscripts utilizing various pipelines that allow users to detect and/or classify Greek letters.\cite{Williams2014, Williams2015, Tabin, Atanasiu} These methods, while not helpful in generating a fully automated pipeline, are valuable for generating data for both training and testing of fully automated pipelines.
 
 Like Dhali et al.\cite{Dhali2019}, Tabin\cite{Tabin} utilizes a manual facsimile generation process that allows a user to manually annotate pixels in images, which they use to perform OCR on directly, but that could also be utilized in generating more data to train on as Dhali et al.\cite{Dhali2019} proposed.

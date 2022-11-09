@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Masters/Doctoral Thesis 
+% Masters/Doctoral Thesis
 % Class File
 % Version 1.6 (27/8/17)
 %
@@ -55,7 +55,7 @@
 
 \LoadClass{\baseclass}
 
-%  Simple interface for the user  to customize the chapter titles 
+%  Simple interface for the user  to customize the chapter titles
 \ProvideDocumentCommand{\abovechapterskip}{}{\vspace*{20pt}}
 \ProvideDocumentCommand{\chapterbelowskip}{}{\vspace*{40pt}}
 \ProvideDocumentCommand{\chapterinbetweenskip}{}{\vspace*{20pt}}
@@ -131,7 +131,7 @@
 %	CLASS OPTIONS
 %----------------------------------------------------------------------------------------
 
-\ifbool{parskip}{\RequirePackage{parskip}} % If the parskip option is passed to the class, require the parskip package 
+\ifbool{parskip}{\RequirePackage{parskip}} % If the parskip option is passed to the class, require the parskip package
 
 
 \ifbool{listtoc}{% If the liststotoc option has been passed to the class, add the lists to the table of contents
@@ -224,7 +224,7 @@
 \NewDocumentCommand{\subject}{m}{\newcommand{\subjectname}{#1}}
 \NewDocumentCommand{\keywords}{m}{\newcommand{\keywordnames}{#1}}
 
-\newcommand{\checktoopen}{% New command to move content to the next page which prints to the next odd page if twosided mode is active  
+\newcommand{\checktoopen}{% New command to move content to the next page which prints to the next odd page if twosided mode is active
 	\if@openright\cleardoublepage\else\clearpage\fi
 	\ifdef{\phantomsection}{\phantomsection}{}% The \phantomsection command is necessary for hyperref to jump to the correct page
 }
@@ -295,8 +295,8 @@
 \pagestyle{thesis}
 \ifbool{headsepline}{\KOMAoption{headsepline}{true}}{}
 \PreventPackageFromLoading[\ClassError{\classname}{Package `fancyhdr' is
-incompatible\MessageBreak with this class}{The pagesyles are defined 
-	using package `scrlayer-scrpage', please consult the\MessageBreak 
+incompatible\MessageBreak with this class}{The pagesyles are defined
+	using package `scrlayer-scrpage', please consult the\MessageBreak
 KOMA-script documentation for details.}]{fancyhdr}
 
 
@@ -337,100 +337,137 @@ KOMA-script documentation for details.}]{fancyhdr}
 %	ABSTRACT PAGE DESIGN
 %----------------------------------------------------------------------------------------
 
-\DeclareDocumentCommand{\abstractauthorfont}{}{}
-\DeclareDocumentCommand{\abstracttitlefont}{}{}
-\newcommand{\byname}{by}
 \newcommand{\abstractname}{Abstract}
-\providecaptionname{german,ngerman,austrian,naustrian}{\byname}{von}
-\providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish}{\byname}{by}
+\providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish}{\abstractname}{Abstract} % Declaration of Authorship text for English countries
+\providecaptionname{german,ngerman,austrian,naustrian}{\abstractname}{Abstract} % Declaration of Authorship text for Germanic countriess
+
 \ifbool{consistentlayout}{
-	\DeclareDocumentEnvironment{abstract}{ O{} }{%
-		\addchap*{\abstractname}%
-		{\chapteralign\normalsize\abstractauthorfont \authorname \par}% Author name
-		\vspace{\baselineskip}
-		{\chapteralign\parbox{.7\linewidth}{\chapteralign\normalsize\itshape\abstracttitlefont\@title}\par}% Thesis title
-		\bigskip\noindent\ignorespaces
-	}%
-	{}%end alt-abstract
-}{%
-	\DeclareDocumentEnvironment{abstract}{ O{\null\vfill} }{
+	\DeclareDocumentEnvironment{abstract}{}{
+		\addchap*{\abstractname}
+		}{}%
+}{
+	\DeclareDocumentEnvironment{abstract}{}{
 		\checktoopen
 		\tttypeout{\abstractname}
-		#1%added to be able to have abstract more than one page long
 		\thispagestyle{plain}
-		\begin{center}
-			{\normalsize \MakeUppercase{\univname} \par}% University name in capitals
-			\bigskip
-			{\huge\textit{\abstractname} \par}
-			\bigskip
-			{\normalsize \facname \par}% Faculty name
-			{\normalsize \deptname \par}% Department name
-			\bigskip
-			{\normalsize \degreename\par}% Degree name
-			\bigskip
-			{\normalsize\bfseries \@title \par}% Thesis title
-			\medskip
-			{\normalsize \byname{} \authorname \par}% Author name
-			\bigskip
-		\end{center}
-	}
-	{
-		\vfill\null
-	}
+		\null\vfil
+		{\noindent\huge\bfseries\abstractname\par\vspace{10pt}}
+	}{}
 }
 
-\DeclareDocumentEnvironment{extraAbstract}{ O{\null\vfill} }{
-	\checktoopen
-	\tttypeout{\abstractname}
-	#1%added to be able to have abstract more than one page long
-	\thispagestyle{empty}
-	\begin{center}
-		{\normalsize \MakeUppercase{\univname} \par}% University name in capitals
-		\bigskip
-		{\huge\textit{\abstractname} \par}
-		\bigskip
-		{\normalsize \facname \par}% Faculty name
-		{\normalsize \deptname \par}% Department name
-		\bigskip
-		{\normalsize \degreename\par}% Degree name
-		\bigskip
-		{\normalsize\bfseries \@title \par}% Thesis title
-		\medskip
-		{\normalsize \byname{} \authorname \par}% Author name
-		\bigskip
-	\end{center}
-}
-{
-	\vfill\null
-}
+
+% \DeclareDocumentCommand{\abstractauthorfont}{}{}
+% \DeclareDocumentCommand{\abstracttitlefont}{}{}
+% \newcommand{\byname}{by}
+% \newcommand{\abstractname}{Abstract}
+% \providecaptionname{german,ngerman,austrian,naustrian}{\byname}{von}
+% \providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish}{\byname}{by}
+% \ifbool{consistentlayout}{
+% 	\DeclareDocumentEnvironment{abstract}{ O{} }{%
+% 		\addchap*{\abstractname}%
+% 		{\chapteralign\normalsize\abstractauthorfont \authorname \par}% Author name
+% 		\vspace{\baselineskip}
+% 		{\chapteralign\parbox{.7\linewidth}{\chapteralign\normalsize\itshape\abstracttitlefont\@title}\par}% Thesis title
+% 		\bigskip\noindent\ignorespaces
+% 	}%
+% 	{}%end alt-abstract
+% }{%
+% 	\DeclareDocumentEnvironment{abstract}{ O{\null\vfill} }{
+% 		\checktoopen
+% 		\tttypeout{\abstractname}
+% 		#1%added to be able to have abstract more than one page long
+% 		\thispagestyle{plain}
+% 		\begin{center}
+% 			{\normalsize \MakeUppercase{\univname} \par}% University name in capitals
+% 			\bigskip
+% 			{\huge\textit{\abstractname} \par}
+% 			\bigskip
+% 			{\normalsize \facname \par}% Faculty name
+% 			{\normalsize \deptname \par}% Department name
+% 			\bigskip
+% 			{\normalsize \degreename\par}% Degree name
+% 			\bigskip
+% 			{\normalsize\bfseries \@title \par}% Thesis title
+% 			\medskip
+% 			{\normalsize \byname{} \authorname \par}% Author name
+% 			\bigskip
+% 		\end{center}
+% 	}
+% 	{
+% 		\vfill\null
+% 	}
+% }
+
+% \DeclareDocumentEnvironment{extraAbstract}{ O{\null\vfill} }{
+% 	\checktoopen
+% 	\tttypeout{\abstractname}
+% 	#1%added to be able to have abstract more than one page long
+% 	\thispagestyle{empty}
+% 	\begin{center}
+% 		{\normalsize \MakeUppercase{\univname} \par}% University name in capitals
+% 		\bigskip
+% 		{\huge\textit{\abstractname} \par}
+% 		\bigskip
+% 		{\normalsize \facname \par}% Faculty name
+% 		{\normalsize \deptname \par}% Department name
+% 		\bigskip
+% 		{\normalsize \degreename\par}% Degree name
+% 		\bigskip
+% 		{\normalsize\bfseries \@title \par}% Thesis title
+% 		\medskip
+% 		{\normalsize \byname{} \authorname \par}% Author name
+% 		\bigskip
+% 	\end{center}
+% }
+% {
+% 	\vfill\null
+% }
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS PAGE DESIGN
 %----------------------------------------------------------------------------------------
 
-\usepackage{xcolor}
-\colorlet{mdtRed}{red!50!black}
-\newcommand{\acknowledgementname}{Acknowledgements}
-\providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish} {\acknowledgementname}{Acknowledgements} % Acknowledgement text for English countries
-\providecaptionname{german,ngerman,austrian,naustrian}{\acknowledgementname}{Danksagung} % Acknowledgement text for Germanic countries
+\newcommand{\acknowledgementname}{/textit{Acknowledgements}}
+\providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish}{\acknowledgementname}{Acknowledgements} % Declaration of Authorship text for English countries
+\providecaptionname{german,ngerman,austrian,naustrian}{\acknowledgementname}{Abstract} % Declaration of Authorship text for Germanic countriess
 
 \ifbool{consistentlayout}{
-	\DeclareDocumentEnvironment{acknowledgements}{}{%
-		\tttypeout{\acknowledgementname}
+	\DeclareDocumentEnvironment{acknowledgements}{}{
 		\addchap*{\acknowledgementname}
-	}
-}
-{
-	\DeclareDocumentEnvironment{acknowledgements}{}{%
+		}{}%
+}{
+	\DeclareDocumentEnvironment{acknowledgements}{}{
 		\checktoopen
 		\tttypeout{\acknowledgementname}
 		\thispagestyle{plain}
-		\begin{center}{\huge\textit{\acknowledgementname}\par}\end{center}
-	}
-	{
-		\vfil\vfil\null
-	}
+		\null\vfil
+		{\noindent\huge\bfseries\acknowledgementname\par\vspace{10pt}}
+	}{}
 }
+
+% \usepackage{xcolor}
+% \colorlet{mdtRed}{red!50!black}
+% \newcommand{\acknowledgementname}{Acknowledgements}
+% \providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish} {\acknowledgementname}{Acknowledgements} % Acknowledgement text for English countries
+% \providecaptionname{german,ngerman,austrian,naustrian}{\acknowledgementname}{Danksagung} % Acknowledgement text for Germanic countries
+%
+% \ifbool{consistentlayout}{
+% 	\DeclareDocumentEnvironment{acknowledgements}{}{%
+% 		\tttypeout{\acknowledgementname}
+% 		\addchap*{\acknowledgementname}
+% 	}
+% }
+% {
+% 	\DeclareDocumentEnvironment{acknowledgements}{}{%
+% 		\checktoopen
+% 		\tttypeout{\acknowledgementname}
+% 		\thispagestyle{plain}
+% 		\begin{center}{\huge\textit{\acknowledgementname}\par}\end{center}
+% 	}
+% 	{
+% 		\vfil\vfil\null
+% 	}
+% }
 
 %----------------------------------------------------------------------------------------
 %	DECLARATION PAGE DESIGN
@@ -523,9 +560,9 @@ bookmarksopen=true,
 bookmarksopenlevel=0,
 hypertexnames=false,
 colorlinks=true,% Set to false to disable coloring links
-citecolor=magenta,% The color of citations
-linkcolor=red,% The color of references to document elements (sections, figures, etc)
-urlcolor=mdtRed,% The color of hyperlinks (URLs)
+citecolor=violet,% The color of citations
+linkcolor=violet,% The color of references to document elements (sections, figures, etc)
+urlcolor=violet,% The color of hyperlinks (URLs)
 pdfstartview={FitV},
 unicode,
 breaklinks=true,
