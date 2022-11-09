@@ -3,7 +3,7 @@
 %-------------------------------------------------------------------------------
 
 \documentclass[
-12pt, % The default document font size, options: 10pt, 11pt, 12pt
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
 oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
 english, % ngerman for German
 singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
@@ -11,7 +11,7 @@ singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 toctotoc, % Uncomment to add the main table of contents to the table of contents
-%parskip, % Uncomment to add space between paragraphs
+parskip, % Uncomment to add space between paragraphs
 %nohyperref, % Uncomment to not load the hyperref package
 headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
@@ -98,7 +98,7 @@ headsepline, % Uncomment to get a line under the header
 \begin{flushright} \large
 \emph{Supervisor:}\\\supname
 \end{flushright}
-\end{minipage}\\[2cm]
+\end{minipage}\\[1.5cm]
 
 \includegraphics[width=0.5\textwidth]{st-andrews_vertical_black.png}\\[1.5cm]
 
@@ -125,6 +125,15 @@ headsepline, % Uncomment to get a line under the header
 \end{abstract}
 
 %-------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%-------------------------------------------------------------------------------
+
+\addchaptertocentry{Acknowledgements} % Add the acknowledgements to the table of contents
+\begin{acknowledgements}
+	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on the project as a whole. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that lead to this project. Finally I would like to thank my family and friends, who have supported me throughout this process, your support is invaluable.
+\end{acknowledgements}
+
+%-------------------------------------------------------------------------------
 %	DECLARATION PAGE
 %-------------------------------------------------------------------------------
 
@@ -147,15 +156,6 @@ I declare that the material submitted for assessment is my own work except where
 % \noindent\enquote{\itshape Thanks to my solid academic training, today I can write hundreds of words on virtually any topic without possessing a shred of information, which is how I got a good job in journalism.}\bigbreak
 %
 % \hfill Dave Barry
-
-%-------------------------------------------------------------------------------
-%	ACKNOWLEDGEMENTS
-%-------------------------------------------------------------------------------
-
-\addchaptertocentry{Acknowledgements} % Add the acknowledgements to the table of contents
-\begin{acknowledgements}
-	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on the project as a whole. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that lead to this project. Finally I would like to thank my family and friends, who have supported me throughout this process, your support is invaluable.
-\end{acknowledgements}
 
 %-------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -198,11 +198,17 @@ I declare that the material submitted for assessment is my own work except where
 
 \pagestyle{thesis}
 
+\chapter{Introduction}
+\chapterinput{introduction.tex}
+
 \chapter{Context Survey}
 \chapterinput{context_survey.tex}
 
 \chapter{Ethical Considerations}
 \chapterinput{ethics.tex}
+
+\chapter{Software Engineering Methodology}
+\chapterinput{software_engineering.tex}
 
 \chapter{Software Engineering Methodology}
 \chapterinput{software_engineering.tex}
@@ -213,7 +219,7 @@ I declare that the material submitted for assessment is my own work except where
 
 \appendix
 
-% \include{content/AppendixA}
+% \appendixinput{appendixA.tex}
 
 %-------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
