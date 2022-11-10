@@ -1,1 +1,15 @@
-\todo{}
+\section{Design Constraints}
+
+\subsection{Time Efficiency}
+
+In addition to the project goals, there were also some more technical design restrictions that were either self-imposed or implied. Given that this project was based on a contest, it was decided that the restrictions explicitly given, or implied, by the contest could be utilized as design guidelines. As the contest gave a week between the release of the test data and the deadline for test data classification and bounding, the same restriction on computation time was given for this project. This meant that any result of the pipeline would need to utilize up to a week of processing time for an input of $31$ images, allowing for $5.4$ hours per image, a time restriction so generous that it could be ignored as a constraint.
+
+\subsection{Input}
+
+The contest also supplied images in various formats, such as \code{.png} and \code{.jpg}/\code{.jpeg}. As such, the pipeline is able to take any of the common image formats, such as PNG, JPEG, TIF, and BMP, but not GIF due to restrictions imposed by the cv2 and PIL. As approximately $2\%$ of the training data given by the contest contained malformed images, requiring that the pipeline gracefully manage such files allowed for more training data.
+
+In addition to accepting images as input for processing, the program accepts bounding box and glyph category information for the purposes of training and evaluation. This information is accepted, as in the contest, in the COCO image format which formats information in a JSON structure \seefig{coco}. Each COCO file contains lists of images, classes, and annotations, with each object being defined by a single annotation that references an image, a class and provides a bounding box, along with any metadata that the dataset may provide. In the case of the competition, additional information about the classes of the glyphs were provided, grouping each class of glyphs into sub-types, and providing a rating of how well formed each glyph is.
+
+\subsection{Output}
+
+To evaluate submissions, the contest required COCO formatted output, so that is one of the output types the pipeline supports, in addition to a pascal format, and a csv format.

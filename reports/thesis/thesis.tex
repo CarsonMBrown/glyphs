@@ -24,6 +24,8 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{mathpazo} % Use the Palatino font by default
 \usepackage{todonotes}
 
+\usepackage{listings}
+
 \usepackage[style=numeric,sorting=nyt]{biblatex}
 
 \graphicspath{{../graphics/}}
@@ -31,9 +33,20 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
-\def\chapterinput#1{\input{../content/chapters/#1}}
-\def\appendixinput#1{\input{../content/appendix/#1}}
-\def\bfcolor#1{\textbf{\color{violet}{#1}}}
+\newcommand{\chapterinput}[1]{\input{../content/chapters/#1}}
+\newcommand{\appendixinput}[1]{\input{../content/appendix/#1}}
+\newcommand{\bfcolor}[1]{\textbf{\color{violet}{#1}}}
+
+\newcommand{\code}{\texttt}
+\renewcommand{\O}[1]{$\mathcal{O}(#1)$}
+\renewcommand{\o}[1]{$o(#1)$}
+\newcommand{\T}[1]{$\Theta(#1)$}
+\newcommand{\W}[1]{$\Omega(#1)$}
+\newcommand{\w}[1]{$\omega(#1)$}
+\newcommand{\command}[1]{\\\\\code{#1}\\\\\noindent}
+
+\newcommand{\seefig}[1]{(Figure \ref{fig:#1})}
+\newcommand{\codefigsize}{footnotesize}
 
 %-------------------------------------------------------------------------------
 %	MARGIN SETTINGS
@@ -231,12 +244,14 @@ I declare that the material submitted for assessment is my own work except where
 
 \appendix
 
-% \appendixinput{appendixA.tex}
+\chapter{Code Fragments}
+\appendixinput{code.tex}
 
 %-------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %-------------------------------------------------------------------------------
 
+\emergencystretch=1em
 \printbibliography[heading=bibintoc]
 
 %-------------------------------------------------------------------------------

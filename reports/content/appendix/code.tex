@@ -1,0 +1,57 @@
+\begin{figure}
+\caption{Minimal Example of the COCO Annotation Format}
+\centering
+\par\noindent\rule{\textwidth}{0.5pt}
+\begin{\codefigsize}
+\lstset{literate={∆}{{$\Delta$}}1}
+\begin{lstlisting}
+{
+  "annotations": [
+    {
+      "area": 600,
+      "bbox": [
+        100,
+        50,
+        20,
+        30
+      ],
+      "category_id": 186,
+      "id": 1,
+      "image_id": 1,
+      "iscrowd": 1
+      "tags": {...}
+    },
+  ],
+  "categories": [
+    {
+      "id": 186,
+      "name": "∆",
+      "supercategory": "Greek"
+    }
+  ],
+  "images": [
+    {
+      "bln_id": 1,
+      "date_captured": null,
+      "file_name": ...,
+      "img_url": ...,
+      "width": width (integer),
+      "height": height (integer),
+      "id": 1,
+      "license": 2
+    },
+  ],
+  "licenses": [
+    {
+      "id": 2,
+      "name": "CC-BY-NC 3.0.",
+      "url": "https://creativecommons.org/licenses/by/3.0/"
+    },
+  ]
+}
+\end{lstlisting}
+\end{\codefigsize}
+\par\noindent\rule{\textwidth}{0.5pt}
+The minimum required information for a single image with a single instance of the $\Delta$ glyph in the COCO file format. Elipsis (\ldots) represent information removed for conciseness.
+\label{fig:coco}
+\end{figure}
