@@ -6,6 +6,7 @@ glyphs = [
     '.', 'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ',
     'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π',
     'Ρ', 'Ϲ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω']
+
 required_map = {
     "Σ": "Ϲ"
 }
@@ -25,7 +26,7 @@ glyph_map = {
     "Ϡ": "Ϡ",  # Sampi
 }
 
-names = ['period', 'alpha', 'beta', 'gamma',
+names = ['alpha', 'beta', 'gamma',
          'delta', 'epsilon', 'zeta',
          'eta', 'theta', 'iota',
          'kappa', 'lambda', 'mu',
@@ -33,6 +34,11 @@ names = ['period', 'alpha', 'beta', 'gamma',
          'pi', 'rho', 'sigma',
          'tau', 'upsilon', 'phi',
          'chi', 'psi', 'omega', ]
+
+glyph_classes = [
+    'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ',
+    'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π',
+    'Ρ', 'Ϲ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω']
 
 
 def name_to_glyph(name):
@@ -46,6 +52,13 @@ def glyph_to_name(glyph, *, look_a_like_glyphs=False):
         if glyph in glyph_map:
             glyph = glyph_map[glyph]
     for i, g in enumerate(glyphs):
+        if glyph == g:
+            return names[i]
+    print(glyph)
+
+
+def glyph_class_to_name(glyph):
+    for i, g in enumerate(glyph_classes):
         if glyph == g:
             return names[i]
     print(glyph)
@@ -70,10 +83,19 @@ def glyph_to_index(glyph, *, look_a_like_glyphs=False):
     if look_a_like_glyphs:
         if glyph in glyph_map:
             glyph = glyph_map[glyph]
-    for i, g in enumerate(glyphs):
+    for i, g in enumerate(glyph_classes):
         if glyph == g:
             return i
     print(glyph)
+
+
+def index_to_glyph(index, *, look_a_like_glyphs=False):
+    glyph = glyph_classes[index]
+    if look_a_like_glyphs:
+        if glyph in glyph_map:
+            return glyph_map[glyph]
+    else:
+        return glyph
 
 
 def get_classes_as_glyphs():

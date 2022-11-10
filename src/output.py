@@ -19,5 +19,5 @@ def write_coco(file_path, image_bboxes, category_map):
                 annotation = {
                     "area": bbox.area,
                     "bbox": list(bbox.coco),
-                    "category_id": bbox.get_class() if category_map is None else category_map[bbox.get_class()],
+                    "category_id": bbox.get_class_index() if category_map is None else category_map[bbox.get_class_index()],
                 }

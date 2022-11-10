@@ -1,4 +1,4 @@
-from src.binarization.dp_linknet import test
+from src.binarization.dp_linknet import dp_linknet
 from src.binarization.filters import gabor_filter
 from src.binarization.thresholding import input_sensitive_threshold
 from src.util.dir_util import clean_dir
@@ -23,7 +23,7 @@ def gabor_inverse(img_in_dir, img_temp_dir, img_out_dir):
     :return: None
     """
     gabor_filter.process(img_in_dir, img_temp_dir)
-    test.run(img_temp_dir, img_out_dir)
+    test.binarize_imgs(img_temp_dir, img_out_dir)
     clean_dir(img_temp_dir)
 
 
@@ -52,4 +52,4 @@ def cnn(img_in_dir, img_out_dir, threshold=5):
     :param img_out_dir: path to directory to output images
     :return: None
     """
-    test.run(img_in_dir, img_out_dir, threshold=threshold)
+    dp_linknet.binarize_imgs(img_in_dir, img_out_dir, threshold=threshold)

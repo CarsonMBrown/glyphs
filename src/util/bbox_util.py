@@ -2,6 +2,8 @@ import math
 
 import numpy as np
 
+from src.util.glyph_util import index_to_glyph
+
 
 class BBox:
     def __init__(self, x_min, y_min, x_max, y_max):
@@ -41,10 +43,13 @@ class BBox:
     def get_class_probabilities(self):
         return self.probabilities
 
-    def get_class(self):
+    def get_class_index(self):
         if self.probabilities is None:
             return None
         return np.argmax(self.probabilities)
+
+    def get_class(self):
+        return index_to_glyph(self.get_class_index())
 
     def intersections(self, other: "BBox"):
         """Return the intersection of the x and y dimensions between two bboxes"""
@@ -131,7 +136,7 @@ class BBox:
         return x_dist, y_dist
 
     def crop(self, img):
-        return img[self.y_min:self.y_max + 1, self.x_min:self.y_max + 1]
+        return img[self.y_min:self.y_max + 1, self.x_min:self.x_max + 1]
 
     def __lt__(self, other):
         return self.x_min < other.x_min or (self.x_min == other.x_min and self.y_min > other.y_min)
@@ -149,7 +154,9 @@ class BBox:
         return self.x_min == other.x_min and self.center == other.center and self.area == self.area
 
     def __repr__(self):
-        return str(self.pascal())
+        if self.probabilities is None:
+            return str(self.pascal())
+        return str(self.pascal(), self.get_class_probabilities())
 
 
 def bboxes_to_crops(bboxes, img):

@@ -5,19 +5,28 @@ import torch
 
 from src.evaluation.bbox_eval import get_unique_bboxes
 from src.util.bbox_util import BBox
-# Load pre-trained model using given coco data and using yolov5x
 from src.util.img_util import plot_bboxes
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt', trust_repo=True)
+# don't load model until needed
+model = None
 
 
-def find_glyphs(img):
+def find_glyphs(img, *, model_local=True):
     """
     Gets the bounding boxes of the glyphs in the passed-in image (RGB channels)
 
     :param img: image to get glyph bounding boxes (image path, cv2 image, or pil image)
+    :param model_local: if model is not already loaded, load model from local path instead of github
     :return:
     """
+    global model
+    if model is None:
+        if model_local:
+            model = torch.hub.load(r'C:\yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt',
+                                   source='local')
+        else:
+            model = torch.hub.load('ultralytics/yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt', trust_repo=True)
+
     return model(img)
 
 

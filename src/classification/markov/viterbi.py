@@ -52,4 +52,4 @@ def viterbi(observations, states, start_p, trans_p, emit_p):
 
     # print([glyph_util.glyph_to_index(o) - 1 for o in opt])
     # print("The steps of states are " + " ".join(opt) + " with highest probability of %s" % min_prob)
-    return [glyph_util.glyph_to_index(o) - 1 for o in opt]
+    return [glyph_util.glyph_to_index(o) for o in opt]

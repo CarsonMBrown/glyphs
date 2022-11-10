@@ -39,14 +39,14 @@ class VectorLoader(Dataset):
 
     def __getitem__(self, index):
         label = self.language_text[index]
-        if glyph_util.glyph_to_name(label) is None:
+        if glyph_util.glyph_class_to_name(label) is None:
             print(label)
-        vector = random.choice(self.img_vectors[glyph_util.glyph_to_name(label)])
+        vector = random.choice(self.img_vectors[glyph_util.glyph_class_to_name(label)])
         if self.transform:
             vector = self.transform(vector)
         if self.target_transform:
             label = self.target_transform(label)
-        return vector, glyph_util.glyph_to_index(label) - 1
+        return vector, glyph_util.glyph_to_index(label)
 
 
 class ImageLoader(Dataset):
@@ -67,13 +67,13 @@ class ImageLoader(Dataset):
 
     def __getitem__(self, index):
         label = self.language_text[index]
-        if glyph_util.glyph_to_name(label) is None:
+        if glyph_util.glyph_class_to_name(label) is None:
             print(label)
-        path = random.choice(self.imgs[glyph_util.glyph_to_name(label)])
+        path = random.choice(self.imgs[glyph_util.glyph_class_to_name(label)])
         input_tensor = Image.open(path)
         if self.transform:
             input_tensor = self.transform(input_tensor)
             input_tensor.unsqueeze(0)
         if self.target_transform:
             label = self.target_transform(label)
-        return input_tensor, glyph_util.glyph_to_index(label) - 1
+        return input_tensor, glyph_util.glyph_to_index(label)

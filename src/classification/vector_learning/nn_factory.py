@@ -3,6 +3,7 @@ import random
 
 import numpy as np
 import torch
+from PIL import Image
 from sklearn.metrics import precision_recall_fscore_support
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
@@ -18,17 +19,17 @@ def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size
     elif input_size is not None:
         model = model_class(input_size, 24).cuda()
     else:
-        return None
+        return None, None
 
     model_path, save_file = get_model_path(load_epoch, model, name)
 
-    print("path exists", os.path.exists(save_file))
-
     if os.path.exists(save_file):
+        print("Model Found")
         model.load_state_dict(torch.load(save_file))
         if not resume:
             model.eval()
         return model, model_path
+    print("Model Not Found")
     return None, model_path
 
 
@@ -103,14 +104,19 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
 
 
 def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
-                batch_size=8, num_workers=1, resume=False, start_epoch=0, shuffle=False, name=None,
+                batch_size=8, num_workers=0, resume=False, start_epoch=0, shuffle=False, name=None,
                 loader=VectorLoader, transforms=None):
     # Load validation set for model init, not loading train set yet
     if transforms is None:
         transforms = [None]
-    validation_set, validation_loader = generate_dataloader(lang_file, annotations_file, validation_data_path,
+
+    if isinstance(lang_file, tuple):
+        lang_train, lang_eval = lang_file[0], lang_file[1]
+    else:
+        lang_train, lang_eval = lang_file, lang_file
+    validation_set, validation_loader = generate_dataloader(lang_eval, annotations_file, validation_data_path,
                                                             batch_size=batch_size, num_workers=num_workers,
-                                                            shuffle=shuffle, loader=loader, transform=transforms[0])
+                                                            shuffle=shuffle, loader=loader, transform=transforms[-1])
 
     print("Input Vector Size:", validation_set.get_vector_size())
 
@@ -128,15 +134,15 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         model_path, _ = get_model_path(start_epoch, model, name)
 
     # Load training set after model init and potential load as it may be much larger than validation set
-    training_set, training_loader = generate_dataloader(lang_file, annotations_file, training_data_path,
+    training_set, training_loader = generate_dataloader(lang_train, annotations_file, training_data_path,
                                                         batch_size=batch_size, num_workers=num_workers, shuffle=shuffle,
-                                                        loader=loader, transform=transforms[-1])
+                                                        loader=loader, transform=transforms[0])
 
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0004, momentum=0.8)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.85)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0004, momentum=0.9)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -146,6 +152,8 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     if resume:
         start_epoch += 1
+        for i in range(0, start_epoch + 1):
+            scheduler.step()
 
     for epoch in range(start_epoch, epochs):
         print('EPOCH {}:'.format(epoch))
@@ -213,8 +221,8 @@ def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn, tb_
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 1000 == 999:
-            last_loss = running_loss / 1000  # loss per batch
+        if i % 250 == 249:
+            last_loss = running_loss / 250  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(training_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)
@@ -224,3 +232,33 @@ def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn, tb_
         del inputs, labels, data
 
     return last_loss
+
+
+def classify(model, lines, img, transform):
+    """
+    Using the given model, returns the class probabilities for each line given,
+    where each line is a list of BBoxes in order of their occurrence
+    :param model:
+    :param lines:
+    :param img: image to crop with bounding boxes
+    :param transform: transform to apply to each cropped bounding box
+    :return: None
+    """
+    if torch.cuda.is_available():
+        model = model.to('cuda')
+
+    for line in lines:
+        with torch.no_grad():
+            # convert bounding boxes to tensors
+            input_imgs = [transform(Image.fromarray(bbox.crop(img))) for bbox in line]
+            for i in input_imgs:
+                i.unsqueeze(0)
+            tensor_inputs = torch.stack(input_imgs)
+
+            #  move the input and model to GPU for speed if available
+            if torch.cuda.is_available():
+                tensor_inputs = tensor_inputs.to('cuda')
+            tensor_outputs = model(tensor_inputs)
+            probs_list = tensor_outputs.tolist()
+            for i, bbox in enumerate(line):
+                bbox.add_class_probabilities(probs_list[i])

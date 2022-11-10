@@ -132,8 +132,9 @@ class TTAFrame():
         self.net.load_state_dict(torch.load(path))
 
 
-def run(img_in_dir, img_out_dir, *, threshold=7.5, tile_size=256, data_name="DIBCO", network_name="DPLinkNet34",
-        weights_dir="weights/dp-linknet/"):
+def binarize_imgs(img_in_dir, img_out_dir, *, threshold=7.5, tile_size=256, data_name="DIBCO",
+                  network_name="DPLinkNet34",
+                  weights_dir="weights/dp-linknet/"):
     """
 
     :param img_in_dir: path to directory containing input images
@@ -168,22 +169,24 @@ def run(img_in_dir, img_out_dir, *, threshold=7.5, tile_size=256, data_name="DIB
         img, img_output = load_image(img_in_dir, img_out_dir, img_path, skip_existing=True)
         if img is None:
             continue
-        # CONVERT TO PATCHES
-        locations, patches = get_patches(img, tile_size, tile_size)
-        # GENERATE MASK FOR EACH IMAGE
-        masks = []
-        for idy in range(len(patches)):
-            msk = solver.test_one_img_from_path(patches[idy])
-            masks.append(msk)
-        # RECOMBINE IMAGES AND MASKS
-        prediction = stitch_together(locations, masks, tuple(img.shape[0:2]), tile_size, tile_size)
-
-        # BINARIZE if threshold exists
-        if threshold is not None:
-            prediction[prediction >= threshold] = 255
-            prediction[prediction < threshold] = 0
-        else:
-            prediction = sklearn.preprocessing.minmax_scale(prediction, (0, 255))
-        # SAVE AS IMAGE
+        prediction = binarize_image(img, solver, threshold, tile_size)
         save_image(img_output, prediction)
-    # print("Finished!")
+
+
+def binarize_image(img, solver, threshold, tile_size):
+    # CONVERT TO PATCHES
+    locations, patches = get_patches(img, tile_size, tile_size)
+    # GENERATE MASK FOR EACH IMAGE
+    masks = []
+    for idy in range(len(patches)):
+        msk = solver.test_one_img_from_path(patches[idy])
+        masks.append(msk)
+    # RECOMBINE IMAGES AND MASKS
+    prediction = stitch_together(locations, masks, tuple(img.shape[0:2]), tile_size, tile_size)
+    # BINARIZE if threshold exists
+    if threshold is not None:
+        prediction[prediction >= threshold] = 255
+        prediction[prediction < threshold] = 0
+    else:
+        prediction = sklearn.preprocessing.minmax_scale(prediction, (0, 255))
+    return prediction

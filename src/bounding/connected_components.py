@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+from src.util.bbox_util import BBox
 from src.util.dir_util import get_input_img_paths, set_output_dir
 from src.util.img_util import load_image, save_image
 
@@ -8,9 +9,17 @@ BOUNDING_COLOR = [0, 0, 255]
 CENTROID_COLOR = [0, 255, 0]
 
 
-def bound(img_in_dir, img_out_dir):
+def get_connected_component_bounding_boxes(img):
+    # Invert img so black is non-ink, white is ink
+    inverted_img = cv2.invert(img)
+    # Apply the Component analysis function
+    _, _, values, _ = cv2.connectedComponentsWithStats(inverted_img, 8, cv2.CV_32S)
+    # convert bounding boxes to BBoxes and return
+    return [BBox.from_coco(x, y, w, h) for x, y, w, h, _ in values]
+
+
+def bound_and_render(img_in_dir, img_out_dir):
     """
-    Takes in a binararized image and returns
 
     Author: https://www.geeksforgeeks.org/python-opencv-connected-component-labeling-and-analysis/
     :param img_in_dir: glyph_path to directory containing input images

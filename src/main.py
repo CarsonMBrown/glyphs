@@ -1,11 +1,8 @@
 import os.path
 
-import cv2
-
-from src.bounding.yolo import yolo
-from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
-from src.line_recognition import bbox_connection
-from src.util.img_util import plot_bboxes, plot_lines
+from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
+from src.classification.vector_learning import nn_factory
+from src.util.torch_dataloader import ImageLoader
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -52,12 +49,31 @@ RAW_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "raw")
 BINARIZED_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "binarized")
 ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificial")
 
+lang_file = os.path.join(DATASET_DIR, "perseus_25000.txt"), os.path.join(DATASET_DIR, "perseus_5000.txt")
+meta_data = os.path.join(GLYPH_DIR, "meta.csv")
+
+
 # TRAIN_RESIZED_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "resized", "raw")
 # TRAIN_RESIZED_BINARIZED_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "resized", "binarized")
 # TRAIN_OCULAR_TRAIN_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "ocular_training")
 # TRAIN_OUTPUT_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "output")
 # RAW_OCULAR_GLYPHS_DIR = os.path.join(GLYPH_DIR, "ocular", "raw")
 # BINARIZED_OCULAR_GLYPHS_DIR = os.path.join(GLYPH_DIR, "ocular", "binarized")
+
+
+def train_model():
+    # TODO: Friday Night, try 101 lstm with correct transforms
+    # nn_factory.train_model(lang_file, meta_data,
+    #                        TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+    #                        ResNext101LSTM,
+    #                        epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=55, loader=ImageLoader,
+    #                        transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
+    # TODO: Thursday Night, continue after removing softmax
+    nn_factory.train_model(lang_file, meta_data,
+                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                           ResNextLongLSTM,
+                           epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=14, loader=ImageLoader,
+                           transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
 
 
 if __name__ == '__main__':
@@ -80,39 +96,46 @@ if __name__ == '__main__':
     # all_vectors, all_classes = alex_init(BINARIZED_GLYPHS_DIR)
     # alex_knn(templates_vector, template_class, all_vectors, all_classes)
 
-    img = cv2.imread(
-        r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
-    # img = cv2.imread(
-    #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\PSI_XIV_1377r.jpg")
-    bboxes = yolo.sliding_glyph_window(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-
-    valid_boxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
-
-    lines, (over_size_bboxes, duplicate_bboxes) = bbox_connection.link_bboxes(bboxes)
-    overlay = img.copy()
-
-    plot_bboxes(img, valid_boxes, color=(0, 0, 0), wait=None)
-
-    plot_bboxes(overlay, over_size_bboxes, color=(0, 0, 255), wait=None)
-    plot_bboxes(overlay, duplicate_bboxes, color=(0, 165, 255), wait=None)
-
-    alpha = .5
-    img = cv2.addWeighted(overlay, alpha, img, 1 - alpha, 0)
-
-    line_centers = []
-    for line in lines:
-        line_centers.append([bbox.center for bbox in line])
-
-    plot_lines(img, line_centers)
-
-    # lang_file = os.path.join(DATASET_DIR, "perseus_micro.txt")
-    # meta_data = os.path.join(GLYPH_DIR, "meta.csv")
+    # print("Loading Model...")
+    # model, _ = nn_factory.load_model(ResNetLSTM, input_size=0, load_epoch=105, resume=False)
     #
-    # nn_factory.train_model(lang_file, meta_data,
-    #                        TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-    #                        ResNetLSTM,
-    #                        epochs=100, batch_size=8, resume=False, start_epoch=0, loader=ImageLoader,
-    #                        transforms=[ResNetLSTM.transform_train, ResNetLSTM.transform_classify])
+    # brg_img = cv2.imread(
+    #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
+    # # brg_img = cv2.imread(
+    # #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\PSI_XIV_1377r.jpg")
+    # rgb_img = cv2.cvtColor(brg_img, cv2.COLOR_BGR2RGB)
+    #
+    # bboxes = yolo.sliding_glyph_window(rgb_img)
+    #
+    # valid_boxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
+    #
+    # lines, (over_size_bboxes, duplicate_bboxes) = bbox_connection.link_bboxes(bboxes)
+    #
+    # nn_factory.classify(model, lines, rgb_img, ResNetLSTM.transform_classify)
+    #
+    # for line in lines:
+    #     for bbox in line:
+    #         print(bbox.get_class())
+    #         cv2.imshow("", bbox.crop(brg_img))
+    #         cv2.waitKey(0)
+
+    # overlay = img.copy()
+    #
+    # plot_bboxes(img, valid_boxes, color=(0, 0, 0), wait=None)
+    #
+    # plot_bboxes(overlay, over_size_bboxes, color=(0, 0, 255), wait=None)
+    # plot_bboxes(overlay, duplicate_bboxes, color=(0, 165, 255), wait=None)
+    #
+    # alpha = .5
+    # img = cv2.addWeighted(overlay, alpha, img, 1 - alpha, 0)
+    #
+    # line_centers = []
+    # for line in lines:
+    #     line_centers.append([bbox.center for bbox in line])
+    #
+    # plot_lines(img, line_centers)
+
+    train_model()
 
     # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
     #                                                                EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
