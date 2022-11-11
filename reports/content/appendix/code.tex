@@ -1,57 +1,71 @@
 \begin{figure}
-\caption{Minimal Example of the COCO Annotation Format}
-\centering
-\par\noindent\rule{\textwidth}{0.5pt}
-\begin{\codefigsize}
-\lstset{literate={∆}{{$\Delta$}}1}
-\begin{lstlisting}
-{
-  "annotations": [
+  \caption{Minimal Example of the COCO Annotation Format}
+  \label{fig:coco}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \lstset{literate={∆}{{$\Delta$}}1}
+  \begin{lstlisting}
     {
-      "area": 600,
-      "bbox": [
-        100,
-        50,
-        20,
-        30
+      "annotations": [
+        {
+          "area": 600,
+          "bbox": [
+            100,
+            50,
+            20,
+            30
+          ],
+          "category_id": 186,
+          "id": 1,
+          "image_id": 1,
+          "iscrowd": 1
+          "tags": {...}
+        }
       ],
-      "category_id": 186,
-      "id": 1,
-      "image_id": 1,
-      "iscrowd": 1
-      "tags": {...}
-    },
-  ],
-  "categories": [
-    {
-      "id": 186,
-      "name": "∆",
-      "supercategory": "Greek"
+      "categories": [
+        {
+          "id": 186,
+          "name": "∆",
+          "supercategory": "Greek"
+        }
+      ],
+      "images": [
+        {
+          "bln_id": 1,
+          "date_captured": null,
+          "file_name": "images/image.png",
+          "img_url": "images/image.png",
+          "width": 1000,
+          "height": 2000,
+          "id": 1,
+          "license": 2
+        },
+      ],
+      "licenses": [
+        {
+          "id": 2,
+          "name": "CC-BY-NC 3.0.",
+          "url": "https://creativecommons.org/licenses/by/3.0/"
+        },
+      ]
     }
-  ],
-  "images": [
-    {
-      "bln_id": 1,
-      "date_captured": null,
-      "file_name": ...,
-      "img_url": ...,
-      "width": width (integer),
-      "height": height (integer),
-      "id": 1,
-      "license": 2
-    },
-  ],
-  "licenses": [
-    {
-      "id": 2,
-      "name": "CC-BY-NC 3.0.",
-      "url": "https://creativecommons.org/licenses/by/3.0/"
-    },
-  ]
-}
-\end{lstlisting}
-\end{\codefigsize}
-\par\noindent\rule{\textwidth}{0.5pt}
-The minimum required information for a single image with a single instance of the $\Delta$ glyph in the COCO file format. Elipsis (\ldots) represent information removed for conciseness.
-\label{fig:coco}
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  The minimum required information for a single image with a single instance of the $\Delta$ glyph in the COCO file format. The bounding boxes in this format are output in the COCO bounding box format, in which bounding boxes are described by their minimum x and y coordinates and their width and height.
+\end{figure}
+
+\begin{figure}
+  \caption{Minimal Example of the CSV Output Format}
+  \label{fig:csv_output}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \lstset{literate={∆}{{$\Delta$}}1}
+  \begin{lstlisting}
+    glyph,  min_x,  min_y,  max_x,  max_y,        image_path
+        ∆,    100,     50,     20,     30,  images/image.png
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  The minimum required information for a single image with a single instance of the $\Delta$ glyph in the CSV output file format. The bounding boxes in this format are output in the pascal bounding box format, in which bounding boxes are described by their maximum and minimum x and y coordinates.
 \end{figure}
