@@ -1,6 +1,7 @@
 import os
 
 
+# TODO coco output format
 def write_coco(file_path, image_bboxes, category_map):
     """
     TODO not finished.
@@ -19,5 +20,16 @@ def write_coco(file_path, image_bboxes, category_map):
                 annotation = {
                     "area": bbox.area,
                     "bbox": list(bbox.coco),
-                    "category_id": bbox.get_class_index() if category_map is None else category_map[bbox.get_class_index()],
+                    "category_id": bbox.get_class_index() if category_map is None else category_map[
+                        bbox.get_class_index()],
                 }
+
+
+# TODO pascal output format
+def write_pascal(file_path, image_bboxes):
+    pass
+
+
+# TODO csv format
+def write_csv(file_path, image_bboxes):
+    pass

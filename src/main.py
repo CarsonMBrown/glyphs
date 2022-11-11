@@ -1,6 +1,6 @@
 import os.path
 
-from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
+from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM, ResNextClassifyLSTM
 from src.classification.vector_learning import nn_factory
 from src.util.torch_dataloader import ImageLoader
 
@@ -50,6 +50,7 @@ BINARIZED_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "binarized"
 ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificial")
 
 lang_file = os.path.join(DATASET_DIR, "perseus_25000.txt"), os.path.join(DATASET_DIR, "perseus_5000.txt")
+quick_lang_file = os.path.join(DATASET_DIR, "perseus_5000.txt"), os.path.join(DATASET_DIR, "perseus_2000.txt")
 meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
 
@@ -62,17 +63,23 @@ meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
 
 def train_model():
-    # TODO: Friday Night, try 101 lstm with correct transforms
+    # TODO: Sun Night, try 101 lstm with correct transforms
     # nn_factory.train_model(lang_file, meta_data,
     #                        TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
     #                        ResNext101LSTM,
     #                        epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=55, loader=ImageLoader,
     #                        transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
-    # TODO: Thursday Night, continue after removing softmax
+    # TODO: Friday Night, continue after removing softmax
     nn_factory.train_model(lang_file, meta_data,
                            TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
                            ResNextLongLSTM,
-                           epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=14, loader=ImageLoader,
+                           epochs=50, batch_size=8, num_workers=0, resume=True, start_epoch=27, loader=ImageLoader,
+                           transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
+    # TODO: Sun/Fri Night, continue after removing softmax
+    nn_factory.train_model(lang_file, meta_data,
+                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                           ResNextClassifyLSTM,
+                           epochs=100, batch_size=8, num_workers=0, resume=True, start_epoch=73, loader=ImageLoader,
                            transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
 
 

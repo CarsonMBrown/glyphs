@@ -54,11 +54,7 @@ class ResNext50LSTM(nn.Module):
         return "resnext50_lstm"
 
 
-# EPOCH 14:
-#   batch 250 loss: 0.8180728744864464
-#   batch 500 loss: 0.8396832743883132
-# LOSS train 0.8396832743883132 valid 0.878256618976593
-# PRECISION 0.7629999999999998 RECALL 0.7505 FSCORE 0.74435
+# EPOCH 19: PRECISION 0.8248833333333341 RECALL 0.8184 FSCORE 0.8106371428571422
 class ResNextLongLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
@@ -83,6 +79,7 @@ class ResNextLongLSTM(nn.Module):
         return "resnext50_long_lstm"
 
 
+# epoch 73: FSCORE 0.7000923809523812
 class ResNextClassifyLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
@@ -116,10 +113,12 @@ class ResNextClassifyLSTM(nn.Module):
 class ResNext101LSTM(nn.Module):
     transform_train = transforms.Compose([
         transforms.Resize(240),
-        transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+        transforms.RandomPerspective(distortion_scale=0.1, p=.5),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),
         transforms.RandomAffine(degrees=10, shear=10),
         transforms.RandomResizedCrop(224, scale=(0.95, 1.05), ratio=(0.95, 1.05)),
-        transforms.RandomAdjustSharpness(2),
+        transforms.RandomAdjustSharpness(1.2),
+        transforms.RandomAdjustSharpness(.8),
         transforms.RandomAutocontrast(),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),

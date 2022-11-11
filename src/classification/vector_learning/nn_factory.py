@@ -141,8 +141,8 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0004, momentum=0.9)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, weight_decay=0.0004, momentum=0.9)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.2)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -152,10 +152,11 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     if resume:
         start_epoch += 1
-        for i in range(0, start_epoch + 1):
-            scheduler.step()
+        # for i in range(0, start_epoch + 1):
+        #     optimizer.step()
+        #     scheduler.step()
 
-    for epoch in range(start_epoch, epochs):
+    for epoch in range(start_epoch, epochs + 1):
         print('EPOCH {}:'.format(epoch))
 
         # Make sure gradient tracking is on, and do a pass over the data
