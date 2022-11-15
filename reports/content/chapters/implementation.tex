@@ -39,12 +39,27 @@ These methods were used to extract glyph images from both the binarized images a
 
 \subsection{Greek Language Corpus}
 
-To form the training data for a language model, the entirety of the Greek section of the Perseus Digital Library \cite{Perseus} dataset was downloaded. The data was converted from XML to plain text and cleaned of all non-standard Greek letters utilizing a mix of regex, python string functions and a list of the glyphs that appear in the training set of images. When removing invalid characters, the passages that they appeared in were also removed to ensure the integrity of the training data. To ensure the language data was as close to the image training data as possible, all diacritics and punctuation marks were removed, and the letters were converted to their uppercase variant. The remaining data contains $~46,000,000$ glyphs. This data was used to generate five smaller files for the purposes of training language models.
+To form the training data for a language model, the entirety of the Greek section of the Perseus Digital Library \cite{Perseus} dataset was downloaded. The data was converted from XML to plain text and cleaned of all non-standard Greek letters utilizing a mix of regex, python string functions and a list of the glyphs that appear in the training set of images. When removing invalid characters, the passages that they appeared in were also removed to ensure the integrity of the training data. To ensure the language data was as close to the image training data as possible, all diacritics and punctuation marks were removed, and the letters were converted to their uppercase variant. The remaining data contains $~46,400,000$ glyphs. This data was used to generate five smaller files for the purposes of training language models by randomly selecting chunks from the data.
 
 
 \section{Binarization}
+\todo{NEW}
+
+A perfect binarized version of a papyrus image is defined by a background color and ink color, where the ink is black, and the background is white. Each pixel in an image is altered so that it is either black or white, depending on if it is ink or anything else (background). As no ground truth for ink was given to train on, all the methods for binarization are based on either pre-trained CNNs or algorithmic solutions utilized in similar problems.
 
 \subsection{Clustering}
+\todo{NEW}
+
+Clustering based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3d space with their red, green, and blue values being used to determine their location. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background.
+
+\subsection{Filtering}
+\todo{NEW}
+
+Filtering based binarizations are generated utilizing the Gabor filtering  \cite{Gabor1949, Gabor1948} to find clusters of pixels that are not like those around them, which could be glyphs. Gabor filtering is based on a linear filter, but when multiple linear filters are grouped together with a set rotation applied to each subsequent filter, a 2d filter can be generated to generate a simplification of Gabor wavelets \cite{Gabor1949, Gabor1948}. Using these 2d filters, this method of binarization seeks to find features in an image that has a specific frequency, which in the case of glyphs might be the width or height of a single line in a glyph.
+
+This method requires an assumption on the wave frequency that may generate the glyphs, so a manual heuristic method was utilized to generate the function that most accurately generated the correct wave for the images in the training dataset.
+
+\subsection{Input Invarient Thresholding}
 \todo{TODO}
 
 \subsection{DP-Linknet}

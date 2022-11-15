@@ -1,5 +1,10 @@
 TODO:
   https://en.wikipedia.org/wiki/Conditional_random_field
+  Smoothing for Markov - NO
+  log probabilies for Markov - NO
+  cropping
+  height avg, width with middle
+
 
   accuracy
     blue scores

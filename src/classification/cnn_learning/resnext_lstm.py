@@ -55,6 +55,9 @@ class ResNext50LSTM(nn.Module):
 
 
 # EPOCH 19: PRECISION 0.8248833333333341 RECALL 0.8184 FSCORE 0.8106371428571422
+# EPOCH 28: PRECISION 0.847766666666667 RECALL 0.8324 FSCORE 0.82944
+# EPOCH 41: PRECISION 0.852183333333334 RECALL 0.8412 FSCORE 0.8367676190476188
+# EPOCH 56: PRECISION 0.8464500000000006 RECALL 0.839 FSCORE 0.833355238095238
 class ResNextLongLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
@@ -77,6 +80,30 @@ class ResNextLongLSTM(nn.Module):
     @staticmethod
     def get_name():
         return "resnext50_long_lstm"
+
+
+class ResNextDeepLSTM(nn.Module):
+    def __init__(self, input_size, output_size):
+        super().__init__()
+        self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
+        self.resnext.fc = nn.LSTM(self.resnext.fc.in_features, output_size * 2, num_layers=3, bidirectional=True,
+                                  dropout=.5)
+        self.classifier = nn.Sequential(
+            nn.Dropout(p=.5),
+            nn.ReLU(),
+            nn.Linear(output_size * 4, output_size * 4),
+            nn.Dropout(p=.5),
+            nn.ReLU(),
+            nn.Linear(output_size * 4, output_size),
+        )
+
+    def forward(self, x):
+        x, _ = self.resnext(x)
+        return self.classifier(x)
+
+    @staticmethod
+    def get_name():
+        return "resnext50_deep_lstm"
 
 
 # epoch 73: FSCORE 0.7000923809523812
@@ -113,12 +140,16 @@ class ResNextClassifyLSTM(nn.Module):
 class ResNext101LSTM(nn.Module):
     transform_train = transforms.Compose([
         transforms.Resize(240),
-        transforms.RandomPerspective(distortion_scale=0.1, p=.5),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),
+        transforms.RandomPerspective(distortion_scale=0.3, p=.5),
+        transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
         transforms.RandomAffine(degrees=10, shear=10),
-        transforms.RandomResizedCrop(224, scale=(0.95, 1.05), ratio=(0.95, 1.05)),
-        transforms.RandomAdjustSharpness(1.2),
-        transforms.RandomAdjustSharpness(.8),
+        transforms.RandomResizedCrop(224, scale=(0.8, 1.2), ratio=(0.8, 1.2)),
+        transforms.RandomAdjustSharpness(1.3, p=.1),
+        transforms.RandomAdjustSharpness(1.2, p=.1),
+        transforms.RandomAdjustSharpness(1.1, p=.1),
+        transforms.RandomAdjustSharpness(.9, p=.1),
+        transforms.RandomAdjustSharpness(.8, p=.1),
+        transforms.RandomAdjustSharpness(.7, p=.1),
         transforms.RandomAutocontrast(),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),

@@ -4,13 +4,17 @@ import random
 import numpy as np
 import torch
 from PIL import Image
-from sklearn.metrics import precision_recall_fscore_support
+from matplotlib import pyplot as plt
+from sklearn.metrics import precision_recall_fscore_support, top_k_accuracy_score, confusion_matrix, \
+    ConfusionMatrixDisplay
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
+from src.util.glyph_util import get_classes_as_glyphs
 from src.util.torch_dataloader import VectorLoader
 
 SAVE_PATH = os.path.join("weights", "nn")
+GLYPH_CLASSES = get_classes_as_glyphs()
 
 
 def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size=None, resume=False):
@@ -24,7 +28,6 @@ def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size
     model_path, save_file = get_model_path(load_epoch, model, name)
 
     if os.path.exists(save_file):
-        print("Model Found")
         model.load_state_dict(torch.load(save_file))
         if not resume:
             model.eval()
@@ -80,12 +83,7 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
                 v_loss = loss_fn(v_outputs, v_labels)
                 running_v_loss += v_loss
 
-            v_outputs = v_outputs.cpu()
-            if prediction_modifier is not None:
-                predictions = prediction_modifier(v_outputs)
-            else:
-                predictions = np.argmax(v_outputs, axis=1)
-            v_labels = v_labels.cpu()
+            predictions, v_labels = modify_predictions(prediction_modifier, v_labels, v_outputs)
 
             precision, recall, fscore, _ = \
                 precision_recall_fscore_support(v_labels, predictions, average=average, zero_division=0)
@@ -101,6 +99,85 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
         return avg_precision, avg_recall, avg_fscore, avg_v_loss
     else:
         return avg_precision, avg_recall, avg_fscore
+
+
+def model_confusion_matrix(model, validation_loader, *, prediction_modifier=None, average="weighted", seed=None,
+                           top_k=1, display_cm=True):
+    """
+    Preforms an evaluation of the model passed in with top-k accuracy support and a confusion matrix support
+    :param model:
+    :param validation_loader:
+    :param prediction_modifier:
+    :param average:
+    :param seed:
+    :param top_k:
+    :param display_cm:
+    :return: cm, avg_top_n_accuracy
+    """
+    set_seed(seed)
+    model.train(False)
+
+    all_predications = []
+    all_labels = []
+
+    running_top_n_accuracy = [0.0] * top_k
+    avg_top_n_accuracy = [0.0] * top_k
+
+    for i, v_data in enumerate(validation_loader):
+        with torch.no_grad():
+            # Every data instance is an input + label pair
+            v_inputs, v_labels = v_data
+
+            #  move the input and model to GPU for speed if available
+            if torch.cuda.is_available():
+                v_inputs = v_inputs.to('cuda')
+                v_labels = v_labels.to('cuda')
+
+            v_outputs = model(v_inputs)
+
+            predictions, v_labels = modify_predictions(prediction_modifier, v_labels, v_outputs, arg_max=False)
+            if len(predictions.shape) > 1 and predictions.shape[-1] == 24:
+                for k in range(len(running_top_n_accuracy)):
+                    running_top_n_accuracy[k] += top_k_accuracy_score(v_labels, predictions, k=k + 1,
+                                                                      labels=[i for i in range(len(GLYPH_CLASSES))])
+
+            if len(predictions.shape) > 1 and predictions.shape[-1] == 24:
+                all_predications += list(np.argmax(predictions, axis=1))
+            else:
+                all_predications += list(predictions)
+            all_labels += list(v_labels)
+
+    for k in range(len(running_top_n_accuracy)):
+        avg_top_n_accuracy[k] = running_top_n_accuracy[k] / (i + 1)
+
+    cm = confusion_matrix(all_labels, all_predications)
+    if display_cm:
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=GLYPH_CLASSES)
+        disp.plot()
+        plt.show()
+
+    if avg_top_n_accuracy == [0.0] * top_k:
+        return cm, precision_recall_fscore_support(all_labels, all_predications, average=average, zero_division=0)
+    else:
+        return cm, avg_top_n_accuracy
+
+
+def modify_predictions(prediction_modifier, v_labels, v_outputs, arg_max=True):
+    v_outputs = v_outputs.cpu()
+    if prediction_modifier is not None:
+        predictions = prediction_modifier(v_outputs)
+    else:
+        if arg_max:
+            predictions = np.argmax(v_outputs, axis=1)
+        else:
+            predictions = v_outputs
+    v_labels = v_labels.cpu()
+    return predictions, v_labels
+
+
+def set_seed(seed):
+    if seed is not None:
+        random.seed(seed)
 
 
 def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
@@ -141,8 +218,8 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, weight_decay=0.0004, momentum=0.9)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.2)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0004, momentum=0.9)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.9)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -152,9 +229,9 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     if resume:
         start_epoch += 1
-        # for i in range(0, start_epoch + 1):
-        #     optimizer.step()
-        #     scheduler.step()
+        for i in range(0, start_epoch + 1):
+            optimizer.step()
+            scheduler.step()
 
     for epoch in range(start_epoch, epochs + 1):
         print('EPOCH {}:'.format(epoch))

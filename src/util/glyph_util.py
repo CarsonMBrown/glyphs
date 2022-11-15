@@ -33,7 +33,7 @@ names = ['alpha', 'beta', 'gamma',
          'nu', 'xi', 'omicron',
          'pi', 'rho', 'sigma',
          'tau', 'upsilon', 'phi',
-         'chi', 'psi', 'omega', ]
+         'chi', 'psi', 'omega']
 
 glyph_classes = [
     'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ',
@@ -45,6 +45,12 @@ def name_to_glyph(name):
     for i, n in enumerate(names):
         if name == n:
             return glyphs[i]
+
+
+def name_to_glyph_class(name):
+    for i, n in enumerate(names):
+        if name == n:
+            return glyph_classes[i]
 
 
 def glyph_to_name(glyph, *, look_a_like_glyphs=False):
@@ -99,8 +105,8 @@ def index_to_glyph(index, *, look_a_like_glyphs=False):
 
 
 def get_classes_as_glyphs():
-    return [name_to_glyph(n) for n in sorted(names[1:])]
+    return [name_to_glyph_class(n) for n in sorted(names)]
 
 
 def get_classes_as_glyph_names():
-    return [n for n in sorted(names[1:])]
+    return [n for n in sorted(names)]

@@ -55,3 +55,8 @@ Week 9:
   Wed: more training + reporting
   Thursday: more training + reporting
   Fri: more training + reporting
+
+Week 10:
+  Mon: reporting, classification evaluation additions, attempt Markov chain ideas
+  Tuesday: TODO fix bounding issues (attempt removing sliding window)
+            TODO metrics for bounding

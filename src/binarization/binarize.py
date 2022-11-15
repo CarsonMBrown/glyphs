@@ -23,7 +23,7 @@ def gabor_inverse(img_in_dir, img_temp_dir, img_out_dir):
     :return: None
     """
     gabor_filter.process(img_in_dir, img_temp_dir)
-    test.binarize_imgs(img_temp_dir, img_out_dir)
+    dp_linknet.binarize_imgs(img_temp_dir, img_out_dir)
     clean_dir(img_temp_dir)
 
 

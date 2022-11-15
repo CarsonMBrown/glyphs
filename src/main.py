@@ -1,6 +1,6 @@
 import os.path
 
-from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM, ResNextClassifyLSTM
+from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM, ResNextDeepLSTM
 from src.classification.vector_learning import nn_factory
 from src.util.torch_dataloader import ImageLoader
 
@@ -63,24 +63,26 @@ meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
 
 def train_model():
-    # TODO: Sun Night, try 101 lstm with correct transforms
-    # nn_factory.train_model(lang_file, meta_data,
-    #                        TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-    #                        ResNext101LSTM,
-    #                        epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=55, loader=ImageLoader,
-    #                        transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
-    # TODO: Friday Night, continue after removing softmax
     nn_factory.train_model(lang_file, meta_data,
                            TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-                           ResNextLongLSTM,
-                           epochs=50, batch_size=8, num_workers=0, resume=True, start_epoch=27, loader=ImageLoader,
+                           ResNextDeepLSTM,
+                           epochs=200, batch_size=8, num_workers=0, resume=False, start_epoch=0, loader=ImageLoader,
                            transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
-    # TODO: Sun/Fri Night, continue after removing softmax
-    nn_factory.train_model(lang_file, meta_data,
-                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-                           ResNextClassifyLSTM,
-                           epochs=100, batch_size=8, num_workers=0, resume=True, start_epoch=73, loader=ImageLoader,
-                           transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
+
+
+def eval_model():
+    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(os.path.join(DATASET_DIR, "perseus_25000.txt"),
+                                                                   meta_data,
+                                                                   EVAL_RAW_GLYPHS_DIR, batch_size=8,
+                                                                   loader=ImageLoader,
+                                                                   transform=ResNext101LSTM.transform_classify)
+    print("Epoch, Precision, Recall, FScore")
+    for epoch in range(0, 73):
+        model, _ = nn_factory.load_model(
+            ResNextLongLSTM, load_epoch=epoch, dataset=eval_dataset, resume=False)
+        avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="weighted",
+                                                                      seed=0)
+        print(f"{epoch}, {avg_precision}, {avg_recall}, {avg_fscore}")
 
 
 if __name__ == '__main__':
@@ -143,15 +145,47 @@ if __name__ == '__main__':
     # plot_lines(img, line_centers)
 
     train_model()
+    # eval_model()
 
-    # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(lang_file, meta_data,
-    #                                                                EVAL_BINARIZED_GLYPHS_DIR, batch_size=4)
-    # model, _ = nn_factory.load_model(
-    #     LinearToLSTM, name="binarized", load_epoch=9, dataset=eval_dataset, resume=False)
-    # markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"), get_classes_as_glyphs(),
-    #                                         cache_path=os.path.join("dataset", "perseus.markov"))
+    # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(os.path.join(DATASET_DIR, "perseus_25000.txt"),
+    #                                                                meta_data,
+    #                                                                EVAL_RAW_GLYPHS_DIR, batch_size=8,
+    #                                                                loader=ImageLoader,
+    #                                                                transform=ResNext101LSTM.transform_classify)
     #
-    # avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="weighted", seed=0)
-    # print(avg_precision, avg_recall, avg_fscore)
+    # log_markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
+    #                                             get_classes_as_glyphs(),
+    #                                             cache_path=os.path.join("dataset", "perseus_log.markov"),
+    #                                             log=True,
+    #                                             overwrite=False)
+    # markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
+    #                                         get_classes_as_glyphs(),
+    #                                         cache_path=os.path.join("dataset", "perseus.markov"),
+    #                                         overwrite=False)
+
+    # model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, dataset=eval_dataset, resume=False)
+
+    # cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
+    #                                                       display_cm=False, seed=0, top_k=1,
+    #                                                       prediction_modifier=partial(
+    #                                                           markov.top_n_markov_optimization,
+    #                                                           log_markov_chain,
+    #                                                           n=1,
+    #                                                       ))
+    # print(p, r, fs)
+
+    # for u in arange(0, 1.01, 0.01):
+    #     u = round(u, 2)
+    #     cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
+    #                                                           display_cm=False, seed=0, top_k=1,
+    #                                                           prediction_modifier=partial(
+    #                                                               markov.top_n_markov_optimization,
+    #                                                               log_markov_chain,
+    #                                                               n=2,
+    #                                                               uncertainty_threshold=u
+    #                                                           ))
+    #     print(u, p, r, fs)
+
+    #
     # avg_precision, avg_recall, avg_1fscore = nn_factory.eval_model(model, eval_dataloader, average="macro", seed=0)
     # print(avg_precision, avg_recall, avg_fscore)

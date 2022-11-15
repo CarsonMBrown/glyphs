@@ -4,7 +4,7 @@ from src.util.img_util import *
 
 def run(img_in_dir, img_out_dir):
     """
-    Runs algorithm from doi:10.1016/j.patrec.2004.07.014.
+    Runs algorithm from "Input sensitive thresholding for ancient Hebrew manuscript" by Itay Bar-Yosef
 
     :param img_in_dir: glyph_path to directory containing input images
     :param img_out_dir: glyph_path to directory to output images
