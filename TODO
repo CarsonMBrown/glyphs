@@ -4,6 +4,8 @@ TODO:
   log probabilies for Markov - NO
   cropping
   height avg, width with middle
+  metrics for bounding on actual data
+  fix bounding issues (attempt removing sliding window)
 
 
   accuracy

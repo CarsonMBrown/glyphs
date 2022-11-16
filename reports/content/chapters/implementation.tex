@@ -48,22 +48,30 @@ To form the training data for a language model, the entirety of the Greek sectio
 A perfect binarized version of a papyrus image is defined by a background color and ink color, where the ink is black, and the background is white. Each pixel in an image is altered so that it is either black or white, depending on if it is ink or anything else (background). As no ground truth for ink was given to train on, all the methods for binarization are based on either pre-trained CNNs or algorithmic solutions utilized in similar problems.
 
 \subsection{Clustering}
-\todo{NEW}
+\todo{NEW, TODO: ADD FIGURE}
 
 Clustering based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3d space with their red, green, and blue values being used to determine their location. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background.
 
 \subsection{Filtering}
-\todo{NEW}
+\todo{NEW, TODO: ADD FIGURE}
 
 Filtering based binarizations are generated utilizing the Gabor filtering  \cite{Gabor1949, Gabor1948} to find clusters of pixels that are not like those around them, which could be glyphs. Gabor filtering is based on a linear filter, but when multiple linear filters are grouped together with a set rotation applied to each subsequent filter, a 2d filter can be generated to generate a simplification of Gabor wavelets \cite{Gabor1949, Gabor1948}. Using these 2d filters, this method of binarization seeks to find features in an image that has a specific frequency, which in the case of glyphs might be the width or height of a single line in a glyph.
 
 This method requires an assumption on the wave frequency that may generate the glyphs, so a manual heuristic method was utilized to generate the function that most accurately generated the correct wave for the images in the training dataset.
 
+To utilize the approximation on a Gabor wavelet on the input, the input is read in and converted to a greyscale image before having the collection of Gabor filters applied. This reduces the channels from three to one and allows the Gabor wavelet approximation to work on the image. The outputs of each filter in the wavelet approximation are then averaged together to generate a new greyscale image, which can then be binarized using naive thresholding.
+
 \subsection{Input Invarient Thresholding}
-\todo{TODO}
+\todo{NEW, TODO: ADD FIGURE}
+
+In a similar fashion to utilizing the Gabor filter or Gabor wavelet, thresholding utilizing an input invariant method, such as the one proposed by \cite{Bar-Yosef2005, Bar-Yosef2007} requires consistency in the input or a strong method for determining the correct threshold. Using clustering, as discussed above, could be a potential method to find a threshold, however the method them becomes a variant of clustering, so this method was not implemented past the initial stage of picking an arbitrarily chosen threshold value and binarizing the input by converting it greyscale and then binarizing the greyscale image by converting all values darker than the threshold to black and all other values to white.
 
 \subsection{DP-Linknet}
-\todo{TODO}
+\todo{NEW, TODO: ADD FIGURE}
+
+Although it was out of the scope of this project to train a CNN to binarize an image, Convolutional Neural Networks have already been generated and trained on the problem of binarization of historical texts. DP-Linknet \cite{Xiong} is one such CNN, trained on historical texts and implemented in Python 3 utilizing common deep learning tools such as PyTorch \cite{PyTorch} and Scikit-Learn \cite{Scikit}. As the Python source code for DP-Linknet is publicly available on \href{https://github.com/beargolden/DP-LinkNet}{GitHub}, it was a simple task to implement it into the project and add a simple API that integrates the CNN into the pipeline.
+
+\textit{Note: All code contained in the} \code{src/binarization/dp\_linknet} \textit{folder is either directly from the GitHub reposity or highly based on that code. I take no credit for this code, as extraordinarily little of my own work was done to integrate the work of Xiong et al. into this project.}
 
 \subsection{BiNet}
 \todo{TODO}
@@ -72,7 +80,82 @@ This method requires an assumption on the wave frequency that may generate the g
 \section{Glyph Bounding}
 
 \subsection{Bounding Boxes}
-\todo{TODO}
+\todo{NEW}
+
+Bounding boxes are represented internally by an object that holds the PASCAL Visual Object Classes (VOC) representation of a bounding box \seefig{pascalbbox}. Using this method of representation, compared to a tuple or list, allows for operations on bounding boxes to be standardized and for bounding boxes to be represented in a way that is abstracted from their format. Allowing this abstract bounding box format assists with the problem of having multiple constraints on how bounding boxes are utilized in the pipeline, such as importing and exporting COCO formatted bounding boxes \seefig{cocobbox}, calculating metrics based on PASCAL VOC formatted bounding boxes \seefig{pascalbbox}, and utilizing tools and methods that require YOLO formatted bounding boxes \seefig{yolobbox}. Bounding box objects are then able to utilize internal methods for operations such as finding the IOU (intersection over union) \seefig{IOU} between between two bounding boxes, one dimensional IOU \seefig{1dIOU}, and generating cropped images from lists of bounding boxes.
+
+\begin{figure}
+    \caption{PASCAL VOC Bounding Box Examples}
+    \label{fig:pascalbbox}
+    \begin{center}
+    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples.png}}
+    \end{center}
+    Three examples of bounding boxes, on a $B$, $I$, and a $A$ (left to right). For these examples, the red lines denote the pixels that are outside of the bounding boxes, meaning the centers of the (3 pixel wide) blue and green squares are the top left and bottom right anchors of the bounding boxes. In the PASCAL VOC bounding box format, bounding boxes are described using the top left corner of the box in absolute pixels, and the bottom right corner of the box in absolute pixels. In this example, the boxes shown above would be denoted in the PASCAL VOC format as follows: $B:(18, 9, 79, 85)$, $I:(10, 5, 45, 78)$, $A:(1, 19, 54, 84)$.
+\end{figure}
+
+\begin{figure}
+    \caption{COCO Format Bounding Box Examples}
+    \label{fig:cocobbox}
+    \begin{center}
+    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples.png}}
+    \end{center}
+    Three examples of bounding boxes, on a $B$, $I$, and a $A$ (left to right). For these examples, the red lines denote the pixels that are outside of the bounding boxes, meaning the centers of the (3 pixel wide) blue and green squares are the top left and bottom right anchors of the bounding boxes. In the COCO bounding box format, bounding boxes are described using the top left corner of the box in absolute pixels and the box's width and height in absolute pixels. In this example, the boxes shown above would be denoted in the COCO format as follows: $B:(18, 9, 61, 76)$, $I:(10, 5, 35, 73)$, $A:(1, 19, 53, 65)$.
+\end{figure}
+
+\begin{figure}
+    \caption{YOLO Format Bounding Box Examples}
+    \label{fig:yolobbox}
+    \begin{center}
+    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples.png}}
+    \end{center}
+    Three examples of bounding boxes, on a $B$, $I$, and a $A$ (left to right). For these examples, the red lines denote the pixels that are outside of the bounding boxes, meaning the centers of the (3 pixel wide) blue and green squares are the top left and bottom right anchors of the bounding boxes. In the COCO bounding box format, bounding boxes are described using the top left corner of the box in relative coordinates (based on image width and height) and the box's width and height also in relative coordinates. In this example, the boxes shown above would be denoted in the YOLO format as follows (rounded to three decimal places): $B:(0.200, 0.089, 0.678, 0.752)$, $I:(0.175, 0.055, 0.614, 0.811)$, $A:(0.018, 0.188, 0.946, 0.644)$.
+\end{figure}
+
+\begin{figure}
+    \caption{2D Intersection Over Union (IOU) Examples}
+    \label{fig:IOU}
+    \begin{center}
+      \begin{subfigure}[b]{0.45\textwidth}
+           \centering
+           \caption{Bounding Boxes With A Low IOU Value}
+           \label{fig:lowIOU}
+           \includegraphics[width=\textwidth]{{bounding/lowIOU.jpg}}
+       \end{subfigure}
+       \hfill
+       \begin{subfigure}[b]{0.45\textwidth}
+           \centering
+           \caption{Bounding Boxes With A High IOU Value}
+           \label{fig:highIOU}
+           \includegraphics[width=\textwidth]{{bounding/highIOU.jpg}}
+       \end{subfigure}
+    \end{center}
+    The IOU of two bounding boxes is a measure of how similar they are (with a possible range denoted by the interval $[0,1]$). It is calculated using the following formula, where $a$ and $b$ are bounding boxes represented by sets of pixels.
+    \begin{equation}
+      IOU(a,b) = \frac{a \cap b}{a \cup b}
+    \end{equation}
+    Figure \ref{fig:lowIOU} is an example of two bounding boxes with a low IOU value as the union of the sets (green and blue regions) is much larger than the intersection of the sets (blue region). Figure \ref{fig:highIOU} is an example of two bounding boxes with a high IOU value as the union of the sets (green and blue regions) is similar to the intersection of the sets (blue region).
+\end{figure}
+
+\begin{figure}
+    \caption{1D Intersection Over Union (IOU) Examples}
+    \label{fig:1dIOU}
+    \begin{center}
+      \begin{subfigure}[b]{0.45\textwidth}
+           \centering
+           \caption{1D Horizontal IOU Calculation}
+           \label{fig:horizonalIOU}
+           \includegraphics[width=\textwidth]{{bounding/horizontalIOU.jpg}}
+       \end{subfigure}
+       \hfill
+       \begin{subfigure}[b]{0.45\textwidth}
+           \centering
+           \caption{1D Vertical IOU Calculation}
+           \label{fig:verticalIOU}
+           \includegraphics[width=\textwidth]{{bounding/verticalIOU.jpg}}
+       \end{subfigure}
+    \end{center}
+    To find the 1D IOUs of a pair of bounding boxes the boxes are treated as one dimensional objects and the IOU is found as normal, calculating the intersection and union for the $x$ and $y$ dimensions separately. In Figure \ref{fig:horizonalIOU} the horizonal IOU is low, with the intersection of the sets in 1D (blue region) being divided by the the union of the sets (green and blue regions). Figure \ref{fig:verticalIOU} has a high veritical IOU, with the intersection of the sets (blue region) being divided by the the union of the sets (green and blue regions).
+\end{figure}
 
 \subsection{Connected Components}
 \todo{TODO}
@@ -80,6 +163,8 @@ This method requires an assumption on the wave frequency that may generate the g
 \subsection{Sliding Window Region Based Convolution Neural Networks}
 \todo{TODO}
 
+\subsection{Binarization Assisted CNN}
+\todo{TODO}
 
 \section{Line Bounding}
 

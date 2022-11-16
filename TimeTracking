@@ -58,5 +58,5 @@ Week 9:
 
 Week 10:
   Mon: reporting, classification evaluation additions, attempt Markov chain ideas
-  Tuesday: TODO fix bounding issues (attempt removing sliding window)
-            TODO metrics for bounding
+  Tuesday: Explore smoothing + log probs for markov
+  Wednesday: cleanup + comments +

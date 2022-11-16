@@ -1,4 +1,19 @@
 \begin{figure}
+  \caption{Minimal Example of the CSV Output Format}
+  \label{fig:csv_output}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \lstset{literate={∆}{{$\Delta$}}1}
+  \begin{lstlisting}
+    glyph,  min_x,  min_y,  max_x,  max_y,        image_path
+        ∆,    100,     50,     20,     30,  images/image.png
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  The minimum required information for a single image with a single instance of the $\Delta$ glyph in the CSV output file format. The bounding boxes in this format are output in the Pascal VOC bounding box format \seefig{pascalbbox}, in which bounding boxes are described by their maximum and minimum x and y coordinates.
+\end{figure}
+
+\begin{figure}
   \caption{Minimal Example of the COCO Annotation Format}
   \label{fig:coco}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -52,20 +67,5 @@
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
-  The minimum required information for a single image with a single instance of the $\Delta$ glyph in the COCO file format. The bounding boxes in this format are output in the COCO bounding box format, in which bounding boxes are described by their minimum x and y coordinates and their width and height.
-\end{figure}
-
-\begin{figure}
-  \caption{Minimal Example of the CSV Output Format}
-  \label{fig:csv_output}
-  \par\noindent\rule{\textwidth}{0.5pt}
-  \begin{\codefigsize}
-  \lstset{literate={∆}{{$\Delta$}}1}
-  \begin{lstlisting}
-    glyph,  min_x,  min_y,  max_x,  max_y,        image_path
-        ∆,    100,     50,     20,     30,  images/image.png
-  \end{lstlisting}
-  \end{\codefigsize}
-  \par\noindent\rule{\textwidth}{0.5pt}
-  The minimum required information for a single image with a single instance of the $\Delta$ glyph in the CSV output file format. The bounding boxes in this format are output in the pascal bounding box format, in which bounding boxes are described by their maximum and minimum x and y coordinates.
+  The minimum required information for a single image with a single instance of the $\Delta$ glyph in the COCO file format. The bounding boxes in this format are output in the COCO bounding box format \seefig{cocobbox}, in which bounding boxes are described by their minimum x and y coordinates and their width and height.
 \end{figure}
