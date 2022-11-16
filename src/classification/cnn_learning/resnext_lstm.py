@@ -85,14 +85,16 @@ class ResNextLongLSTM(nn.Module):
 class ResNextDeepLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
+        dropout = .5
         self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
-        self.resnext.fc = nn.LSTM(self.resnext.fc.in_features, output_size * 2, num_layers=3, bidirectional=True,
-                                  dropout=.5)
+        self.resnext.fc = nn.Sequential(
+            nn.LSTM(self.resnext.fc.in_features, output_size * 4, num_layers=1, bidirectional=True)
+        )
         self.classifier = nn.Sequential(
-            nn.Dropout(p=.5),
+            nn.Dropout(p=dropout),
             nn.ReLU(),
-            nn.Linear(output_size * 4, output_size * 4),
-            nn.Dropout(p=.5),
+            nn.Linear(output_size * 8, output_size * 4),
+            nn.Dropout(p=dropout),
             nn.ReLU(),
             nn.Linear(output_size * 4, output_size),
         )

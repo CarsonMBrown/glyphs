@@ -62,7 +62,8 @@ class ImageLoader(Dataset):
     def __len__(self):
         return len(self.language_text)
 
-    def get_vector_size(self):
+    @staticmethod
+    def get_vector_size():
         return None
 
     def __getitem__(self, index):

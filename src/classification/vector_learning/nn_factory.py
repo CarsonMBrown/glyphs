@@ -53,6 +53,7 @@ def get_model_path(load_epoch, model, name):
 
 def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=None, average="weighted", seed=None):
     """
+    Evaluates a model on a given data loader.
 
     :param model:
     :param validation_loader:
@@ -123,6 +124,7 @@ def model_confusion_matrix(model, validation_loader, *, prediction_modifier=None
     running_top_n_accuracy = [0.0] * top_k
     avg_top_n_accuracy = [0.0] * top_k
 
+    i = 0
     for i, v_data in enumerate(validation_loader):
         with torch.no_grad():
             # Every data instance is an input + label pair
@@ -218,8 +220,8 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, weight_decay=0.0004, momentum=0.9)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, weight_decay=0.0004, momentum=0.9)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -241,7 +243,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         avg_loss = train_one_epoch(epoch, training_loader, optimizer, model, loss_fn, writer)
 
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
-            model, validation_loader, loss_fn=loss_fn)
+            model, validation_loader, loss_fn=loss_fn, seed=0)
 
         print(f'LOSS train {avg_loss} valid {avg_v_loss}')
         print(f'PRECISION {avg_precision} RECALL {avg_recall} FSCORE {avg_fscore}')

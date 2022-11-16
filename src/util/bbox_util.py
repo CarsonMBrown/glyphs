@@ -65,12 +65,15 @@ class BBox:
         allowing the case in which the bounding boxes have the same edge(s)."""
         if not isinstance(other, BBox):
             raise TypeError
-        return self.x_min >= other.x_min and self.y_min >= other.y_min and self.x_max <= other.x_max and self.y_max <= other.y_max
+        return (
+                self.x_min >= other.x_min and self.y_min >= other.y_min and
+                self.x_max <= other.x_max and self.y_max <= other.y_max
+        )
 
     def contains_point(self, point, *, dimension_wise=False, allow_border=True):
         """
         Checks if the given point is inside the bounding box,
-        by default allowing for points on the border to be considered inside.
+        by default allowing for points on the border to be considered inside
         :param point: (x,y)
         :param dimension_wise: if true will return a pair of bools representing if the point is contained in the x dim
          of the bounding box, and if the point is contained in the y dim of the bounding box
@@ -153,16 +156,16 @@ class BBox:
     def __eq__(self, other):
         return self.x_min == other.x_min and self.center == other.center and self.area == self.area
 
-    def __repr__(self):
+    def __str__(self):
         if self.probabilities is None:
             return str(self.pascal())
-        return str(self.pascal(), self.get_class_probabilities())
+        return str(self.pascal()) + ":" + self.get_class_probabilities()
 
 
 def bboxes_to_crops(bboxes, img):
     """
     Converts a list of bounding boxes to a list of images
-    :param bboxes: bounding boxes to convert to images
+    :param bboxes: the bounding boxes to convert to cropped images
     :param img: img to crop from
     :return: list of images
     """

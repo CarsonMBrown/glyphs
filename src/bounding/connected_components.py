@@ -20,6 +20,7 @@ def get_connected_component_bounding_boxes(img):
 
 def bound_and_render(img_in_dir, img_out_dir):
     """
+    Using connected components, draws a bounding box around each non-internal component and saves the results to file.
 
     Author: https://www.geeksforgeeks.org/python-opencv-connected-component-labeling-and-analysis/
     :param img_in_dir: glyph_path to directory containing input images
@@ -77,10 +78,11 @@ def bound_and_render(img_in_dir, img_out_dir):
 
 def get_internal_centroids(centroids, values):
     """
+    Get a list of all the bounding boxes with centroids inside at least one other bounding box
     :param centroids:
     :param values:
-    :return: a list of the indexes/labels of all
-    the bounding boxes with centroids that are fully in another bounding box
+    :return: a list of the indexes/labels of all the bounding boxes with
+    centroids that are fully in another bounding box
     """
     to_remove = []
     for i, (cx, cy) in enumerate(centroids[1:], 1):
@@ -92,14 +94,14 @@ def get_internal_centroids(centroids, values):
 
 def get_internal_regions(values):
     """
+    Get list of all the bounding boxes that are fully contained within another bounding box
     :param values:
-    :return: a list of the indexes/labels of all
-    the bounding boxes that are fully in another bounding box
+    :return: a list of the indexes/labels of all the bounding boxes that are fully in another bounding box
     """
-    to_remove = []
+    internal_bboxes = []
     for i, (ax, ay, aw, ah, _) in enumerate(values[1:], 1):
         ax2, ay2 = ax + aw, ay + ah
         for bx, by, bw, bh, _ in values[1:i]:
             if ax >= bx and ay >= by and ax2 <= bx + bw and ay2 <= by + bh:
-                to_remove.append(i)
-    return to_remove
+                internal_bboxes.append(i)
+    return internal_bboxes

@@ -40,6 +40,7 @@ COCO_TESTING_DIR = os.path.join("HomerCompTesting")
 
 RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "raw")
 TRAIN_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw")
+TRAIN_RAW_QUALITY_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw_high_quality")
 EVAL_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "raw")
 BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "binarized")
 TRAIN_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "binarized")
@@ -64,9 +65,9 @@ meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
 def train_model():
     nn_factory.train_model(lang_file, meta_data,
-                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                           TRAIN_RAW_QUALITY_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
                            ResNextDeepLSTM,
-                           epochs=200, batch_size=8, num_workers=0, resume=False, start_epoch=0, loader=ImageLoader,
+                           epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=2, loader=ImageLoader,
                            transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
 
 
