@@ -1,4 +1,5 @@
 import math
+from uuid import uuid4
 
 import numpy as np
 
@@ -6,17 +7,33 @@ from src.util.glyph_util import index_to_glyph
 
 
 class BBox:
-    def __init__(self, x_min, y_min, x_max, y_max):
-        """Creates a bounding box using the pascal format."""
+    width, height, area, center = None, None, None, None
+
+    def __init__(self, x_min, y_min, x_max, y_max, *, probabilities=None, uuid=None):
+        """Creates a bounding box using the pascal format and an optional list of class probabilities and uuid"""
         self.x_min = int(x_min)
         self.y_min = int(y_min)
         self.x_max = int(x_max)
         self.y_max = int(y_max)
-        self.width = x_max - x_min
-        self.height = y_max - y_min
-        self.area = (self.width + 1) * (self.height + 1)
-        self.center = int((x_min + x_max) // 2), int((y_min + y_max) // 2)
-        self.probabilities = None
+        # Precalculate some commonly used values
+        self.recalculate_reference_values()
+        # init probabilities and uuid
+        self.probabilities = probabilities
+        if uuid is None:
+            self.uuid = uuid4()
+
+    def calc_dims(self):
+        return self.x_max - self.x_min, self.y_max - self.y_min
+
+    def calc_area(self):
+        return (self.width + 1) * (self.height + 1)
+
+    def calc_center(self):
+        return int((self.x_min + self.x_max) // 2), int((self.y_min + self.y_max) // 2)
+
+    def recalculate_reference_values(self):
+        self.width, self.height = self.calc_dims()
+        self.area, self.center = self.calc_area(), self.calc_center()
 
     @staticmethod
     def from_coco(x_min, y_min, width, height):
@@ -36,6 +53,26 @@ class BBox:
             self.width / img_x,
             self.height / img_y
         )
+
+    def set_width(self, new_width):
+        cx, cy = self.center
+        self.x_min = cx - new_width // 2
+        self.x_max = self.x_min + new_width
+        self.recalculate_reference_values()
+
+    def set_height(self, new_height):
+        cx, cy = self.center
+        self.y_min = cy - new_height // 2
+        self.y_max = self.y_min + new_height
+        self.recalculate_reference_values()
+
+    def copy(self):
+        return BBox(self.x_min, self.y_min, self.x_max, self.y_max, probabilities=self.probabilities, uuid=self.uuid)
+
+    def is_copy(self, other: "BBox"):
+        if not isinstance(other, BBox):
+            raise TypeError
+        return self.uuid == other.uuid
 
     def add_class_probabilities(self, probabilities):
         self.probabilities = probabilities

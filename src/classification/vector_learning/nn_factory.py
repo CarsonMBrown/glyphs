@@ -8,7 +8,6 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import precision_recall_fscore_support, top_k_accuracy_score, confusion_matrix, \
     ConfusionMatrixDisplay
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 
 from src.util.glyph_util import get_classes_as_glyphs
 from src.util.torch_dataloader import VectorLoader
@@ -226,9 +225,6 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
 
-    # Initializing in a separate cell, so we can easily add more epochs to the same run
-    writer = SummaryWriter('runs/lstm')
-
     if resume:
         start_epoch += 1
         for i in range(0, start_epoch + 1):
@@ -240,7 +236,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
         # Make sure gradient tracking is on, and do a pass over the data
         model.train(True)
-        avg_loss = train_one_epoch(epoch, training_loader, optimizer, model, loss_fn, writer)
+        avg_loss = train_one_epoch(epoch, training_loader, optimizer, model, loss_fn)
 
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
             model, validation_loader, loss_fn=loss_fn, seed=0)
@@ -248,12 +244,6 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         print(f'LOSS train {avg_loss} valid {avg_v_loss}')
         print(f'PRECISION {avg_precision} RECALL {avg_recall} FSCORE {avg_fscore}')
 
-        # Log the running loss averaged per batch
-        # for both training and validation
-        writer.add_scalars('Training vs. Validation Loss',
-                           {'Training': avg_loss, 'Validation': avg_v_loss},
-                           epoch)
-        writer.flush()
         torch.save(model.state_dict(),
                    os.path.join(model_path, "rnn_" + str(epoch) + ".pt"))
 
@@ -270,7 +260,7 @@ def generate_dataloader(lang_file, annotations_file, data_path, *, batch_size=32
     return training_set, training_loader
 
 
-def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn, tb_writer):
+def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn):
     running_loss = 0.
     last_loss = 0.
 
@@ -305,7 +295,6 @@ def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn, tb_
             last_loss = running_loss / 250  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(training_loader) + i + 1
-            tb_writer.add_scalar('Loss/train', last_loss, tb_x)
             running_loss = 0.0
 
         optimizer.zero_grad()

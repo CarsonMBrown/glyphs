@@ -1,6 +1,6 @@
 import os.path
 
-from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM, ResNextDeepLSTM
+from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
 from src.classification.vector_learning import nn_factory
 from src.util.torch_dataloader import ImageLoader
 
@@ -64,10 +64,10 @@ meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
 
 def train_model():
-    nn_factory.train_model(lang_file, meta_data,
-                           TRAIN_RAW_QUALITY_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-                           ResNextDeepLSTM,
-                           epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=2, loader=ImageLoader,
+    nn_factory.train_model(quick_lang_file, meta_data,
+                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                           ResNext101LSTM,
+                           epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=55, loader=ImageLoader,
                            transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
 
 
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     #
     # line_centers = []
     # for line in lines:
-    #     line_centers.append([bbox.center for bbox in line])
+    #     line_centers.append(get_line_centers(line))
     #
     # plot_lines(img, line_centers)
 

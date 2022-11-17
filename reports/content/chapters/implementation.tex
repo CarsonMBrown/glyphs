@@ -82,33 +82,33 @@ Although it was out of the scope of this project to train a CNN to binarize an i
 \subsection{Bounding Boxes}
 \todo{NEW}
 
-Bounding boxes are represented internally by an object that holds the PASCAL Visual Object Classes (VOC) representation of a bounding box \seefig{pascalbbox}. Using this method of representation, compared to a tuple or list, allows for operations on bounding boxes to be standardized and for bounding boxes to be represented in a way that is abstracted from their format. Allowing this abstract bounding box format assists with the problem of having multiple constraints on how bounding boxes are utilized in the pipeline, such as importing and exporting COCO formatted bounding boxes \seefig{cocobbox}, calculating metrics based on PASCAL VOC formatted bounding boxes \seefig{pascalbbox}, and utilizing tools and methods that require YOLO formatted bounding boxes \seefig{yolobbox}. Bounding box objects are then able to utilize internal methods for operations such as finding the IOU (intersection over union) \seefig{IOU} between between two bounding boxes, one dimensional IOU \seefig{1dIOU}, and generating cropped images from lists of bounding boxes.
+Bounding boxes are represented internally by an object that holds the PASCAL Visual Object Classes (VOC) representation of a bounding box \seefig{pascalbbox}. Using this method of representation, compared to a tuple or list, allows for operations on bounding boxes to be standardized and for bounding boxes to be represented in a way that is abstracted from their format. Allowing this abstract bounding box format assists with the problem of having multiple constraints on how bounding boxes are utilized in the pipeline, such as importing and exporting COCO formatted bounding boxes \seefig{cocobbox}, calculating metrics based on PASCAL VOC formatted bounding boxes \seefig{pascalbbox}, and utilizing tools and methods that require YOLO formatted bounding boxes \seefig{yolobbox}. Bounding box objects are then able to utilize internal methods for operations such as finding the IOU (intersection over union) \seefig{IOU} between two bounding boxes, one dimensional IOU \seefig{1dIOU}, and generating cropped images from lists of bounding boxes.
 
 \begin{figure}
     \caption{PASCAL VOC Bounding Box Examples}
     \label{fig:pascalbbox}
     \begin{center}
-    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples.png}}
+    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples_pascal.png}}
     \end{center}
-    Three examples of bounding boxes, on a $B$, $I$, and a $A$ (left to right). For these examples, the red lines denote the pixels that are outside of the bounding boxes, meaning the centers of the (3 pixel wide) blue and green squares are the top left and bottom right anchors of the bounding boxes. In the PASCAL VOC bounding box format, bounding boxes are described using the top left corner of the box in absolute pixels, and the bottom right corner of the box in absolute pixels. In this example, the boxes shown above would be denoted in the PASCAL VOC format as follows: $B:(18, 9, 79, 85)$, $I:(10, 5, 45, 78)$, $A:(1, 19, 54, 84)$.
+    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). For these examples, the red lines denote the pixels that are inside of the bounding boxes. In the PASCAL VOC bounding box format, bounding boxes are described using the top left corner (marked in green) of the box in absolute pixels, and the bottom right corner of the box (marked in blue) in absolute pixels. In this example, the boxes shown above would be denoted in the PASCAL VOC format as follows: $N:(6, 13, 82, 97)$, $\Upsilon:(1, 3, 89, 103)$, $\Xi:(6, 16, 126, 96)$.
 \end{figure}
 
 \begin{figure}
     \caption{COCO Format Bounding Box Examples}
     \label{fig:cocobbox}
     \begin{center}
-    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples.png}}
+    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples_coco.png}}
     \end{center}
-    Three examples of bounding boxes, on a $B$, $I$, and a $A$ (left to right). For these examples, the red lines denote the pixels that are outside of the bounding boxes, meaning the centers of the (3 pixel wide) blue and green squares are the top left and bottom right anchors of the bounding boxes. In the COCO bounding box format, bounding boxes are described using the top left corner of the box in absolute pixels and the box's width and height in absolute pixels. In this example, the boxes shown above would be denoted in the COCO format as follows: $B:(18, 9, 61, 76)$, $I:(10, 5, 35, 73)$, $A:(1, 19, 53, 65)$.
+    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the COCO bounding box format, bounding boxes are described using the top left corner (marked in green) of the box  in absolute pixels and the box's width (purple) and height (blue) in absolute pixels. In this example, the boxes shown above would be denoted in the COCO format as follows: $N:(6, 13, 76, 84)$, $\Upsilon:(1, 3, 88, 100)$, $\Xi:(6, 16, 120, 80)$.
 \end{figure}
 
 \begin{figure}
     \caption{YOLO Format Bounding Box Examples}
     \label{fig:yolobbox}
     \begin{center}
-    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples.png}}
+    \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples_yolo.png}}
     \end{center}
-    Three examples of bounding boxes, on a $B$, $I$, and a $A$ (left to right). For these examples, the red lines denote the pixels that are outside of the bounding boxes, meaning the centers of the (3 pixel wide) blue and green squares are the top left and bottom right anchors of the bounding boxes. In the COCO bounding box format, bounding boxes are described using the top left corner of the box in relative coordinates (based on image width and height) and the box's width and height also in relative coordinates. In this example, the boxes shown above would be denoted in the YOLO format as follows (rounded to three decimal places): $B:(0.200, 0.089, 0.678, 0.752)$, $I:(0.175, 0.055, 0.614, 0.811)$, $A:(0.018, 0.188, 0.946, 0.644)$.
+    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the YOLO bounding box format, bounding boxes are described using the center of the box (marked in green) in relative coordinates (based on image width and height) and the box's width (purple) and height (blue) also in relative coordinates. In this example, the boxes shown above would be denoted in the YOLO format as follows (rounded to three decimal places): $N:(0.319, 0.519, , 0.532, 0.739)$, $\Upsilon:(0.469, 0.469, 0.917, 0.885)$, $\Xi:(0.431, 0.487, 0.784, 0.696)$.
 \end{figure}
 
 \begin{figure}
@@ -129,7 +129,7 @@ Bounding boxes are represented internally by an object that holds the PASCAL Vis
            \includegraphics[width=\textwidth]{{bounding/highIOU.jpg}}
        \end{subfigure}
     \end{center}
-    The IOU of two bounding boxes is a measure of how similar they are (with a possible range denoted by the interval $[0,1]$). It is calculated using the following formula, where $a$ and $b$ are bounding boxes represented by sets of pixels.
+    The IOU of two bounding boxes is a measure of how similar they are (with a range denoted by the interval $[0,1]$). It is calculated using the following formula, where $a$ and $b$ are bounding boxes represented by sets of pixels.
     \begin{equation}
       IOU(a,b) = \frac{a \cap b}{a \cup b}
     \end{equation}
@@ -154,7 +154,7 @@ Bounding boxes are represented internally by an object that holds the PASCAL Vis
            \includegraphics[width=\textwidth]{{bounding/verticalIOU.jpg}}
        \end{subfigure}
     \end{center}
-    To find the 1D IOUs of a pair of bounding boxes the boxes are treated as one dimensional objects and the IOU is found as normal, calculating the intersection and union for the $x$ and $y$ dimensions separately. In Figure \ref{fig:horizonalIOU} the horizonal IOU is low, with the intersection of the sets in 1D (blue region) being divided by the the union of the sets (green and blue regions). Figure \ref{fig:verticalIOU} has a high veritical IOU, with the intersection of the sets (blue region) being divided by the the union of the sets (green and blue regions).
+    To find the 1D IOUs of a pair of bounding boxes the boxes each treated as one dimensional objects and the IOU is found as normal, calculating the intersection and union for the $x$ and $y$ dimensions separately. In Figure \ref{fig:horizonalIOU} the horizonal IOU is low, with the intersection of the sets in 1D (blue region) being divided by the union of the sets (green and blue regions). Figure \ref{fig:verticalIOU} has a high vertical IOU, with the intersection of the sets (blue region) being divided by the union of the sets (green and blue regions).
 \end{figure}
 
 \subsection{Connected Components}

@@ -1,3 +1,6 @@
+from src.util.line_util import get_line_centers
+
+
 def link_bboxes(bboxes):
     """
     Takes in a list of bounding boxes and generates a list of lists of
@@ -68,7 +71,7 @@ def remove_oversize_bboxes(lines, max_sub_bboxes=1):
     # increase count by one to allow for a bounding boxes own center to be included without removing
     max_sub_bboxes += 1
     # get all bounding boxes to
-    all_centers = [bbox.center for line in lines for bbox in line]
+    all_centers = [center for line in lines for center in get_line_centers(line)]
     # store boxes at contain <max_sub_bboxes> bbox centers inside them
     oversize_bboxes = []
     # for each line, attempt to remove all bounding boxes that are too big, maintaining line integrity

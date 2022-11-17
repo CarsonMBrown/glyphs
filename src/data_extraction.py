@@ -7,7 +7,7 @@ from collections import defaultdict
 import cv2
 import numpy as np
 
-from src.util.bbox_util import coco_to_yolo
+from src.util.bbox_util import BBox
 from src.util.dir_util import split_image_name_extension, get_file_name
 from src.util.glyph_util import glyph_to_name, glyph_to_glyph
 from src.util.img_util import plot_lines
@@ -107,8 +107,8 @@ class CocoReader:
 
         self.name_to_ann = defaultdict(list)
         for a in self.annotations:
-            id = ann_cat_id(a)
-            cat = self.id_to_cat[id]
+            ident = ann_cat_id(a)
+            cat = self.id_to_cat[ident]
             name = cat_name(cat)
             self.name_to_ann[name].append(a)
 
@@ -159,7 +159,7 @@ def unify_vert_spans(s1, s2):
 def divide_into_lines(ann):
     spans = []
     lines = defaultdict(list)
-    ann = sorted(ann, key=lambda a: ann_x(a))
+    ann = sorted(ann, key=lambda x: ann_x(x))
     for a in ann:
         span = vert_span(a)
         similar_index = overlapping_vert_span(spans, span)
@@ -172,8 +172,10 @@ def divide_into_lines(ann):
     return [lines[i] for i in sorted(lines.keys(), key=lambda l: spans[l][0])]
 
 
-def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_filter=[],
+def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_filter=None,
                    glyphs_per_footmark_type_limit=None):
+    if quality_filter is None:
+        quality_filter = []
     coco = CocoReader(coco_dir)
     glyphs_per_footmark_type = {}
 
@@ -241,9 +243,9 @@ def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):
             glyph = glyph_to_name(annotation_to_glyph(annotation, coco))
             if not mono_class:
                 labels.add(glyph)
+    label_map = {}
     if not mono_class:
         labels = list(sorted(labels))
-        label_map = {}
         for i, l in enumerate(labels):
             label_map[l] = i
             print(f"{i}: {l}")
@@ -252,7 +254,8 @@ def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):
         with open(os.path.join(out_dir, img_name + ".txt"), mode="w") as f:
             for annotation in annotations:
                 glyph = glyph_to_name(annotation_to_glyph(annotation, coco))
-                bbox_cx, bbox_cy, bbox_dx, bbox_dy = coco_to_yolo(annotation["bbox"], img_size)
+                bbox = BBox.from_coco(*annotation["bbox"])
+                bbox_cx, bbox_cy, bbox_dx, bbox_dy = bbox.yolo(img_size)
                 if not mono_class:
                     f.write(f"{label_map[glyph]} {bbox_cx} {bbox_cy} {bbox_dx} {bbox_dy} \n")
                 else:
@@ -299,14 +302,14 @@ def extract_text(coco_dir, in_dir, export_dir, show_images=False):
     for image in coco.images:
         img_path = image["img_url"]
         img_name = get_file_name(img_path)
-        img = cv2.imread(os.path.join(in_dir, img_path))
 
-        centers, glyph_map = get_glyph_centers(image)
-        w_mean, _ = get_bbox_dim_means(image)
+        centers, glyph_map = get_glyph_centers(coco, image)
+        w_mean, _ = get_bbox_dim_means(coco, image)
         max_line_gap = 3 * w_mean
-        _, h_sigma = get_bbox_dim_sigmas(image)
+        _, h_sigma = get_bbox_dim_sigmas(coco, image)
 
         lines = []
+        line = None
         for c in sorted(centers, key=lambda x: x[0]):
             new_line = True
             for line in lines:
@@ -339,7 +342,7 @@ def get_glyph_centers(coco, image):
     glyph_centers = [(
         get_bounding_box_center(*annotation["bbox"]),
         glyph_to_glyph(cat_name(coco.id_to_cat[annotation["category_id"]])))
-        for annotation in get_annotations(image)
+        for annotation in get_annotations(coco, image)
     ]
     glyph_map = {}
     for gc in glyph_centers:
@@ -433,11 +436,11 @@ def lines_to_glyphs(lines, glyph_map):
     return [glyph_map[point] for line in lines for point in line]
 
 
-def get_bbox_dims(image):
+def get_bbox_dims(coco, image):
     # get bounding boxs
-    bboxs = np.array([annotation["bbox"] for annotation in get_annotations(image)])
+    bboxes = np.array([annotation["bbox"] for annotation in get_annotations(coco, image)])
     # return lists of bbox width and height by rotating the list of bounding boxes
-    return bboxs.swapaxes(0, 1)[2:]
+    return bboxes.swapaxes(0, 1)[2:]
 
 
 def get_bbox_dist_and_angle_from_point(p1, p2):
@@ -449,15 +452,15 @@ def get_bbox_dist_and_dy_sigma_from_point(p1, p2, h_sigma):
     return math.dist(p1, p2), abs(p1[1] - p2[1]) / h_sigma
 
 
-def get_bbox_dim_means(image):
+def get_bbox_dim_means(coco, image):
     # get widths and heights of bboxes
-    ws, hs = get_bbox_dims(image)
+    ws, hs = get_bbox_dims(coco, image)
     # return means
     return ws.mean(), hs.mean()
 
 
-def get_bbox_dim_sigmas(image):
+def get_bbox_dim_sigmas(coco, image):
     # return std-devs
-    ws, hs = get_bbox_dims(image)
+    ws, hs = get_bbox_dims(coco, image)
     # get widths and heights of bboxes
     return ws.std(), hs.std()
