@@ -1,7 +1,18 @@
 import os.path
+from functools import partial
 
+import cv2
+from numpy import arange
+
+from src.bounding.yolo import yolo
 from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
+from src.classification.markov import markov
 from src.classification.vector_learning import nn_factory
+from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
+from src.line_recognition.bbox_connection import link_bboxes, remove_bbox_intersections
+from src.util.glyph_util import get_classes_as_glyphs
+from src.util.img_util import plot_bboxes, plot_lines
+from src.util.line_util import get_line_centers
 from src.util.torch_dataloader import ImageLoader
 
 DATASET_DIR = "dataset"
@@ -86,107 +97,94 @@ def eval_model():
         print(f"{epoch}, {avg_precision}, {avg_recall}, {avg_fscore}")
 
 
-if __name__ == '__main__':
-    # data_extraction.generate_yolo_labels(COCO_TRAINING_DIR, TRAIN_LABEL_MONO_BINARY_DIR, mono_class=True)
-    # dir_util.split_eval_data(TRAIN_IMAGE_MONO_BINARY_DIR,
-    #                          TRAIN_LABEL_MONO_BINARY_DIR,
-    #                          EVAL_IMAGE_MONO_BINARY_DIR,
-    #                          EVAL_LABEL_MONO_BINARY_DIR)
+def deep_eval_model():
+    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(os.path.join(DATASET_DIR, "perseus_25000.txt"),
+                                                                   meta_data,
+                                                                   EVAL_RAW_GLYPHS_DIR, batch_size=8,
+                                                                   loader=ImageLoader,
+                                                                   transform=ResNext101LSTM.transform_classify)
 
-    # data_extraction.extract_glyphs(COCO_TRAINING_DIR,
-    #                                TRAIN_IMAGE_MONO_RAW_DIR,
-    #                                TRAIN_RAW_GLYPHS_DIR)
-    # data_extraction.extract_glyphs(COCO_TRAINING_DIR,
-    #                                EVAL_IMAGE_MONO_RAW_DIR,
-    #                                EVAL_RAW_GLYPHS_DIR)
+    log_markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
+                                                get_classes_as_glyphs(),
+                                                cache_path=os.path.join("dataset", "perseus_log.markov"),
+                                                log=True,
+                                                overwrite=False)
+    markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
+                                            get_classes_as_glyphs(),
+                                            cache_path=os.path.join("dataset", "perseus.markov"),
+                                            overwrite=False)
 
-    # binarize.cnn(INPUT_DIR, CONFIDENCE_DIR, threshold=None)
+    model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, dataset=eval_dataset, resume=False)
 
-    # templates_vector, template_class = alex_init(ARTIFICIAL_TEMPLATE_GLYPHS_DIR)
-    # all_vectors, all_classes = alex_init(BINARIZED_GLYPHS_DIR)
-    # alex_knn(templates_vector, template_class, all_vectors, all_classes)
+    cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
+                                                          display_cm=False, seed=0, top_k=1,
+                                                          prediction_modifier=partial(
+                                                              markov.top_n_markov_optimization,
+                                                              log_markov_chain,
+                                                              n=1,
+                                                          ))
+    print(p, r, fs)
 
-    # print("Loading Model...")
-    # model, _ = nn_factory.load_model(ResNetLSTM, input_size=0, load_epoch=105, resume=False)
-    #
-    # brg_img = cv2.imread(
-    #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\P_Hamb_graec_665.jpg")
-    # # brg_img = cv2.imread(
-    # #     r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\PSI_XIV_1377r.jpg")
-    # rgb_img = cv2.cvtColor(brg_img, cv2.COLOR_BGR2RGB)
-    #
-    # bboxes = yolo.sliding_glyph_window(rgb_img)
-    #
-    # valid_boxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
-    #
-    # lines, (over_size_bboxes, duplicate_bboxes) = bbox_connection.link_bboxes(bboxes)
-    #
-    # nn_factory.classify(model, lines, rgb_img, ResNetLSTM.transform_classify)
-    #
-    # for line in lines:
-    #     for bbox in line:
-    #         print(bbox.get_class())
-    #         cv2.imshow("", bbox.crop(brg_img))
-    #         cv2.waitKey(0)
+    for u in arange(0, 1.01, 0.01):
+        u = round(u, 2)
+        cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
+                                                              display_cm=False, seed=0, top_k=1,
+                                                              prediction_modifier=partial(
+                                                                  markov.top_n_markov_optimization,
+                                                                  log_markov_chain,
+                                                                  n=2,
+                                                                  uncertainty_threshold=u
+                                                              ))
+        print(u, p, r, fs)
 
-    # overlay = img.copy()
-    #
-    # plot_bboxes(img, valid_boxes, color=(0, 0, 0), wait=None)
-    #
+
+def generate_line_images():
+    input_path = "dataset/display/line_generation/"
+    export_path = "output_data/line_generation/"
+    img_names = [
+        # "P_Hamb_graec_665",
+        # "PSI_XIV_1377r",
+        "G_02317_26742_Pap",
+        # "G_26734_c"
+    ]
+    for img_name in img_names:
+        display_lines(cv2.imread(input_path + img_name + ".jpg"),
+                      save_path=export_path + img_name + ".png")
+
+
+def display_lines(brg_img, *, save_path=None):
+    rgb_img = cv2.cvtColor(brg_img, cv2.COLOR_BGR2RGB)
+    bboxes = yolo.sliding_glyph_window(rgb_img)
+
+    valid_bboxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
+
+    lines, _ = link_bboxes(valid_bboxes)
+    lines = remove_bbox_intersections(lines)
+
+    overlay = brg_img.copy()
+
+    valid_bboxes = [bbox for line in lines for bbox in line]
+
+    plot_bboxes(brg_img, valid_bboxes, color=(0, 0, 0), wait=None)
+
     # plot_bboxes(overlay, over_size_bboxes, color=(0, 0, 255), wait=None)
     # plot_bboxes(overlay, duplicate_bboxes, color=(0, 165, 255), wait=None)
-    #
-    # alpha = .5
-    # img = cv2.addWeighted(overlay, alpha, img, 1 - alpha, 0)
-    #
-    # line_centers = []
-    # for line in lines:
-    #     line_centers.append(get_line_centers(line))
-    #
-    # plot_lines(img, line_centers)
 
-    train_model()
+    alpha = 1
+    img = cv2.addWeighted(overlay, 1 - alpha, brg_img, alpha, 0)
+
+    line_centers = []
+    for line in lines:
+        line_centers.append(get_line_centers(line))
+
+    plot_lines(img, line_centers)
+
+    cv2.imwrite(save_path, img)
+
+
+if __name__ == '__main__':
+    # train_model()
     # eval_model()
+    # deep_eval_model()
 
-    # eval_dataset, eval_dataloader = nn_factory.generate_dataloader(os.path.join(DATASET_DIR, "perseus_25000.txt"),
-    #                                                                meta_data,
-    #                                                                EVAL_RAW_GLYPHS_DIR, batch_size=8,
-    #                                                                loader=ImageLoader,
-    #                                                                transform=ResNext101LSTM.transform_classify)
-    #
-    # log_markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
-    #                                             get_classes_as_glyphs(),
-    #                                             cache_path=os.path.join("dataset", "perseus_log.markov"),
-    #                                             log=True,
-    #                                             overwrite=False)
-    # markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
-    #                                         get_classes_as_glyphs(),
-    #                                         cache_path=os.path.join("dataset", "perseus.markov"),
-    #                                         overwrite=False)
-
-    # model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, dataset=eval_dataset, resume=False)
-
-    # cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
-    #                                                       display_cm=False, seed=0, top_k=1,
-    #                                                       prediction_modifier=partial(
-    #                                                           markov.top_n_markov_optimization,
-    #                                                           log_markov_chain,
-    #                                                           n=1,
-    #                                                       ))
-    # print(p, r, fs)
-
-    # for u in arange(0, 1.01, 0.01):
-    #     u = round(u, 2)
-    #     cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
-    #                                                           display_cm=False, seed=0, top_k=1,
-    #                                                           prediction_modifier=partial(
-    #                                                               markov.top_n_markov_optimization,
-    #                                                               log_markov_chain,
-    #                                                               n=2,
-    #                                                               uncertainty_threshold=u
-    #                                                           ))
-    #     print(u, p, r, fs)
-
-    #
-    # avg_precision, avg_recall, avg_1fscore = nn_factory.eval_model(model, eval_dataloader, average="macro", seed=0)
-    # print(avg_precision, avg_recall, avg_fscore)
+    generate_line_images()

@@ -1,6 +1,5 @@
 from src.bounding.connected_components import get_connected_component_bounding_boxes, bound_and_render
 from src.util.bbox_util import BBox
-from src.util.line_util import get_mean_line_dims
 
 
 def export_connected_component(img_in_dir, img_out_dir):
@@ -42,15 +41,14 @@ def get_minimal_line_bounding_boxes(binary_img, lines):
     """
     cc_bboxes = get_connected_component_bounding_boxes(binary_img)
 
+    new_lines = []
     for line in lines:
-        mean_width, mean_height = get_mean_line_dims(line)
+        new_line = []
         for bbox in line:
-            cropped_bbox, cropped = crop_to_content(bbox, cc_bboxes, maintain_center=True)
-            if bbox.height < mean_height:
-                bbox.set_height(mean_height)
-            if not cropped:
-                continue
-    return lines
+            cropped_bbox, _ = crop_to_content(bbox, cc_bboxes, maintain_center=True)
+            new_line.append(cropped_bbox)
+        new_lines.append(new_line)
+    return new_lines
 
 
 def crop_to_content(bbox, cc_bboxes, *, maintain_center=False):
@@ -62,6 +60,7 @@ def crop_to_content(bbox, cc_bboxes, *, maintain_center=False):
             x_min, y_min = min(x_min, cc_bbox.x_min), min(x_min, cc_bbox.y_min)
             x_max, y_max = max(x_max, cc_bbox.x_max), max(x_max, cc_bbox.y_max)
             cropped = True
+    # if bbox was cropped, maintain center if needed or make clone of bounding box and return
     if cropped:
         if not maintain_center:
             bbox = BBox(x_min, y_min, x_max, y_max, probabilities=bbox.probabilities, uuid=bbox.uuid)
@@ -71,8 +70,21 @@ def crop_to_content(bbox, cc_bboxes, *, maintain_center=False):
 
 
 def recenter_bbox(bbox, x_max, x_min, y_max, y_min):
+    """
+    Increases the size of the bounding box region passed into keep the center in the same place, and generates a copy
+    of the passed in bounding box with the new dimensions
+    :param bbox: bbox to copy and keep center of
+    :param x_max:
+    :param x_min:
+    :param y_max:
+    :param y_min:
+    :return:
+    """
     cx, cy = bbox.center
+    # get bigger x dist from center
     max_dx = max(abs(x_min - cx), abs(x_max - cx))
+    # get bigger y dist from center
     max_dy = max(abs(y_min - cy), abs(y_max - cy))
+    # generate new bounding box with the biggest size that is still within at least two of the bounds passed in
     return BBox(cx - max_dx, cy - max_dy, cx + max_dx, cy + max_dy,
                 probabilities=bbox.probabilities, uuid=bbox.uuid)

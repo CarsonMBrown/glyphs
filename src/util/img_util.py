@@ -53,6 +53,7 @@ def plot_lines(img, lines, *, wait=0, sort=True):
     :param img:
     :param lines:
     :param wait:
+    :param sort: if the lines should be sorted before display (for random colors)
     :return:
     """
     global color_index
@@ -66,10 +67,9 @@ def plot_lines(img, lines, *, wait=0, sort=True):
         color = random_color()
         if len(line) > 1:
             for i, p in enumerate(line[:-1], 1):
-                img = cv2.line(img, p, line[i], color=color, thickness=5)
+                img = cv2.line(img, p, line[i], color=color, thickness=1)
         else:
-            print(line[0])
-            img = cv2.circle(img, line[0], 1, color=color, thickness=5)
+            img = cv2.circle(img, line[0], 1, color=color, thickness=1)
     cv2.imshow("", img)
     cv2.waitKey(wait)
 
@@ -88,7 +88,7 @@ def plot_bboxes(img, bboxes, *, wait=0, color=None):
     for bbox in bboxes:
         img = cv2.rectangle(img, (bbox.x_min, bbox.y_min), (bbox.x_max, bbox.y_max),
                             color=random_color() if color is None else color,
-                            thickness=2)
+                            thickness=1)
     if wait is not None and wait >= 0:
         cv2.imshow("", img)
         cv2.waitKey(wait)

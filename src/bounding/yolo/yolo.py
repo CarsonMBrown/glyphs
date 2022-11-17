@@ -3,7 +3,7 @@ import os.path
 import cv2
 import torch
 
-from src.evaluation.bbox_eval import get_unique_bboxes
+from src.evaluation.bbox_eval import get_unique_bboxes, get_non_enclosed_bboxes
 from src.util.bbox_util import BBox
 from src.util.img_util import plot_bboxes
 
@@ -56,12 +56,15 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
                 window_y_max - window_step if window_y_max != y_max else y_max
             )
             # get bboxes fully contained by the window
-            potential_bboxes = get_bounding_boxes(find_glyphs(img[dy:window_y_max, dx:window_x_max]),
+            found_glyphs = find_glyphs(img[dy:window_y_max, dx:window_x_max])
+            potential_bboxes = get_bounding_boxes(found_glyphs,
                                                   offset_x=dx,
                                                   offset_y=dy)
+            # TODO change sliding window once metrics are in place
             valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
             bboxes += valid_bboxes
 
+            # if exporting images
             if export_path is not None:
                 window = BBox(dx, dy, window_x_max, window_y_max)
                 temp_img = cv2.cvtColor(img.copy(), cv2.COLOR_RGB2BGR)
@@ -72,7 +75,9 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
                 plot_bboxes(temp_img, bboxes, color=(0, 0, 0), wait=None)
                 cv2.imwrite(os.path.join(export_path, f"window_{dx}_{dy}.png"), temp_img)
 
-    return get_unique_bboxes(bboxes)
+    unique_bboxes = get_unique_bboxes(bboxes)
+    non_internal_bboxes = get_non_enclosed_bboxes(unique_bboxes)
+    return non_internal_bboxes
 
 
 def show_result(result):

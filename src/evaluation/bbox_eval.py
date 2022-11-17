@@ -1,5 +1,6 @@
-import numpy as np
 from numpy import mean
+
+from src.util.bbox_util import get_mean_dims
 
 
 def mean_iou(bbox, bboxes):
@@ -19,6 +20,10 @@ def get_unique_bboxes(bboxes, iou_threshold=.8):
     return unique_bboxes
 
 
+def get_non_enclosed_bboxes(bboxes):
+    return [bbox for bbox in bboxes if len(bbox.get_enclosing(bboxes)) == 0]
+
+
 def remove_bbox_outliers(bboxes, *, x_min_percent=.5, x_max_percent=2, y_min_percent=.5, y_max_percent=2):
     """
     Removes all bounding boxes where the width or height of the bounding box is more/less than the allowed
@@ -30,11 +35,11 @@ def remove_bbox_outliers(bboxes, *, x_min_percent=.5, x_max_percent=2, y_min_per
     :param y_max_percent:
     :return:
     """
-    dx_mean, dy_mean = get_mean_dimensions(bboxes)
+    dx_mean, dy_mean = get_mean_dims(bboxes)
     return [
         bbox for bbox in bboxes if
-        dx_mean * x_min_percent <= (bbox.x_max - bbox.x_min) <= dx_mean * x_max_percent or
-        dy_mean * y_min_percent <= (bbox.y_max - bbox.y_min) <= dy_mean * y_max_percent
+        dx_mean * x_min_percent <= bbox.width <= dx_mean * x_max_percent or
+        dy_mean * y_min_percent <= bbox.height <= dy_mean * y_max_percent
     ]
 
 
@@ -52,9 +57,3 @@ def get_bbox_outliers(bboxes, *, x_min_percent=.5, x_max_percent=2, y_min_percen
     non_outliers = remove_bbox_outliers(bboxes, x_min_percent=x_min_percent, x_max_percent=x_max_percent,
                                         y_min_percent=y_min_percent, y_max_percent=y_max_percent)
     return [bbox for bbox in bboxes if bbox not in non_outliers]
-
-
-def get_mean_dimensions(bboxes):
-    dx_mean, dy_mean = mean(
-        np.array([[bbox.x_max - bbox.x_min, bbox.y_max - bbox.y_min] for bbox in bboxes]).transpose(), axis=1)
-    return dx_mean, dy_mean

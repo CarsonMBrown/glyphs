@@ -1,4 +1,5 @@
 import math
+from statistics import mean
 from uuid import uuid4
 
 import numpy as np
@@ -66,6 +67,24 @@ class BBox:
         self.y_max = self.y_min + new_height
         self.recalculate_reference_values()
 
+    def trim(self, amount, *, side="r"):
+        """
+        Trims some amount of pixels off the given side
+        :param amount: how much to trim off of given side
+        :param side: right, left, top, bottom
+        :return: None
+        """
+        if side == "r":
+            self.x_max -= amount
+        elif side == "l":
+            self.x_min += amount
+        elif side == "b":
+            self.y_max -= amount
+        elif side == "t":
+            self.y_min += amount
+
+        self.recalculate_reference_values()
+
     def copy(self):
         return BBox(self.x_min, self.y_min, self.x_max, self.y_max, probabilities=self.probabilities, uuid=self.uuid)
 
@@ -106,6 +125,9 @@ class BBox:
                 self.x_min >= other.x_min and self.y_min >= other.y_min and
                 self.x_max <= other.x_max and self.y_max <= other.y_max
         )
+
+    def get_enclosing(self, others):
+        return [other for other in others if self != other and self.is_inside(other)]
 
     def contains_point(self, point, *, dimension_wise=False, allow_border=True):
         """
@@ -165,15 +187,21 @@ class BBox:
         cosine_angle = dot_product / (math.sqrt(x1 * x1 + y1 * y1) * math.sqrt(x2 * x2 + y2 * y2))
         return math.degrees(math.acos(cosine_angle))
 
+    def edge_distance(self, other):
+        """Returns the x and y distances (dx,dy) between the edges of two bboxes.
+        Only defined for non-intersecting boxes."""
+        x_dist = max(other.x_min - self.x_max, self.x_min - other.x_max)
+        y_dist = max(other.y_min - self.y_max, self.y_min - other.y_max)
+        return x_dist, y_dist
+
     def relative_edge_distance(self, other):
         """Returns the x and y distances (dx,dy) between the edges of two bboxes as the
         percentage of the mean width/height of the two bounding boxes.
         Only defined for non-intersecting boxes."""
-        mean_width = (self.x_max + other.x_max - self.x_min - other.x_min)
-        mean_height = (self.y_max + other.y_max - self.y_min - other.y_min)
-        x_dist = max(other.x_min - self.x_max, self.x_min - other.x_max) / mean_width
-        y_dist = max(other.y_min - self.y_max, self.y_min - other.y_max) / mean_height
-        return x_dist, y_dist
+        mean_width = (self.width + other.width) / 2
+        mean_height = (self.height + other.height) / 2
+        x_dist, y_dist = self.edge_distance(other)
+        return x_dist / mean_width, y_dist / mean_height
 
     def crop(self, img):
         return img[self.y_min:self.y_max + 1, self.x_min:self.x_max + 1]
@@ -192,6 +220,11 @@ class BBox:
 
     def __eq__(self, other):
         return self.x_min == other.x_min and self.center == other.center and self.area == self.area
+
+    def __repr__(self):
+        if self.probabilities is None:
+            return str(self.pascal())
+        return str(self.pascal()) + ":" + self.get_class_probabilities()
 
     def __str__(self):
         if self.probabilities is None:
@@ -219,3 +252,14 @@ def linear_combined_area(max1, max2, min1, min2):
     :return:
     """
     return max1 + max2 - min1 - min2
+
+
+def get_mean_dims(bbox):
+    """Return mean (as int) bbox width and height for a line"""
+    mean_width = int(mean([bbox.width for bbox in bbox]))
+    mean_height = int(mean([bbox.height for bbox in bbox]))
+    return mean_width, mean_height
+
+
+def get_bbox_pairs(bboxes):
+    return zip(bboxes[:-1], bboxes[1:])

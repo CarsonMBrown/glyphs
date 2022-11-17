@@ -1,3 +1,6 @@
+from math import floor, ceil
+
+from src.util.bbox_util import get_bbox_pairs
 from src.util.line_util import get_line_centers
 
 
@@ -33,7 +36,7 @@ def link_bboxes(bboxes):
                     line.append(bbox_other)
                     break
 
-        # add line to list of lines
+        # add line to list of lines, always maintaining an x based sort
         lines.append(line)
 
     # remove erroneous bounding boxes, saving removed bboxes to new lists
@@ -41,8 +44,17 @@ def link_bboxes(bboxes):
     duplicate_bboxes = remove_duplicate_bboxes(lines)
     # join lines together (if possible) after cleaning
     lines = join_lines(lines)
-    # remove
     return sorted_lines(lines), (oversize_bboxes, duplicate_bboxes)
+
+
+def remove_bbox_intersections(lines):
+    for line in lines:
+        for bbox, bbox_other in get_bbox_pairs(line):
+            inter_x, _ = bbox.intersections(bbox_other)
+            if inter_x > 0:
+                bbox.trim(floor(inter_x / 2), side="r")
+                bbox_other.trim(ceil(inter_x / 2), side="l")
+    return lines
 
 
 def sorted_lines(lines):
@@ -60,7 +72,7 @@ def sorted_lines(lines):
 
 def remove_oversize_bboxes(lines, max_sub_bboxes=1):
     """
-    Removes bboxes from lines that contain the centers of more than max_sub_bboxes other bounding boxes
+    Removes bboxes from lines that contain the centers of more than <max_sub_bboxes> other bounding boxes
     :param lines:
     :param max_sub_bboxes:
     :return:
@@ -120,10 +132,17 @@ def join_lines(lines):
     :param lines:
     :return: a new list of lines
     """
+    # TODO
+    # # for each line, if it has an element in common with another, join them
+    # for i, line in enumerate(lines):
+    #     for line_other in lines[i + 1:]:
+    #         if lines_intersect(line, line_other):
+    #             line += line_other
+    #             lines.remove(line_other)
     # for each line, if it intersects with another line (after it in the list), join them together
     for i, line in enumerate(lines):
         for line_other in lines[i + 1:]:
-            if lines_intersect(line, line_other):
+            if is_line_valid(line + line_other):
                 line += line_other
                 lines.remove(line_other)
     return lines
@@ -139,24 +158,26 @@ def lines_intersect(line1, line2):
     return len([value for value in line1 if value in line2]) > 0
 
 
-def is_line_valid(line, x_rel_distance_threshold=.05):
+def is_line_valid(line, x_rel_distance_threshold=.2):
     """
     Checks that a line is valid, based on checking if the line, assuming an x-value based ordering of bboxes
     in the line, that each bbox touches (or gets quite close to) the bbox next to it
     :param line:
-    :param x_rel_distance_threshold: how close bboxes need to be (relative to average width)
+    :param x_rel_distance_threshold: how close bboxes need to be
     :return:
     """
+    line = sorted(line)
     # for each pair of bboxes, (assuming x-value based ordering)
-    for bbox, bbox_other in zip(line[:-1], line[1:]):
+    for bbox, bbox_other in get_bbox_pairs(line):
         # get line centers and check if each box's center is in the others valid neighbor range
         _, in_other_y = bbox_other.contains_center(bbox, dimension_wise=True)
         _, other_in_y = bbox.contains_center(bbox_other, dimension_wise=True)
+        # Both bboxes centers must be in the y range of the others
         if not in_other_y or not other_in_y:
-            return False  # if not, exit and return false
+            return False
         # check if the bboxes overlap or are close in the x direction
         iou_x, iou_y = bbox.dimensional_iou(bbox_other)
-        x_rel_distance, y_rel_distance = bbox.relative_edge_distance(bbox_other)
-        if iou_x == 0 or x_rel_distance > x_rel_distance_threshold:
+        x_rel_dist, _ = bbox.relative_edge_distance(bbox_other)
+        if iou_x == 0 and x_rel_dist > x_rel_distance_threshold:
             return False  # if not, exit and return false
     return True  # valid only if no pair is invalid
