@@ -7,6 +7,7 @@ from collections import defaultdict
 import cv2
 import numpy as np
 
+from src.bounding.bound import get_minimal_bounding_boxes_v2
 from src.util.bbox_util import BBox
 from src.util.dir_util import split_image_name_extension, get_file_name
 from src.util.glyph_util import glyph_to_name, glyph_to_glyph
@@ -232,6 +233,46 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
                              ))
     with open(os.path.join(out_dir, "meta.csv"), mode="w", encoding="UTF_8", newline='') as meta_file:
         csv.writer(meta_file).writerows(metadata)
+
+
+def extract_cropped_glyphs(coco_dir, in_dir, binarized_dir, out_dir, write_binary_guides=False):
+    coco = CocoReader(coco_dir)
+    for img, img_name, img_extension, _, annotations in get_image_and_data(coco, in_dir):
+        binary_img = cv2.imread(os.path.join(binarized_dir, img_name + ".png"), cv2.IMREAD_GRAYSCALE)
+        bboxes = []
+        out_paths = []
+        for glyph_count, annotation in enumerate(annotations):
+            glyph = annotation_to_glyph(annotation, coco)
+            if glyph_to_name(glyph) == "period":
+                continue
+            tags = annotation["tags"]
+            base_type = tags["BaseType"][0]
+            foot_mark_type = None
+            if "FootMarkType" in tags:
+                foot_mark_type = tags["FootMarkType"][0]
+
+            bboxes.append(BBox.from_coco(*annotation["bbox"]))
+
+            output_file_name = base_type + (
+                "" if foot_mark_type is None else "-" + foot_mark_type) + "-" + img_name + str(glyph_count)
+
+            glyph_path = os.path.join(out_dir, glyph_to_name(glyph))
+            if not os.path.exists(glyph_path):
+                os.makedirs(glyph_path)
+
+            full_glyph_image_path = os.path.join(glyph_path, output_file_name)
+            out_paths.append(full_glyph_image_path + ".png")
+
+        for i, (bbox, path) in enumerate(zip(get_minimal_bounding_boxes_v2(binary_img, bboxes), out_paths)):
+            cropped_img = bbox.crop(img)
+            cv2.imwrite(path, cropped_img)
+            if write_binary_guides:
+                cropped_binary_img = cv2.cvtColor(bboxes[i].crop(binary_img), cv2.COLOR_GRAY2BGR)
+                cropped_binary_img = cv2.rectangle(cropped_binary_img,
+                                                   (bbox.x_min - bboxes[i].x_min, bbox.y_min - bboxes[i].y_min),
+                                                   (bbox.x_max - bboxes[i].x_min, bbox.y_max - bboxes[i].y_min),
+                                                   color=(0, 0, 255))
+                cv2.imwrite(path.replace(".png", "_bin.png"), cropped_binary_img)
 
 
 def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):

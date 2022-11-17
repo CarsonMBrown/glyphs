@@ -23,6 +23,12 @@ class BBox:
         if uuid is None:
             self.uuid = uuid4()
 
+    def offset(self, x, y):
+        self.x_min += x
+        self.x_max += x
+        self.y_min += y
+        self.y_max += y
+
     def calc_dims(self):
         return self.x_max - self.x_min, self.y_max - self.y_min
 
@@ -116,15 +122,17 @@ class BBox:
         inter_min_y, inter_max_y = max(self.y_min, other.y_min), min(self.y_max, other.y_max)
         return max(0, inter_max_x - inter_min_x + 1), max(0, inter_max_y - inter_min_y + 1)
 
-    def is_inside(self, other: "BBox"):
+    def is_inside(self, other: "BBox", *, allow_partial=False):
         """Return True if this bbox is contained in the other bbox, False otherwise,
         allowing the case in which the bounding boxes have the same edge(s)."""
         if not isinstance(other, BBox):
             raise TypeError
-        return (
-                self.x_min >= other.x_min and self.y_min >= other.y_min and
-                self.x_max <= other.x_max and self.y_max <= other.y_max
-        )
+        if allow_partial:
+            x, y = self.intersections(other)
+            return x > 0 and y > 0
+        else:
+            return (self.x_min >= other.x_min and self.x_max <= other.x_max and
+                    self.y_min >= other.y_min and self.y_max <= other.y_max)
 
     def get_enclosing(self, others):
         return [other for other in others if self != other and self.is_inside(other)]

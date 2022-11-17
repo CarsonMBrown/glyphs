@@ -26,6 +26,15 @@ glyph_map = {
     "Ϡ": "Ϡ",  # Sampi
 }
 
+extended_names = ['period', 'alpha', 'beta', 'gamma',
+                  'delta', 'epsilon', 'zeta',
+                  'eta', 'theta', 'iota',
+                  'kappa', 'lambda', 'mu',
+                  'nu', 'xi', 'omicron',
+                  'pi', 'rho', 'sigma',
+                  'tau', 'upsilon', 'phi',
+                  'chi', 'psi', 'omega']
+
 names = ['alpha', 'beta', 'gamma',
          'delta', 'epsilon', 'zeta',
          'eta', 'theta', 'iota',
@@ -59,7 +68,7 @@ def glyph_to_name(glyph, *, look_a_like_glyphs=False):
             glyph = glyph_map[glyph]
     for i, g in enumerate(glyphs):
         if glyph == g:
-            return names[i]
+            return extended_names[i]
     print(glyph)
 
 

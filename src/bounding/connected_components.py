@@ -10,8 +10,13 @@ CENTROID_COLOR = [0, 255, 0]
 
 
 def get_connected_component_bounding_boxes(img):
+    """Takes in a BGR (binary) img and gets the bounding boxes of the connected components"""
     # Invert img so black is non-ink, white is ink
-    inverted_img = cv2.invert(img)
+    # grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # cv2.imshow("", ~img)
+    # cv2.waitKey(0)
+    # inverted_img = cv2.invert(img)
+    inverted_img = ~img
     # Apply the Component analysis function
     _, _, values, _ = cv2.connectedComponentsWithStats(inverted_img, 8, cv2.CV_32S)
     # convert bounding boxes to BBoxes and return

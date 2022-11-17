@@ -8,6 +8,7 @@ from src.bounding.yolo import yolo
 from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
 from src.classification.markov import markov
 from src.classification.vector_learning import nn_factory
+from src.data_extraction import extract_cropped_glyphs
 from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
 from src.line_recognition.bbox_connection import link_bboxes, remove_bbox_intersections
 from src.util.glyph_util import get_classes_as_glyphs
@@ -50,6 +51,7 @@ COCO_TRAINING_DIR = os.path.join("HomerCompTraining")
 COCO_TESTING_DIR = os.path.join("HomerCompTesting")
 
 RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "raw")
+CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "cropped_raw")
 TRAIN_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw")
 TRAIN_RAW_QUALITY_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw_high_quality")
 EVAL_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "raw")
@@ -186,5 +188,5 @@ if __name__ == '__main__':
     # train_model()
     # eval_model()
     # deep_eval_model()
-
-    generate_line_images()
+    # generate_line_images()
+    extract_cropped_glyphs(COCO_TRAINING_DIR, ALL_RAW_DIR, ALL_BINARIZED_DIR, CROPPED_RAW_GLYPHS_DIR)
