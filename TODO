@@ -2,7 +2,7 @@ TODO:
   https://en.wikipedia.org/wiki/Conditional_random_field
   Smoothing for Markov - NO
   log probabilies for Markov - NO
-  cropping - Should be working
+  cropping - working
   height avg, width with middle
   metrics for bounding on actual data
   fix bounding issues (attempt removing sliding window)

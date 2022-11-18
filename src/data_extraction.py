@@ -238,7 +238,15 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
 def extract_cropped_glyphs(coco_dir, in_dir, binarized_dir, out_dir, write_binary_guides=False):
     coco = CocoReader(coco_dir)
     for img, img_name, img_extension, _, annotations in get_image_and_data(coco, in_dir):
+        # load binary img (to be used for cropping)
         binary_img = cv2.imread(os.path.join(binarized_dir, img_name + ".png"), cv2.IMREAD_GRAYSCALE)
+        # if both images don't exist, skip
+        if img is None and binary_img is None:
+            continue
+        # raise potential warning if only one image is missing
+        elif img is None or binary_img is None:
+            print(img_name, img is not None, binary_img is not None)
+
         bboxes = []
         out_paths = []
         for glyph_count, annotation in enumerate(annotations):

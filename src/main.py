@@ -4,6 +4,7 @@ from functools import partial
 import cv2
 from numpy import arange
 
+from src.binarization import binarize
 from src.bounding.yolo import yolo
 from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
 from src.classification.markov import markov
@@ -51,12 +52,13 @@ COCO_TRAINING_DIR = os.path.join("HomerCompTraining")
 COCO_TESTING_DIR = os.path.join("HomerCompTesting")
 
 RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "raw")
-CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "cropped_raw")
 TRAIN_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw")
+TRAIN_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "cropped_raw")
 TRAIN_RAW_QUALITY_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw_high_quality")
-EVAL_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "raw")
-BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "binarized")
 TRAIN_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "binarized")
+EVAL_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "raw")
+EVAL_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "cropped_raw")
+BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "binarized")
 EVAL_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "binarized")
 
 RAW_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "raw")
@@ -189,4 +191,15 @@ if __name__ == '__main__':
     # eval_model()
     # deep_eval_model()
     # generate_line_images()
-    extract_cropped_glyphs(COCO_TRAINING_DIR, ALL_RAW_DIR, ALL_BINARIZED_DIR, CROPPED_RAW_GLYPHS_DIR)
+
+    # extract_cropped_glyphs(COCO_TRAINING_DIR,
+    #                        TRAIN_RAW_DIR,
+    #                        TRAIN_BINARIZED_DIR,
+    #                        TRAIN_CROPPED_RAW_GLYPHS_DIR)
+
+    binarize.cnn(EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
+
+    extract_cropped_glyphs(COCO_TRAINING_DIR,
+                           EVAL_RAW_DIR,
+                           EVAL_BINARIZED_DIR,
+                           EVAL_CROPPED_RAW_GLYPHS_DIR)

@@ -5,6 +5,9 @@ from math import ceil
 
 import cv2
 
+IMAGE_LIST_CACHE_FILE_NAME = "img_list.pickle"
+BY_DIR_IMAGE_CACHE_FILE_NAME = "img_dict.pickle"
+
 
 def split_eval_data(train_img_dir, train_label_dir, eval_img_dir, eval_label_dir, eval_percentage=.3, seed=0):
     """
@@ -49,10 +52,6 @@ def get_input_img_paths(img_in_dir, *, by_dir=False, verbose=True):
         category_dict[c] = [os.path.join(img_in_dir, c, p) for p in
                             get_input_img_paths(os.path.join(img_in_dir, c), verbose=False)]
     return category_dict
-
-
-IMAGE_LIST_CACHE_FILE_NAME = "img_list.pickle"
-BY_DIR_IMAGE_CACHE_FILE_NAME = "img_dict.pickle"
 
 
 def get_input_imgs(img_in_dir, *, by_dir=False, verbose=True, cache=True):
