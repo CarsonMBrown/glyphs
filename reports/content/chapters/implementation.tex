@@ -48,9 +48,30 @@ To form the training data for a language model, the entirety of the Greek sectio
 A perfect binarized version of a papyrus image is defined by a background color and ink color, where the ink is black, and the background is white. Each pixel in an image is altered so that it is either black or white, depending on if it is ink or anything else (background). As no ground truth for ink was given to train on, all the methods for binarization are based on either pre-trained CNNs or algorithmic solutions utilized in similar problems.
 
 \subsection{Clustering}
-\todo{NEW, TODO: ADD FIGURE}
+\todo{NEW}
 
-Clustering based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3d space with their red, green, and blue values being used to determine their location. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background.
+Clustering based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3d space with their red, green, and blue values being used to determine their location \seefig{pixelClustering}. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background \seefig{binarizationClustering}.
+
+\begin{figure}
+    \caption{RGB Pixel Clustering In 3D Space}
+    \label{fig:pixelClustering}
+    \begin{center}
+      \begin{subfigure}[b]{0.45\textwidth}
+           \centering
+           \caption{Pixel Clustering on An Image With Low Color Variation}
+           \label{fig:goodPixelClustering}
+           \includegraphics[width=\textwidth]{{binarization/good_pixel_clustering.png}}
+       \end{subfigure}
+       \hfill
+       \begin{subfigure}[b]{0.45\textwidth}
+           \centering
+           \caption{Pixel Clustering on An Image With High Color Variation}
+           \label{fig:badPixelClustering}
+           \includegraphics[width=\textwidth]{{binarization/bad_pixel_clustering.png}}
+       \end{subfigure}
+    \end{center}
+    Two examples of clustering pixels using RGB color representation to place each pixel in space. These clusterings were generated using Gaussian Mixture Models (GMMs) clustering with $k=5$, with each cluster being colored by the color represented by location in RGB space of the cluster's centroid.
+\end{figure}
 
 \subsection{Filtering}
 \todo{NEW, TODO: ADD FIGURE}
@@ -190,14 +211,26 @@ Once bounding boxes for individual glyphs are generated, they can be grouped tog
 
 \subsection{Point Of Interest Clustering}
 
+The first approach to line bounding is based on the work of Garz et al. \cite{Garz2011, Garz2012}, which utilizes points of interest to group lines together. In this approach, gaussians and the SIFT algorithm are utilized to find points of interest, which are clustered by the DBSCAN algorithm, with an adaption proposed by Daszykowski et al. \cite{Daszykowski}.
+
 \subsubsection{Difference of Gaussians}
 \todo{NEW, TODO: ADD FIGURE}
+
+The first step in this algorithm requires that features be extracted from the images in a scale-invariant way, such that any image size may be utilized without the need for scaling, which could cause information to be lost. To do this, the Difference of Gaussians (DOG) method is utilized. Using the implementation of this algorithm provided by OpenCV \cite{OpenCV}, a collection of gaussian kernels is generated and used to blur a greyscale image to extract high frequency spatial data. As multiple gaussian blurs are preformed, only signals in the image that are between the frequencies of the gaussian kernels remain after the differences of the all the gaussian blurred images is taken and used to construct a new image. This results in an image that contains only the high frequency data of the original image, regardless of the size of the original image.
 
 \subsubsection{Points of Interest \& SIFT}
 \todo{NEW, TODO: ADD FIGURE}
 
+Using the scale-invariant feature transform algorithm (SIFT) \cite{Lowe}, on the high-frequency information extracted by DOG, key points are extracted from the image which are transform, scale, and rotation invariant.
+
+% However, SIFT often creates too many key points, so many are discarded based on their location in the image, removing key points on the edges of objects, allowing the remaining key points to be more optimal for matching and recognition.
+
 \subsubsection{Adaptive DBSCAN}
 \todo{NEW, TODO: ADD FIGURE}
+
+Once points of interest are generated using SIFT, they are clustered by a scale invariant version of Density-Based Spatial Clustering of Applications with Noise (DBSCAN) \cite{Ester} proposed by Daszykowski et al. \cite{Daszykowski}. This method works by first generating $n$ random points in a region with the same size as the image, where $n$ is the number of points of interest that need to be clustered. Then the distance to the $m$th closest point is found for each point, where $m = \frac{n}{25}$. The $95$th percentile is then taken for these distances, which is used as the $\epsilon$ parameter for DBSCAN (the maximum distance for a point to be added to a cluster), with $m$ acting as the minimum number of points required to form a cluster.
+
+The clusters produced by this method can then be considered to be lines, while points outside of clusters are noise or glyphs that are not within lines.
 
 \subsection{Adjacent Glyph Clustering}
 \todo{TODO: FRIDAY 18}

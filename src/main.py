@@ -4,12 +4,10 @@ from functools import partial
 import cv2
 from numpy import arange
 
-from src.binarization import binarize
 from src.bounding.yolo import yolo
-from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
+from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM, ResNextDeepLSTM
 from src.classification.markov import markov
 from src.classification.vector_learning import nn_factory
-from src.data_extraction import extract_cropped_glyphs
 from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
 from src.line_recognition.bbox_connection import link_bboxes, remove_bbox_intersections
 from src.util.glyph_util import get_classes_as_glyphs
@@ -80,10 +78,12 @@ meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 
 def train_model():
     nn_factory.train_model(quick_lang_file, meta_data,
-                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-                           ResNext101LSTM,
-                           epochs=200, batch_size=8, num_workers=0, resume=True, start_epoch=55, loader=ImageLoader,
-                           transforms=[ResNext101LSTM.transform_train, ResNext101LSTM.transform_classify])
+                           TRAIN_CROPPED_RAW_GLYPHS_DIR, EVAL_CROPPED_RAW_GLYPHS_DIR,
+                           ResNextDeepLSTM,
+                           epochs=200, batch_size=8, num_workers=0, resume=False, start_epoch=0, loader=ImageLoader,
+                           transforms=[ResNext101LSTM.transform_train_cropped,
+                                       ResNext101LSTM.transform_classify_cropped],
+                           name="cropped")
 
 
 def eval_model():
@@ -187,19 +187,12 @@ def display_lines(brg_img, *, save_path=None):
 
 
 if __name__ == '__main__':
-    # train_model()
+    train_model()
     # eval_model()
     # deep_eval_model()
     # generate_line_images()
 
-    # extract_cropped_glyphs(COCO_TRAINING_DIR,
-    #                        TRAIN_RAW_DIR,
-    #                        TRAIN_BINARIZED_DIR,
-    #                        TRAIN_CROPPED_RAW_GLYPHS_DIR)
-
-    binarize.cnn(EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
-
-    extract_cropped_glyphs(COCO_TRAINING_DIR,
-                           EVAL_RAW_DIR,
-                           EVAL_BINARIZED_DIR,
-                           EVAL_CROPPED_RAW_GLYPHS_DIR)
+    # in_dir = r"C:\Users\Carson Brown\git\glyphs\dataset\display\binarization"
+    # out_dir = r"C:\Users\Carson Brown\git\glyphs\output_data\eval_binarization\clustering"
+    #
+    # binarize.cluster(in_dir, out_dir)

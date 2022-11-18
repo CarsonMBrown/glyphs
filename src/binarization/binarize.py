@@ -1,3 +1,4 @@
+from src.binarization.clustering.cluster import kmeans
 from src.binarization.dp_linknet import dp_linknet
 from src.binarization.filters import gabor_filter
 from src.binarization.thresholding import input_sensitive_threshold
@@ -36,14 +37,13 @@ def sensitive_threshold(img_in_dir, img_out_dir):
     input_sensitive_threshold.run(img_in_dir, img_out_dir)
 
 
-def clustering(img_in_dir, img_out_dir):
+def cluster(img_in_dir, img_out_dir):
     """
     :param img_in_dir: path to directory containing input images
     :param img_out_dir: path to directory to output images
     :return: None
     """
-    # TODO
-    pass
+    kmeans(img_in_dir, img_out_dir)
 
 
 def cnn(img_in_dir, img_out_dir, threshold=5):

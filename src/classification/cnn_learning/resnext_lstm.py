@@ -156,9 +156,30 @@ class ResNext101LSTM(nn.Module):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
+    transform_train_cropped = transforms.Compose([
+        transforms.Resize(224),
+        transforms.RandomPerspective(distortion_scale=0.2, p=.5),
+        transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),
+        transforms.RandomAffine(degrees=10, shear=10),
+        transforms.RandomResizedCrop(224, scale=(0.9, 1.0), ratio=(0.9, 1.1)),
+        transforms.RandomAdjustSharpness(1.2, p=.1),
+        transforms.RandomAdjustSharpness(1.1, p=.1),
+        transforms.RandomAdjustSharpness(.9, p=.1),
+        transforms.RandomAdjustSharpness(.8, p=.1),
+        transforms.RandomAutocontrast(),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+
     transform_classify = transforms.Compose([
         transforms.Resize(240),
         transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    transform_classify_cropped = transforms.Compose([
+        transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
