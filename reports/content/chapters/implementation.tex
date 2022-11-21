@@ -232,12 +232,18 @@ Once points of interest are generated using SIFT, they are clustered by a scale 
 
 The clusters produced by this method can then be considered to be lines, while points outside of clusters are noise or glyphs that are not within lines.
 
-\subsection{Adjacent Glyph Clustering}
-\todo{TODO: FRIDAY 18}
 
-\subsection{Overlaping Glyph Clustering}
-\todo{TODO: FRIDAY 18}
+\subsection{Adjacent and Overlaping Glyph Clustering}
+\todo{NEW, TODO: ADD FIGURE}
 
+Another method for clustering glyphs is to utilize domain knowledge to link glyph bounding boxes horizontally using close and overlapping bounding boxes. Using this method, glyphs are linked into lines by linking glyphs based on proximity in the x and y directions. Horizontally overlapping bounding boxes are linked if they overlap in they each contain the y coordinate at the center of the other bounding box. Boxes are similarly linked if they are relatively close to each other, based on the average width of the two glyph bounding boxes.
+
+Once rough grouping are generated using this method, the lines are cleaned of extranious and overlarge bounding boxes by removing bounding boxes that have no effect on the validity of the line based on this linking method. Lines are then joined together if possible, to form longer lines.
+
+\subsection{Line Based Bounding Box Cropping}
+\todo{NEW, TODO: ADD FIGURE}
+
+Once glyphs are linked into lines, the bounding boxes of the glyphs in each line can be cut down such that there is no overlap between bounding boxes. For each pair of overlapping bounding boxes, the center of the overlapping region is set as the edge for both bounding boxes, such that the bounding boxes touch, but do not overlap.
 
 \section{Classification}
 

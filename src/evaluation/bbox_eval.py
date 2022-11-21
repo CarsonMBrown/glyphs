@@ -1,6 +1,63 @@
-from numpy import mean
+from statistics import mean
+
+from sklearn.metrics import precision_recall_fscore_support
 
 from src.util.bbox_util import get_mean_dims
+
+
+def get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes):
+    """
+    Pair truths and predictions based on iou. Returns a list of containing tuples such that every truth and predication
+    is included in a tuple, even if no pair is found.
+    :param truth_bboxes:
+    :param pred_bboxes:
+    :return: [(truth, prediction, iou)] with truth or predication = None if no pair was found
+    """
+    truth_pred_pairs = []
+    # get truth bbox with highest iou for each predication and make pair
+    for pred in pred_bboxes:
+        truth, iou = pred.get_pair(truth_bboxes)
+        # only pair if iou > 0, otherwise add pred with None truth and iou of 0
+        if iou > 0:
+            truth_pred_pairs.append((None, pred, 0))
+        else:
+            # only allow truth to be paired with one predication
+            truth_bboxes.remove(truth)
+            truth_pred_pairs.append((truth, pred, iou))
+    # pair all remaining truths with a None value and an iou of 0, denoting no valid pred was found
+    for truth in truth_bboxes:
+        truth_pred_pairs.append((truth, None, 0))
+    return truth_pred_pairs
+
+
+def get_iou_metrics(truth_pred_tuples):
+    """
+    Get bounding box metrics
+    :param truth_pred_tuples: [(truth, prediction, iou)] with truth or predication = None if no pair was found
+    :return: precision, recall, fscore, avg_IOU across all predications
+    """
+    tp = len([1 for _, _, iou in truth_pred_tuples if iou > 0])
+    fp = len([1 for truth, _, iou in truth_pred_tuples if truth is None])
+    fn = len([1 for _, pred, iou in truth_pred_tuples if pred is None])
+    avg_IOU = mean([iou for _, pred, iou in truth_pred_tuples if pred is None])
+    precision, recall = tp / (tp + fp), tp / (tp + fn)
+    fscore = (2 * precision * recall) / (precision + recall)
+    return precision, recall, fscore, avg_IOU
+
+
+def get_class_metrics(truth_pred_tuples):
+    """
+    Get classification metrics
+    :param truth_pred_tuples: [(truth, prediction, iou)] with truth or predication = None if no pair was found
+    :return: precision, recall, fscore
+    """
+    valid_truth_pred_pairs = [(truth.get_class(), pred.get_class()) for truth, pred, iou in truth_pred_tuples if
+                              iou > 0]
+    truths = [truth for truth, pred in valid_truth_pred_pairs]
+    predictions = [pred for truth, pred in valid_truth_pred_pairs]
+    precision, recall, fscore, _ = \
+        precision_recall_fscore_support(truths, predictions, average="weighted", zero_division=0)
+    return precision, recall, fscore
 
 
 def mean_iou(bbox, bboxes):

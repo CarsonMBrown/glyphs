@@ -185,6 +185,11 @@ class BBox:
         union_y = (linear_combined_area(self.y_max, other.y_max, self.y_min, other.y_min) - inter_y)
         return (inter_x / union_x), (inter_y / union_y)
 
+    def get_pair(self, others):
+        bbox_iou_pairs = [(other, self.iou(other)) for other in others]
+        bbox_iou_pairs.sort(key=lambda x: x[1])
+        return bbox_iou_pairs[0]
+
     def get_intersection_angle(self, other: "BBox"):
         """Return the angle (in degrees) between the two bounding box centers"""
         if not isinstance(other, BBox):

@@ -3,7 +3,7 @@ TODO:
   Smoothing for Markov - NO
   log probabilies for Markov - NO
   cropping - working
-  height avg, width with middle
+  height avg, width with middle - Working
   metrics for bounding on actual data
   fix bounding issues (attempt removing sliding window)
 

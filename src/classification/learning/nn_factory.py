@@ -7,10 +7,10 @@ from PIL import Image
 from matplotlib import pyplot as plt
 from sklearn.metrics import precision_recall_fscore_support, top_k_accuracy_score, confusion_matrix, \
     ConfusionMatrixDisplay
+from src.util.torch_dataloader import VectorLoader
 from torch.utils.data import DataLoader
 
 from src.util.glyph_util import get_classes_as_glyphs
-from src.util.torch_dataloader import VectorLoader
 
 SAVE_PATH = os.path.join("weights", "nn")
 GLYPH_CLASSES = get_classes_as_glyphs()
@@ -86,7 +86,7 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
             predictions, v_labels = modify_predictions(prediction_modifier, v_labels, v_outputs)
 
             precision, recall, fscore, _ = \
-                precision_recall_fscore_support(v_labels, predictions, average=average, zero_division=0)
+                precision_recall_fscore_support(v_labels, predictions, average="weighted", zero_division=0)
             running_precision += precision
             running_recall += recall
             running_fscore += fscore
@@ -220,7 +220,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1, weight_decay=0.0004, momentum=0.9)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
+    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.2)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -229,7 +229,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         start_epoch += 1
         for i in range(0, start_epoch + 1):
             optimizer.step()
-            scheduler.step()
+            # scheduler.step()
 
     for epoch in range(start_epoch, epochs + 1):
         print('EPOCH {}:'.format(epoch))
@@ -248,7 +248,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
                    os.path.join(model_path, "rnn_" + str(epoch) + ".pt"))
 
         model.eval()
-        scheduler.step()
+        # scheduler.step()
     return model
 
 

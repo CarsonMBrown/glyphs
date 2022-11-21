@@ -5,7 +5,7 @@ import cv2
 from numpy import arange
 
 from src.bounding.yolo import yolo
-from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM, ResNextDeepLSTM
+from src.classification.cnn_learning.resnext_lstm import ResNext101LSTM, ResNextLongLSTM
 from src.classification.markov import markov
 from src.classification.vector_learning import nn_factory
 from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers
@@ -79,8 +79,9 @@ meta_data = os.path.join(GLYPH_DIR, "meta.csv")
 def train_model():
     nn_factory.train_model(quick_lang_file, meta_data,
                            TRAIN_CROPPED_RAW_GLYPHS_DIR, EVAL_CROPPED_RAW_GLYPHS_DIR,
-                           ResNextDeepLSTM,
-                           epochs=200, batch_size=8, num_workers=0, resume=False, start_epoch=0, loader=ImageLoader,
+                           ResNextLongLSTM,
+                           epochs=200, batch_size=16, num_workers=0, resume=True,
+                           start_epoch=39, loader=ImageLoader,
                            transforms=[ResNext101LSTM.transform_train_cropped,
                                        ResNext101LSTM.transform_classify_cropped],
                            name="cropped")
@@ -187,7 +188,8 @@ def display_lines(brg_img, *, save_path=None):
 
 
 if __name__ == '__main__':
-    train_model()
+    print("Starting...")
+    # train_model()
     # eval_model()
     # deep_eval_model()
     # generate_line_images()
