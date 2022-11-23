@@ -32,7 +32,7 @@ def find_glyphs(img, *, model_local=True):
 
 def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=None):
     """
-    :param img: img to get bboxes from (IN RGB)
+    :param img: img to get bboxes from (IN BGR)
     :param window_size: size of the sliding window to use
     :param window_step: step to take between windows
     :param export_path: if not None, the draws each sliding window to this path as an image
@@ -40,6 +40,8 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
     """
     if export_path is not None:
         os.makedirs(export_path, exist_ok=True)
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     y_max, x_max, _ = img.shape
     bboxes = []
@@ -88,10 +90,10 @@ def results_to_list(result):
     return result.pandas().xyxy[0].values
 
 
-def get_bounding_boxes(result, *, offset_x=0, offset_y=0):
+def get_bounding_boxes(result, *, offset_x=0, offset_y=0, confidence_min=0.513):
     """returns a list of bounding boxes"""
     return [BBox(min_x + offset_x, min_y + offset_y, max_x + offset_x, max_y + offset_y)
-            for min_x, min_y, max_x, max_y, _, _, _ in results_to_list(result)]
+            for min_x, min_y, max_x, max_y, confidence, _, _ in results_to_list(result) if confidence > confidence_min]
 
 
 def get_bounding_box_confidence(result):

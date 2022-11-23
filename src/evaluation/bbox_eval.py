@@ -13,20 +13,27 @@ def get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes):
     :param pred_bboxes:
     :return: [(truth, prediction, iou)] with truth or predication = None if no pair was found
     """
-    truth_pred_pairs = []
     # get truth bbox with highest iou for each predication and make pair
-    for pred in pred_bboxes:
-        truth, iou = pred.get_pair(truth_bboxes)
-        # only pair if iou > 0, otherwise add pred with None truth and iou of 0
-        if iou > 0:
-            truth_pred_pairs.append((None, pred, 0))
-        else:
-            # only allow truth to be paired with one predication
-            truth_bboxes.remove(truth)
-            truth_pred_pairs.append((truth, pred, iou))
+    truth_pred_pairs = get_optimal_pairs(truth_bboxes, pred_bboxes)
     # pair all remaining truths with a None value and an iou of 0, denoting no valid pred was found
     for truth in truth_bboxes:
         truth_pred_pairs.append((truth, None, 0))
+    return truth_pred_pairs
+
+
+def get_optimal_pairs(truth_bboxes, pred_bboxes):
+    truth_pred_pairs = []
+    for pred in pred_bboxes:
+        if len(truth_bboxes) == 0:
+            break
+        truth, iou = pred.get_pair(truth_bboxes)
+        truth_pair, _ = truth.get_pair(pred_bboxes)
+        # only pair if iou > 0 and optimal pair for truth is pred, otherwise add pred with None truth and iou of 0
+        if truth_pair == pred:
+            truth_bboxes.remove(truth)
+            truth_pred_pairs.append((truth, pred, iou))
+        else:
+            truth_pred_pairs.append((None, pred, 0))
     return truth_pred_pairs
 
 

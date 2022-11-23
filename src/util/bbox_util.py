@@ -3,8 +3,9 @@ from statistics import mean
 from uuid import uuid4
 
 import numpy as np
+from scipy.special import softmax
 
-from src.util.glyph_util import index_to_glyph
+from src.util.glyph_util import index_to_glyph, glyph_to_index, get_num_classes
 
 
 class BBox:
@@ -28,6 +29,7 @@ class BBox:
         self.x_max += x
         self.y_min += y
         self.y_max += y
+        self.center = self.calc_center()
 
     def calc_dims(self):
         return self.x_max - self.x_min, self.y_max - self.y_min
@@ -40,7 +42,8 @@ class BBox:
 
     def recalculate_reference_values(self):
         self.width, self.height = self.calc_dims()
-        self.area, self.center = self.calc_area(), self.calc_center()
+        self.area = self.calc_area()
+        self.center = self.calc_center()
 
     @staticmethod
     def from_coco(x_min, y_min, width, height):
@@ -112,6 +115,16 @@ class BBox:
 
     def get_class(self):
         return index_to_glyph(self.get_class_index())
+
+    def get_class_certainty(self):
+        return softmax(self.probabilities)[self.get_class_index()]
+
+    def set_class(self, glyph, n_classes=0):
+        if n_classes == 0:
+            n_classes = get_num_classes()
+        self.probabilities = [0] * n_classes
+        self.probabilities[glyph_to_index(glyph)] = 1
+        return self
 
     def intersections(self, other: "BBox"):
         """Return the intersection of the x and y dimensions between two bboxes"""
@@ -187,7 +200,7 @@ class BBox:
 
     def get_pair(self, others):
         bbox_iou_pairs = [(other, self.iou(other)) for other in others]
-        bbox_iou_pairs.sort(key=lambda x: x[1])
+        bbox_iou_pairs.sort(key=lambda x: x[1], reverse=True)
         return bbox_iou_pairs[0]
 
     def get_intersection_angle(self, other: "BBox"):
@@ -237,12 +250,12 @@ class BBox:
     def __repr__(self):
         if self.probabilities is None:
             return str(self.pascal())
-        return str(self.pascal()) + ":" + self.get_class_probabilities()
+        return str(self.pascal()) + ":" + self.get_class()
 
     def __str__(self):
         if self.probabilities is None:
             return str(self.pascal())
-        return str(self.pascal()) + ":" + self.get_class_probabilities()
+        return str(self.pascal()) + ":" + self.get_class()
 
 
 def bboxes_to_crops(bboxes, img):

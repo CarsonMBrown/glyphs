@@ -5,6 +5,8 @@ from math import ceil
 
 import cv2
 
+from src.util.glyph_util import glyph_to_name, name_to_glyph_class
+
 IMAGE_LIST_CACHE_FILE_NAME = "img_list.pickle"
 BY_DIR_IMAGE_CACHE_FILE_NAME = "img_dict.pickle"
 
@@ -80,11 +82,12 @@ def get_input_imgs(img_in_dir, *, by_dir=False, verbose=True, cache=True):
         return img_list
 
 
-def set_output_dir(img_out_dir):
+def init_output_dir(img_out_dir, verbose=True):
     # SET DIRECTORY FOR OUTPUT
     if not os.path.exists(img_out_dir):
         os.makedirs(img_out_dir)
-    print("Image output directory:", img_out_dir)
+    if verbose:
+        print("Image output directory:", img_out_dir)
 
 
 def clean_dir(temp_dir):
@@ -102,3 +105,24 @@ def get_file_name(img_path):
 
 def split_image_name_extension(img_path):
     return get_file_name(img_path), img_path[img_path.rindex("."):]
+
+
+def write_generated_bboxes(truth_pred_tuples, image_name, image, output_dir, meta_data):
+    bbox_pairs = [(pred, glyph_to_name(truth.get_class())) for truth, pred, iou in truth_pred_tuples if
+                  iou > 0]
+    unknown_bboxes = [pred for truth, pred, iou in truth_pred_tuples if truth is None]
+    for i, (bbox, glyph_name) in enumerate(bbox_pairs):
+        path = os.path.join(output_dir, glyph_name)
+        init_output_dir(path, verbose=False)
+        cv2.imwrite(os.path.join(path, f"{image_name}_{i}.png"), bbox.crop(image))
+        meta_data.append([
+            os.path.join(glyph_name, f"{image_name}_{i}.png"),
+            name_to_glyph_class(glyph_name),
+            image_name,
+            "None",
+            "None"
+        ])
+    path = os.path.join(output_dir, "unknown")
+    init_output_dir(path, verbose=False)
+    for i, bbox in enumerate(unknown_bboxes):
+        cv2.imwrite(os.path.join(path, f"{image_name}_{i}.png"), bbox.crop(image))

@@ -16,13 +16,14 @@ color_pallet = [
 ]
 
 
-def load_image(img_in_dir, img_out_dir, img_path, *, skip_existing=True, gray_scale=False, invert=False):
+def load_image(img_in_dir, img_out_dir, img_path, *, skip_existing=True, gray_scale=False, invert=False,
+               formattable_output=0):
     print("Now processing image:", img_path)
     file_name, file_extension = os.path.splitext(img_path)
     img_input = os.path.join(img_in_dir, img_path)
-    img_output = os.path.join(img_out_dir, file_name + ".png")
+    img_output = os.path.join(img_out_dir, file_name + "{}" * formattable_output + ".png")
     # LOAD IMAGE
-    if os.path.exists(img_output) and skip_existing:
+    if skip_existing and os.path.exists(img_output):
         return None, img_output
     img = cv2.imread(img_input)
     if gray_scale or invert:
@@ -59,6 +60,8 @@ def plot_lines(img, lines, *, wait=0, sort=True):
     global color_index
     color_index = -1
 
+    thickness = 2
+
     # Sort lines by y component of first point in first line
     if sort:
         lines.sort(key=lambda x: x[0][1])
@@ -67,11 +70,12 @@ def plot_lines(img, lines, *, wait=0, sort=True):
         color = random_color()
         if len(line) > 1:
             for i, p in enumerate(line[:-1], 1):
-                img = cv2.line(img, p, line[i], color=color, thickness=1)
+                img = cv2.line(img, p, line[i], color=color, thickness=thickness)
         else:
-            img = cv2.circle(img, line[0], 1, color=color, thickness=1)
-    cv2.imshow("", img)
-    cv2.waitKey(wait)
+            img = cv2.circle(img, line[0], 1, color=color, thickness=thickness)
+    if wait is not None:
+        cv2.imshow("", img)
+        cv2.waitKey(wait)
 
 
 def plot_bboxes(img, bboxes, *, wait=0, color=None):
@@ -88,7 +92,7 @@ def plot_bboxes(img, bboxes, *, wait=0, color=None):
     for bbox in bboxes:
         img = cv2.rectangle(img, (bbox.x_min, bbox.y_min), (bbox.x_max, bbox.y_max),
                             color=random_color() if color is None else color,
-                            thickness=1)
+                            thickness=2)
     if wait is not None and wait >= 0:
         cv2.imshow("", img)
         cv2.waitKey(wait)

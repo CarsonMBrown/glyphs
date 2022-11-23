@@ -1,8 +1,9 @@
+import csv
 import os
 
 
 # TODO coco output format
-def write_coco(file_path, image_bboxes, category_map):
+def write_coco(output_path, image_bboxes, category_map):
     """
     TODO not finished.
 
@@ -12,9 +13,9 @@ def write_coco(file_path, image_bboxes, category_map):
     :param category_map: dict to convert bbox classes (integers) to another representation
     :return: None
     """
-    os.makedirs(file_path, exist_ok=True)
-    cocojson = {"annotations": [], "images": [], "images": [], "categories": []}
-    with open(file_path, encoding="UTF_8") as f:
+    os.makedirs(output_path, exist_ok=True)
+    cocojson = {"annotations": [], "images": [], "categories": []}
+    with open(output_path, encoding="UTF_8") as f:
         for image_path, bboxes in image_bboxes.items():
             for bbox in bboxes:
                 annotation = {
@@ -26,10 +27,17 @@ def write_coco(file_path, image_bboxes, category_map):
 
 
 # TODO pascal output format
-def write_pascal(file_path, image_bboxes):
+def write_pascal(output_path, image_bboxes):
     pass
 
 
-# TODO csv format
-def write_csv(file_path, image_bboxes):
-    pass
+def write_csv(output_path, image_lines):
+    with open(output_path, encoding="UTF_8", mode="w", newline="") as f:
+        csvwriter = csv.writer(f)
+        csvwriter.writerow(["glyph", "certainty", "min_x", "min_y", "max_x", "max_y", "image_path", "line", "number"])
+        for image, lines in image_lines:
+            for i, line in enumerate(lines):
+                for j, bbox in enumerate(line):
+                    csvwriter.writerow(
+                        [bbox.get_class(), bbox.get_class_certainty(), bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max,
+                         image, i, j])

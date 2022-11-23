@@ -180,7 +180,7 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
     coco = CocoReader(coco_dir)
     glyphs_per_footmark_type = {}
 
-    metadata = [("image", "class", "origin_image", "base_type", "foot_mark_type")]
+    metadata = []
 
     for img, img_name, img_extension, _, annotations in get_image_and_data(coco, in_dir):
         for glyph_count, annotation in enumerate(annotations):
@@ -231,6 +231,11 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
                              base_type,
                              foot_mark_type
                              ))
+    write_meta(metadata, out_dir)
+
+
+def write_meta(metadata, out_dir):
+    metadata = [["image", "class", "origin_image", "base_type", "foot_mark_type"]] + metadata
     with open(os.path.join(out_dir, "meta.csv"), mode="w", encoding="UTF_8", newline='') as meta_file:
         csv.writer(meta_file).writerows(metadata)
 
@@ -281,6 +286,11 @@ def extract_cropped_glyphs(coco_dir, in_dir, binarized_dir, out_dir, write_binar
                                                    (bbox.x_max - bboxes[i].x_min, bbox.y_max - bboxes[i].y_min),
                                                    color=(0, 0, 255))
                 cv2.imwrite(path.replace(".png", "_bin.png"), cropped_binary_img)
+
+
+def load_truth(coco, image):
+    return [BBox.from_coco(*annotation["bbox"]).set_class(annotation_to_glyph(annotation, coco))
+            for annotation in get_annotations(coco, image) if annotation_to_glyph(annotation, coco) != "."]
 
 
 def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):
@@ -400,7 +410,11 @@ def get_glyph_centers(coco, image):
 
 
 def get_annotations(coco, image):
-    return [a for a in coco.annotations if a["image_id"] == image["id"]]
+    if isinstance(image, dict):
+        return [a for a in coco.annotations if a["image_id"] == image["id"]]
+    else:
+        image = [i for i in coco.images if get_file_name(i["img_url"]) == image]
+        return get_annotations(coco, image[0])
 
 
 def get_bounding_box_center(x, y, w, h):

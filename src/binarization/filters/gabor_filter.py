@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from src.util.dir_util import get_input_img_paths, set_output_dir
+from src.util.dir_util import get_input_img_paths, init_output_dir
 from src.util.img_util import load_image, save_image
 
 
@@ -32,7 +32,7 @@ def process(img_in_dir, img_out_dir, filters=None):
     :return:
     """
     img_list = get_input_img_paths(img_in_dir)
-    set_output_dir(img_out_dir)
+    init_output_dir(img_out_dir)
 
     if filters is None:
         filters = build_filters()

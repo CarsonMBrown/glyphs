@@ -7,9 +7,9 @@ from PIL import Image
 from matplotlib import pyplot as plt
 from sklearn.metrics import precision_recall_fscore_support, top_k_accuracy_score, confusion_matrix, \
     ConfusionMatrixDisplay
-from src.util.torch_dataloader import VectorLoader
 from torch.utils.data import DataLoader
 
+from src.classification.learning.torch_dataloader import VectorLoader
 from src.util.glyph_util import get_classes_as_glyphs
 
 SAVE_PATH = os.path.join("weights", "nn")
@@ -22,7 +22,7 @@ def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size
     elif input_size is not None:
         model = model_class(input_size, 24).cuda()
     else:
-        return None, None
+        model = model_class(None, 24).cuda()
 
     model_path, save_file = get_model_path(load_epoch, model, name)
 
@@ -86,7 +86,7 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
             predictions, v_labels = modify_predictions(prediction_modifier, v_labels, v_outputs)
 
             precision, recall, fscore, _ = \
-                precision_recall_fscore_support(v_labels, predictions, average="weighted", zero_division=0)
+                precision_recall_fscore_support(v_labels, predictions, average=average, zero_division=0)
             running_precision += precision
             running_recall += recall
             running_fscore += fscore
@@ -236,7 +236,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
         # Make sure gradient tracking is on, and do a pass over the data
         model.train(True)
-        avg_loss = train_one_epoch(epoch, training_loader, optimizer, model, loss_fn)
+        avg_loss = train_one_epoch(training_loader, optimizer, model, loss_fn)
 
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
             model, validation_loader, loss_fn=loss_fn, seed=0)
@@ -260,7 +260,7 @@ def generate_dataloader(lang_file, annotations_file, data_path, *, batch_size=32
     return training_set, training_loader
 
 
-def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn):
+def train_one_epoch(training_loader, optimizer, model, loss_fn):
     running_loss = 0.
     last_loss = 0.
 
@@ -294,7 +294,6 @@ def train_one_epoch(epoch_index, training_loader, optimizer, model, loss_fn):
         if i % 250 == 249:
             last_loss = running_loss / 250  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
-            tb_x = epoch_index * len(training_loader) + i + 1
             running_loss = 0.0
 
         optimizer.zero_grad()

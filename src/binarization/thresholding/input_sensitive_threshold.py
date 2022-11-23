@@ -11,7 +11,7 @@ def run(img_in_dir, img_out_dir):
     :return: None
     """
     img_list = get_input_img_paths(img_in_dir)
-    set_output_dir(img_out_dir)
+    init_output_dir(img_out_dir)
 
     for img_path in img_list:
         img, img_output = load_image(img_in_dir, img_out_dir, img_path, gray_scale=True)

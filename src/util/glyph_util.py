@@ -63,6 +63,8 @@ def name_to_glyph_class(name):
 
 
 def glyph_to_name(glyph, *, look_a_like_glyphs=False):
+    if glyph is None:
+        return None
     if look_a_like_glyphs:
         if glyph in glyph_map:
             glyph = glyph_map[glyph]
@@ -119,3 +121,7 @@ def get_classes_as_glyphs():
 
 def get_classes_as_glyph_names():
     return [n for n in sorted(names)]
+
+
+def get_num_classes():
+    return len(names)

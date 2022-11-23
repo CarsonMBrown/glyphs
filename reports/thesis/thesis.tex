@@ -28,6 +28,7 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{refcheck}
 
 \usepackage[style=numeric,sorting=nyt]{biblatex}
 
@@ -146,7 +147,7 @@ headsepline, % Uncomment to get a line under the header
 
 % \addchaptertocentry{Acknowledgements} % Add the acknowledgements to the table of contents
 % \begin{acknowledgements}
-% 	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on the project as a whole. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that lead to this project. Finally I would like to thank my family and friends, who have supported me throughout this process, your support is invaluable.
+% 	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on this project. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that led to this project. Finally, I would like to thank my family and friends, who have supported me throughout this process, your support is invaluable.
 % \end{acknowledgements}
 
 %-------------------------------------------------------------------------------
@@ -169,9 +170,17 @@ headsepline, % Uncomment to get a line under the header
 % \vspace*{0.2\textheight}
 %
 % % TODO
-% \noindent\enquote{\itshape Thanks to my solid academic training, today I can write hundreds of words on virtually any topic without possessing a shred of information, which is how I got a good job in journalism.}\bigbreak
+% \noindent\enquote{\itshape “The only true wisdom is in knowing you know nothing.}\bigbreak
 %
-% \hfill Dave Barry
+% \hfill Socrates
+
+% \noindent\enquote{\itshape The direction in which education starts a man will determine his future life.}\bigbreak
+%
+% \hfill Plato
+
+\noindent\enquote{\itshape You should not honor men more than truth.}\bigbreak
+
+\hfill Plato
 
 %-------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -216,11 +225,16 @@ headsepline, % Uncomment to get a line under the header
 % Total Words: (Nov 18)
 % 5,789
 
+% This doc: 206 words (Nov 23)
+% Includes declaration, dedication, and quote
+
+% Abstract: TODO
+
 % 311 Words (Nov 18)
 \chapter{Introduction}
 \chapterinput{introduction.tex}
 
-% 1,895 Words (Nov 18)
+% 1895 Words (Nov 18)
 \chapter{Context Survey}
 \chapterinput{context_survey.tex}
 
@@ -267,6 +281,9 @@ headsepline, % Uncomment to get a line under the header
 %-------------------------------------------------------------------------------
 
 \emergencystretch=1em
+
+% \nocite{*}
+
 \printbibliography[heading=bibintoc]
 
 %-------------------------------------------------------------------------------

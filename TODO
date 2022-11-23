@@ -4,12 +4,11 @@ TODO:
   log probabilies for Markov - NO
   cropping - working
   height avg, width with middle - Working
-  metrics for bounding on actual data
+  metrics for bounding on actual data - Done
   fix bounding issues (attempt removing sliding window)
+  BASED AF Classifier
+  https://github.com/cdeotte/MNIST-CNN-99.75/blob/master/CNN.ipynb
 
-
-  accuracy
-    blue scores
 
   kl diverivenge
 

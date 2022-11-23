@@ -34,7 +34,7 @@ def get_minimal_bounding_boxes(binary_img, bboxes, *, split=False):
         return [bbox for bbox, _ in potentially_cropped_bboxes]
 
 
-def get_minimal_bounding_boxes_v2(binary_img, bboxes, *, split=False):
+def get_minimal_bounding_boxes_v2(binary_img, bboxes, *, split=False, bboxes_in_lines=False, maintain_center=False):
     """
     Crops the given bounding boxes to contain only the ink, given the binary image.
     Bounding boxes with no ink are left as they are and returned separately.
@@ -43,12 +43,19 @@ def get_minimal_bounding_boxes_v2(binary_img, bboxes, *, split=False):
     :param bboxes: the bounding boxes to crop to the minimal size while retaining all
     the ink that was fully in the bounding box already
     :param split: if the cropped and non-cropped should be split
+    :param bboxes_in_lines: if the bboxes passed in are collected by line
+    :param maintain_center: True to keep bounding box centers fixed
     :return: tuple of (list of cropped bounding boxes, list of bounding boxes that could not be cropped)
     """
+    if bboxes_in_lines:
+        return [get_minimal_bounding_boxes_v2(binary_img, line, split=split,
+                                              maintain_center=maintain_center) for line in bboxes]
+
     potentially_cropped_bboxes = [crop_to_content(bbox,
                                                   get_connected_component_bounding_boxes(bbox.crop(binary_img)),
                                                   allow_partial=True,
-                                                  initial_offset=(bbox.x_min, bbox.y_min))
+                                                  initial_offset=(bbox.x_min, bbox.y_min),
+                                                  maintain_center=maintain_center)
                                   for bbox in bboxes]
     if split:
         # store list of cropped bounding boxes (which will have blobs in the binary image)
@@ -98,7 +105,6 @@ def crop_to_content(bbox, cc_bboxes, *, maintain_center=False, allow_partial=Tru
         x_min, y_min = max(x_min, bbox.x_min), max(y_min, bbox.y_min)
         x_max, y_max = min(x_max, bbox.x_max), min(y_max, bbox.y_max)
     # Undo offset
-    bbox.offset(offset_x, offset_y)
     # if bbox was cropped, maintain center if needed or make clone of bounding box and return
     if cropped:
         if not maintain_center:
@@ -107,7 +113,8 @@ def crop_to_content(bbox, cc_bboxes, *, maintain_center=False, allow_partial=Tru
         else:
             bbox = recenter_bbox(bbox, x_min, y_min, x_max, y_max)
             bbox.offset(offset_x, offset_y)
-
+    else:
+        bbox.offset(offset_x, offset_y)
     return bbox, cropped
 
 

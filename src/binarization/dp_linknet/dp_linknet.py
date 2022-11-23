@@ -5,7 +5,7 @@ from torch.autograd import Variable as V
 
 from src.binarization.dp_linknet.networks.dplinknet import LinkNet34, DLinkNet34, DPLinkNet34
 from src.binarization.dp_linknet.utils import get_patches, stitch_together
-from src.util.dir_util import get_input_img_paths, set_output_dir
+from src.util.dir_util import get_input_img_paths, init_output_dir
 from src.util.img_util import load_image, save_image
 
 BATCHSIZE_PER_CARD = 32
@@ -147,7 +147,7 @@ def binarize_imgs(img_in_dir, img_out_dir, *, threshold=7.5, tile_size=256, data
     :return:
     """
     img_list = get_input_img_paths(img_in_dir)
-    set_output_dir(img_out_dir)
+    init_output_dir(img_out_dir)
     # GET GIVEN NETWORK
     if network_name == "DPLinkNet34":
         solver = TTAFrame(DPLinkNet34)

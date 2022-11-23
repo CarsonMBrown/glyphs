@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from src.util.bbox_util import BBox
-from src.util.dir_util import get_input_img_paths, set_output_dir
+from src.util.dir_util import get_input_img_paths, init_output_dir
 from src.util.img_util import load_image, save_image
 
 BOUNDING_COLOR = [0, 0, 255]
@@ -10,15 +10,9 @@ CENTROID_COLOR = [0, 255, 0]
 
 
 def get_connected_component_bounding_boxes(img):
-    """Takes in a BGR (binary) img and gets the bounding boxes of the connected components"""
-    # Invert img so black is non-ink, white is ink
-    # grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # cv2.imshow("", ~img)
-    # cv2.waitKey(0)
-    # inverted_img = cv2.invert(img)
-    inverted_img = ~img
+    """Takes in a black and white (with black as ink) img and gets the bounding boxes of the connected components"""
     # Apply the Component analysis function
-    _, _, values, _ = cv2.connectedComponentsWithStats(inverted_img, 8, cv2.CV_32S)
+    _, _, values, _ = cv2.connectedComponentsWithStats(~img, connectivity=4, ltype=cv2.CV_32S)
     # convert bounding boxes to BBoxes and return
     return [BBox.from_coco(x, y, w, h) for x, y, w, h, _ in values]
 
@@ -33,7 +27,7 @@ def bound_and_render(img_in_dir, img_out_dir):
     :return:
     """
     img_list = get_input_img_paths(img_in_dir)
-    set_output_dir(img_out_dir)
+    init_output_dir(img_out_dir)
     bounding_boxes = []
 
     for img_path in img_list:
