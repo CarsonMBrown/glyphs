@@ -8,10 +8,12 @@ from src.binarization import binarize
 from src.bounding.bound import get_minimal_bounding_boxes_v2
 from src.bounding.yolo import yolo
 from src.classification.learning import nn_factory
+from src.classification.learning.mnist_nn import MNISTCNN
 from src.classification.learning.resnext_lstm import ResNextLongLSTM, ResNext101LSTM
 from src.classification.learning.torch_dataloader import ImageLoader
 from src.classification.markov import markov
-from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers, get_truth_pred_iou_tuples
+from src.evaluation.bbox_eval import remove_bbox_outliers, get_bbox_outliers, get_truth_pred_iou_tuples, \
+    get_iou_metrics, get_class_metrics
 from src.line_recognition.bbox_connection import link_bboxes, remove_bbox_intersections
 from src.output import write_csv
 from src.util.data_util import load_truth, CocoReader, write_meta
@@ -79,7 +81,8 @@ ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificia
 
 lang_file = os.path.join(DATASET_DIR, "perseus_25000.txt"), os.path.join(DATASET_DIR, "perseus_5000.txt")
 quick_lang_file = os.path.join(DATASET_DIR, "perseus_5000.txt"), os.path.join(DATASET_DIR, "perseus_2000.txt")
-meta_data_file = os.path.join(GLYPH_DIR, "meta.csv")
+meta_data_file = os.path.join(TRAIN_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv"), \
+                 os.path.join(EVAL_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv")
 
 
 # TRAIN_RESIZED_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "resized", "raw")
@@ -91,14 +94,22 @@ meta_data_file = os.path.join(GLYPH_DIR, "meta.csv")
 
 
 def train_model():
-    nn_factory.train_model(quick_lang_file, meta_data_file,
-                           TRAIN_CROPPED_RAW_GLYPHS_DIR, EVAL_CROPPED_RAW_GLYPHS_DIR,
-                           ResNextLongLSTM,
-                           epochs=200, batch_size=16, num_workers=0, resume=True,
-                           start_epoch=39, loader=ImageLoader,
-                           transforms=[ResNext101LSTM.transform_train_cropped,
-                                       ResNext101LSTM.transform_classify_cropped],
-                           name="cropped")
+    # nn_factory.train_model(quick_lang_file, meta_data_file,
+    #                        TRAIN_GENERATED_CROPPED_GLYPHS_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
+    #                        ResNextLongLSTM,
+    #                        epochs=200, batch_size=24, num_workers=0, resume=True,
+    #                        start_epoch=1, loader=ImageLoader,
+    #                        transforms=[ResNext101LSTM.transform_train_padded,
+    #                                    ResNext101LSTM.transform_classify_padded],
+    #                        name="generated_cropped_padded")
+
+    nn_factory.train_model(lang_file, meta_data_file,
+                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
+                           MNISTCNN,
+                           epochs=200, batch_size=64, num_workers=0, resume=True,
+                           start_epoch=40, loader=ImageLoader,
+                           transforms=[MNISTCNN.transform_train,
+                                       MNISTCNN.transform_classify])
 
 
 def eval_model():
@@ -224,7 +235,7 @@ def classify(img_in_dir, binary_img_in_dir, img_out_dir):
     write_csv("out.csv", output)
 
 
-def generate_training_data(coco_dir, img_in_dir, binary_img_in_dir, out_dir, crop=False, remove_intersections=False):
+def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, crop=False, remove_intersections=False):
     init_output_dir(out_dir)
     coco = CocoReader(coco_dir)
     meta_data = []
@@ -254,24 +265,50 @@ def generate_training_data(coco_dir, img_in_dir, binary_img_in_dir, out_dir, cro
     write_meta(meta_data, out_dir)
 
 
+def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir, out_dir, crop=False, remove_intersections=False):
+    init_output_dir(out_dir)
+    coco = CocoReader(coco_dir)
+    remove_intersections = crop or remove_intersections
+    for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
+        truth_bboxes = load_truth(coco, get_file_name(color_img_path))
+        color_img, img_output = load_image(img_in_dir, out_dir, color_img_path, formattable_output=1,
+                                           skip_existing=False)
+        if color_img is None:
+            print("NO IMAGE: " + color_img_path)
+            continue
+        binary_img, _ = load_image(binary_img_in_dir, out_dir, binary_img_path, skip_existing=False,
+                                   gray_scale=True)
+        if binary_img is None:
+            print("NO IMAGE: " + binary_img_path)
+            continue
+        pred_bboxes = unpack_lines(generate_lines(color_img,
+                                                  binary_img=binary_img if crop else None,
+                                                  remove_intersections=remove_intersections))
+        truth_pred_iou_tuples = get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
+        bbox_precision, bbox_recall, bbox_fscore, avg_IOU = get_iou_metrics(truth_pred_iou_tuples)
+        class_precision, class_recall, class_fscore = get_class_metrics(truth_pred_iou_tuples)
+        print("BBOX PRECISION:", bbox_precision)
+        print("BBOX RECALL:", bbox_recall)
+        print("BBOX FSCORE:", bbox_fscore)
+        print("Average IOU:", avg_IOU)
+
+        print("CLASS PRECISION:", bbox_precision)
+        print("CLASS RECALL:", bbox_recall)
+        print("CLASS FSCORE:", bbox_fscore)
+
+
 if __name__ == '__main__':
     print("Starting...")
-
-    # generate_training_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_INTERSECTED_GLYPHS_DIR,
-    #                        remove_intersections=True)
-    # generate_training_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
-    #                        crop=True)
-    # generate_training_data(COCO_TRAINING_DIR, TRAIN_RAW_DIR, TRAIN_BINARIZED_DIR, TRAIN_GENERATED_INTERSECTED_GLYPHS_DIR,
-    #                        remove_intersections=True)
-    # generate_training_data(COCO_TRAINING_DIR, TRAIN_RAW_DIR, TRAIN_BINARIZED_DIR, TRAIN_GENERATED_CROPPED_GLYPHS_DIR,
-    #                        crop=True)
-
-    # classify(EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_OUTPUT_DIR)
 
     # train_model()
     # eval_model()
     # deep_eval_model()
     # generate_line_images()
+
+    generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_INTERSECTED_GLYPHS_DIR,
+                       remove_intersections=True)
+
+    # classify(EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_OUTPUT_DIR)
 
     # in_dir = r"C:\Users\Carson Brown\git\glyphs\dataset\display\binarization"
     # out_dir = r"C:\Users\Carson Brown\git\glyphs\output_data\eval_binarization\clustering"

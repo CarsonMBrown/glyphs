@@ -1,14 +1,8 @@
 TODO:
+  height limit crops
   https://en.wikipedia.org/wiki/Conditional_random_field
-  Smoothing for Markov - NO
-  log probabilies for Markov - NO
-  cropping - working
-  height avg, width with middle - Working
-  metrics for bounding on actual data - Done
-  fix bounding issues (attempt removing sliding window)
-  BASED AF Classifier
   https://github.com/cdeotte/MNIST-CNN-99.75/blob/master/CNN.ipynb
-
+  fix bounding issues (attempt removing sliding window)
 
   kl diverivenge
 
@@ -38,3 +32,9 @@ DONE
     get median y for a line and then combine all within 1 stddev?
     split lines that are missing more than 3 character widths?
     take line slope into account
+
+  Smoothing for Markov - NO
+  log probabilies for Markov - NO
+  cropping - working
+  height avg, width with middle - Working
+  metrics for bounding on actual data - Done

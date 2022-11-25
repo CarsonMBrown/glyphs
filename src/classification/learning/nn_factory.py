@@ -187,12 +187,14 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     # Load validation set for model init, not loading train set yet
     if transforms is None:
         transforms = [None]
+    if not isinstance(annotations_file, list) and not isinstance(annotations_file, tuple):
+        annotations_file = [annotations_file]
 
     if isinstance(lang_file, tuple):
         lang_train, lang_eval = lang_file[0], lang_file[1]
     else:
         lang_train, lang_eval = lang_file, lang_file
-    validation_set, validation_loader = generate_dataloader(lang_eval, annotations_file, validation_data_path,
+    validation_set, validation_loader = generate_dataloader(lang_eval, annotations_file[-1], validation_data_path,
                                                             batch_size=batch_size, num_workers=num_workers,
                                                             shuffle=shuffle, loader=loader, transform=transforms[-1])
 
@@ -212,15 +214,15 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         model_path, _ = get_model_path(start_epoch, model, name)
 
     # Load training set after model init and potential load as it may be much larger than validation set
-    training_set, training_loader = generate_dataloader(lang_train, annotations_file, training_data_path,
+    training_set, training_loader = generate_dataloader(lang_train, annotations_file[0], training_data_path,
                                                         batch_size=batch_size, num_workers=num_workers, shuffle=shuffle,
                                                         loader=loader, transform=transforms[0])
 
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.1, weight_decay=0.0004, momentum=0.9)
-    # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.2)
+    loss_fn = torch.nn.NLLLoss()
+    # optimizer = torch.optim.SGD(model.parameters(), lr=0.1, weight_decay=0.0004, momentum=0.9)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -291,8 +293,8 @@ def train_one_epoch(training_loader, optimizer, model, loss_fn):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 250 == 249:
-            last_loss = running_loss / 250  # loss per batch
+        if i % 100 == 99:
+            last_loss = running_loss / 100  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             running_loss = 0.0
 
