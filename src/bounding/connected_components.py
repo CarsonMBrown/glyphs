@@ -12,9 +12,13 @@ CENTROID_COLOR = [0, 255, 0]
 def get_connected_component_bounding_boxes(img):
     """Takes in a black and white (with black as ink) img and gets the bounding boxes of the connected components"""
     # Apply the Component analysis function
-    _, _, values, _ = cv2.connectedComponentsWithStats(~img, connectivity=4, ltype=cv2.CV_32S)
-    # convert bounding boxes to BBoxes and return
-    return [BBox.from_coco(x, y, w, h) for x, y, w, h, _ in values]
+    x, y = img.shape
+    if x > 0 and y > 0:
+        _, _, values, _ = cv2.connectedComponentsWithStats(~img, connectivity=8, ltype=cv2.CV_32S)
+        # convert bounding boxes to BBoxes and return
+        return [BBox.from_coco(x, y, w, h) for x, y, w, h, _ in values]
+    else:
+        return [BBox(0, 0, x, y)]
 
 
 def bound_and_render(img_in_dir, img_out_dir):

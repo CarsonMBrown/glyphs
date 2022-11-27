@@ -24,7 +24,7 @@ for idx in range(len(img_list)):
     if os.path.isdir(os.path.join(data_root, img_list[idx])):
         continue
 
-    print("Now processing image:", os.path.join(data_root, img_list[idx]))
+    print("Now binarizing image:", os.path.join(data_root, img_list[idx]))
     (fname, fext) = os.path.splitext(img_list[idx])
     img = cv2.imread(os.path.join(data_root, img_list[idx]))
     msk = cv2.imread(os.path.join(data_root, "GT", fname + "_GT.tiff"))

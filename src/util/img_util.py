@@ -17,8 +17,9 @@ color_pallet = [
 
 
 def load_image(img_in_dir, img_out_dir, img_path, *, skip_existing=True, gray_scale=False, invert=False,
-               formattable_output=0):
-    print("Now processing image:", img_path)
+               formattable_output=0, verbose=True):
+    if verbose:
+        print("Now processing image:", img_path)
     file_name, file_extension = os.path.splitext(img_path)
     img_input = os.path.join(img_in_dir, img_path)
     img_output = os.path.join(img_out_dir, file_name + "{}" * formattable_output + ".png")

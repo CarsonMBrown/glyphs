@@ -10,6 +10,8 @@ from src.util.glyph_util import index_to_glyph, glyph_to_index, get_num_classes
 
 class BBox:
     width, height, area, center = None, None, None, None
+    uuid = None
+    probabilities = None
 
     def __init__(self, x_min, y_min, x_max, y_max, *, probabilities=None, uuid=None):
         """Creates a bounding box using the pascal format and an optional list of class probabilities and uuid"""

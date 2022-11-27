@@ -243,7 +243,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
             model, validation_loader, loss_fn=loss_fn, seed=0)
 
-        print(f'LOSS train {avg_loss} valid {avg_v_loss}')
+        # print(f'LOSS train {avg_loss} valid {avg_v_loss}')
         print(f'PRECISION {avg_precision} RECALL {avg_recall} FSCORE {avg_fscore}')
 
         torch.save(model.state_dict(),
@@ -293,7 +293,7 @@ def train_one_epoch(training_loader, optimizer, model, loss_fn):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 100 == 99:
+        if i % 100 == 100:
             last_loss = running_loss / 100  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             running_loss = 0.0
