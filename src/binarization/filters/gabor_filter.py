@@ -24,7 +24,6 @@ def build_filters():
 
 def process(img_in_dir, img_out_dir, filters=None):
     """
-
     Author: https://github.com/kkomakkoma
     :param img_in_dir: path to directory containing input images
     :param img_out_dir: path to directory to output images
@@ -38,7 +37,7 @@ def process(img_in_dir, img_out_dir, filters=None):
         filters = build_filters()
 
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path, "gabor", gray_scale=True)
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path, gray_scale=True, skip_existing=False)
         results = []
         for kern, _ in filters:
             fimg = cv2.filter2D(img, cv2.CV_8UC3, kern)

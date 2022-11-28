@@ -30,7 +30,7 @@ def find_glyphs(img, *, model_local=True):
     return model(img)
 
 
-def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=None):
+def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=None, inner_sliding_window=True):
     """
     :param img: img to get bboxes from (IN BGR)
     :param window_size: size of the sliding window to use
@@ -50,21 +50,26 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
             # extend window to fit edges of image to prevent narrow or short slices
             window_x_max = x_max if dx + window_step + window_size >= x_max else dx + window_size
             window_y_max = y_max if dy + window_step + window_size >= y_max else dy + window_size
-            # generate bounding box inset within window to allow for removal of edge boxes
-            valid_bbox_window = BBox(
-                dx + window_step if dx != 0 else 0,
-                dy + window_step if dy != 0 else 0,
-                window_x_max - window_step if window_x_max != x_max else x_max,
-                window_y_max - window_step if window_y_max != y_max else y_max
-            )
+
             # get bboxes fully contained by the window
             found_glyphs = find_glyphs(img[dy:window_y_max, dx:window_x_max])
             potential_bboxes = get_bounding_boxes(found_glyphs,
                                                   offset_x=dx,
                                                   offset_y=dy)
-            # TODO change sliding window once metrics are in place
-            valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
-            bboxes += valid_bboxes
+            # init valid bbox so it can be drawn if needed
+            valid_bbox_window = BBox(0, 0, 0, 0)
+            if inner_sliding_window:
+                # generate bounding box inset within window to allow for removal of edge boxes
+                valid_bbox_window = BBox(
+                    dx + window_step if dx != 0 else 0,
+                    dy + window_step if dy != 0 else 0,
+                    window_x_max - window_step if window_x_max != x_max else x_max,
+                    window_y_max - window_step if window_y_max != y_max else y_max
+                )
+                valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
+                bboxes += valid_bboxes
+            else:
+                bboxes += potential_bboxes
 
             # if exporting images
             if export_path is not None:
@@ -72,7 +77,8 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
                 temp_img = cv2.cvtColor(img.copy(), cv2.COLOR_RGB2BGR)
 
                 plot_bboxes(temp_img, [window], color=(255, 0, 0), wait=None)
-                plot_bboxes(temp_img, [valid_bbox_window], color=(0, 255, 0), wait=None)
+                if inner_sliding_window:
+                    plot_bboxes(temp_img, [valid_bbox_window], color=(0, 255, 0), wait=None)
                 plot_bboxes(temp_img, potential_bboxes, color=(0, 0, 255), wait=None)
                 plot_bboxes(temp_img, bboxes, color=(0, 0, 0), wait=None)
                 cv2.imwrite(os.path.join(export_path, f"window_{dx}_{dy}.png"), temp_img)

@@ -31,6 +31,16 @@ class MNISTCNN(nn.Module):
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
+    transform_train_3 = transforms.Compose([
+        transforms.Resize(input_size - 1, max_size=input_size),
+        transforms.Pad(input_size - 1, fill=(255, 255, 255)),
+        transforms.RandomPerspective(.2),
+        transforms.RandomAffine(degrees=30, translate=(0.4, 0.4), scale=(0.6, 1.4), shear=0.3),
+        transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=.2),
+        transforms.CenterCrop(input_size),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
     transform_classify = transforms.Compose([
         transforms.Resize(input_size - 1, max_size=input_size),
         transforms.Pad(input_size - 1),
@@ -48,7 +58,7 @@ class MNISTCNN(nn.Module):
 
     def __init__(self, input_size, output_size):
         super().__init__()
-        self.dropout = .5
+        self.dropout = .6
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 32, 3, padding=1),
             nn.ReLU(),

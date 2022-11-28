@@ -67,6 +67,8 @@ Week 11:
   Monday: metrics for bounding on actual data + code cleanup
   Tuesday: Generating new image data based on actual bounding box examples
   Wednesday: Reporting
-  Friday: MNIST CNN
+  Thurday: Pipeline Metrics
+  Friday: MNIST CNN + Pipeline Metrics
 
-Week 12: 
+Week 12:
+  Mon: Report + MNIST LSTM Training
