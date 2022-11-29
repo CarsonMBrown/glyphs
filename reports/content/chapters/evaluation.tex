@@ -4,7 +4,7 @@ To ensure experimental validity, all intermediate evaluation and hyperparameter 
 
 \section{Existing Pipelines}
 
-To attempt to generate a baseline to assess new methods against, Tesseract \cite{SmithTesseract}, a popular OCR engine sponsored by Google \cite{Vincent} and Ocular \cite{Berg-Kirkpatrick}, another OCR engine based on Stochastic models were integrated into the pipeline using pytesseract \cite{Lee} and by calling jar files from python respectively.
+To attempt to generate a baseline to assess new methods against, Tesseract \cite{SmithTesseract}, a popular OCR engine sponsored by Google \cite{Vincent} and Ocular \cite{Berg-Kirkpatrick}, another OCR engine based on stochastic models, were integrated into the pipeline using pytesseract \cite{Lee} and by calling jar files from python respectively.
 
 \subsection{Evaluation Metrics}
 \todo{NEW}
@@ -235,7 +235,7 @@ Using the results of the Gabor wavelet approximation \seefig{binarizationGabor},
 
 As the ground-truth information provided for bounding boxes are not tight, perfectly accurate metrics on bounding are not possible without manually tightly rebounding each glyph. Therefore, IOU is used, along with glyph precision and recall measuring the approximate efficacy of methods, with the caveat that a method may have a lower IOU if it generates tighter bounding boxes than if the bounding box was less tight.
 
-Precision and recall are measured not on pixels, but on glyphs,
+Precision and recall are measured not on pixels, but on glyphs, where a prediction is considered to match a truth bounding box if the IOU between the two bounding boxes is greater than zero and each truth bounding box is paired with the prediction bounding box with the highest IOU value.
 
 \subsection{Connected Components}
 \todo{TODO: Nov 29}

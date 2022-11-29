@@ -6,13 +6,13 @@ In addition to the project goals, there were also some more technical design res
 
 \subsection{Input}
 
-The contest also supplied images in various formats, such as \code{.png} and \code{.jpg}/\code{.jpeg}. As such, the pipeline is able to take any of the common image formats, such as PNG, JPEG, TIF, and BMP, but not GIF due to restrictions imposed by the cv2 and PIL. As approximately $2\%$ of the training data given by the contest contained malformed images, requiring that the pipeline gracefully manage such files allowed for more training data.
+The contest also supplied images in various formats, such as \code{.png} and \code{.jpg}/\code{.jpeg}. As such, the pipeline can take any of the common image formats, such as PNG, JPEG, TIF, and BMP, but not GIF due to restrictions imposed by the cv2 and PIL. As approximately $2\%$ of the training data given by the contest contained malformed images, requiring that the pipeline gracefully manage such files allowed for more training data.
 
-In addition to accepting images as input for processing, the program accepts bounding box and glyph category information for the purposes of training and evaluation. This information is accepted, as in the contest, in the COCO image format which formats information in a JSON structure \seefig{coco}. Each COCO file contains lists of images, classes, and annotations, with each object being defined by a single annotation that references an image, a class and provides a bounding box, along with any metadata that the dataset may provide. In the case of the competition, additional information about the classes of the glyphs were provided, grouping each class of glyphs into sub-types, and providing a rating of how well formed each glyph is.
+In addition to accepting images as input for processing, the program accepts bounding box and glyph category information for the purposes of training and evaluation. This information is accepted, as in the contest, in the COCO image format which formats information in a JSON structure \seefig{coco}. Each COCO file contains lists of images, classes, and annotations, with each object being defined by a single annotation that references an image and a class and provides a bounding box, along with any metadata that the dataset may provide. In the case of the competition, additional information about the classes of the glyphs were provided, grouping each class of glyphs into sub-types, and providing a rating of how well-formed each glyph is.
 
 \subsection{Output}
 
-To evaluate submissions, the contest required COCO formatted output, so in addition to a simple csv output format \seefig{csv_output}, the pipeline supports a coco formatted output.
+To evaluate submissions, the contest required COCO-formatted output, so in addition to a simple csv output format \seefig{csv_output}, the pipeline supports a COCO-formatted output.
 
 \section{Pipeline}
 
@@ -20,7 +20,7 @@ The project is designed with a pipeline type structure with a single input and o
 
 \section{Modular Components}
 
-With such a pipeline structure, the importance of allowing internal modularity becomes clear, especially when evaluating the attempted method. Each method implemented is constructed with modularity as a core focus, allowing methods to be slotted together without additional design complexity. This approach to the design of individual components of the pipeline allowed for quick prototyping of the pipeline and efficient evaluation of individual modules without needing to construct a novel information flow for each method that was attempted. By designing the pipeline components in this way, the pipeline is also already optimized for future expansion or re-configuration.
+With such a pipeline structure, the importance of allowing internal modularity becomes clear, especially when evaluating the attempted method. Each method implemented is constructed with modularity as a core focus, allowing methods to be slotted together without additional design complexity. This approach to the design of individual components of the pipeline allowed for quick prototyping of the pipeline and efficient evaluation of individual modules without needing to construct a novel information flow for each method that was attempted. By designing the pipeline components in this way, the pipeline is also already optimized for future expansion or reconfiguration.
 
 \section{User Interface}
 

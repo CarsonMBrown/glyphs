@@ -9,7 +9,7 @@ from src.binarization import binarize
 from src.bounding.bound import get_minimal_bounding_boxes_v2
 from src.bounding.yolo import yolo
 from src.classification.learning import nn_factory
-from src.classification.learning.mnist_nn import MNISTCNN, MNISTCNN_LSTM
+from src.classification.learning.mnist_nn import MNISTCNN, MNISTCNN_DEEP_LSTM
 from src.classification.learning.resnext_lstm import ResNextLongLSTM, ResNext101LSTM
 from src.classification.learning.torch_dataloader import ImageLoader
 from src.classification.markov import markov
@@ -116,11 +116,11 @@ def train_model():
 
     nn_factory.train_model(lang_file, meta_data_file,
                            TRAIN_GENERATED_CROPPED_GLYPHS_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
-                           MNISTCNN_LSTM,
-                           epochs=800, batch_size=64, num_workers=0, resume=True,
-                           start_epoch=631, loader=ImageLoader,
+                           MNISTCNN_DEEP_LSTM,
+                           epochs=400, batch_size=64, num_workers=0, resume=False,
+                           start_epoch=0, loader=ImageLoader,
                            transforms=[MNISTCNN.transform_train_3,
-                                       MNISTCNN.transform_classify_3]
+                                       MNISTCNN.transform_classify_2]
                            )
 
 
@@ -212,6 +212,55 @@ def generate_lines(img, *, binary_img=None, remove_intersections=False, inner_sl
     return lines
 
 
+def generate_line_image(img, *, binary_img=None, remove_intersections=False, inner_sliding_window=True, save_path=None,
+                        wait=True):
+    lines = generate_lines(img, binary_img=binary_img,
+                           remove_intersections=remove_intersections,
+                           inner_sliding_window=inner_sliding_window)
+    display_lines(img, lines, save_path=save_path, wait=wait)
+
+
+def generate_line_images(img_in_dir, binary_img_in_dir, save_path, remove_intersections=False,
+                         inner_sliding_window=True):
+    init_output_dir(save_path)
+    for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
+        x = get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
+                                   skip_existing=True, verbose=False, formattable_output=0)
+        print(color_img_path)
+        if x is None:
+            continue
+        color_img, binary_img, img_output = x
+        generate_line_image(color_img, binary_img=binary_img, save_path=img_output,
+                            remove_intersections=remove_intersections, inner_sliding_window=inner_sliding_window,
+                            wait=False)
+
+
+def get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
+                           skip_existing=False, verbose=False, formattable_output=0):
+    color_img, img_output = load_image(img_in_dir, save_path, color_img_path, formattable_output=formattable_output,
+                                       skip_existing=skip_existing, verbose=verbose)
+    if color_img is None:
+        print("NO IMAGE: " + color_img_path)
+        return None
+    binary_img, _ = load_image(binary_img_in_dir, save_path, binary_img_path, skip_existing=skip_existing,
+                               gray_scale=True, verbose=verbose)
+    if binary_img is None:
+        print("NO IMAGE: " + binary_img_path)
+        return None
+    return color_img, binary_img, img_output
+
+
+def get_image_output_tuples(img_in_dir, binary_img_in_dir, save_path, skip_existing=False, verbose=False,
+                            formattable_output=0):
+    images_output_pairs = []
+    for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
+        x = get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
+                                   skip_existing, verbose, formattable_output)
+        if x is not None:
+            images_output_pairs.append(*x)
+    return images_output_pairs
+
+
 def generate_bboxes(img, *, inner_sliding_window=True):
     bboxes = yolo.sliding_glyph_window(img, inner_sliding_window=inner_sliding_window)
     valid_bboxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
@@ -233,11 +282,16 @@ def bboxes_to_lines(binary_img, remove_intersections, bboxes):
 
 def get_input_paths(img_in_dir, binary_img_in_dir):
     color_img_list = get_input_img_paths(img_in_dir, verbose=False)
-    binary_img_list = get_input_img_paths(binary_img_in_dir, verbose=False)
+    if binary_img_in_dir is not None:
+        binary_img_list = get_input_img_paths(binary_img_in_dir, verbose=False)
+    else:
+        binary_img_list = None
     # Regenerate and reload binary images as needed
-    if len(binary_img_list) != len(color_img_list):
+    if binary_img_list is not None and len(binary_img_list) != len(color_img_list):
         binarize.cnn(img_in_dir, binary_img_in_dir)
         binary_img_list = get_input_img_paths(binary_img_in_dir)
+    if binary_img_list is None:
+        binary_img_list = [None] * len(color_img_list)
     return list(zip(color_img_list, binary_img_list))
 
 
@@ -245,11 +299,9 @@ def classify_images(img_in_dir, binary_img_in_dir, img_out_dir):
     init_output_dir(img_out_dir)
     model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
     output = []
-    for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
-        color_img, img_output = load_image(img_in_dir, img_out_dir, color_img_path, formattable_output=1,
-                                           skip_existing=False)
-        binary_img, _ = load_image(binary_img_in_dir, img_out_dir, binary_img_path, skip_existing=False,
-                                   gray_scale=True)
+    for color_img, color_img_path, binary_img, img_output in get_image_output_tuples(img_in_dir, binary_img_in_dir,
+                                                                                     img_out_dir,
+                                                                                     formattable_output=1):
         lines = generate_lines(color_img, binary_img=None, remove_intersections=False)
         display_lines(color_img, lines, save_path=img_output.format("_lines"), wait=False)
         nn_factory.classify(model, lines, color_img, ResNext101LSTM.transform_classify)
@@ -358,8 +410,10 @@ if __name__ == '__main__':
     # train_model()
     # eval_model()
     # deep_eval_model()
-    # generate_line_images()
+    # generate_line_images(EVAL_RAW_DIR, EVAL_BINARIZED_DIR,
+    #                      os.path.join(EVAL_OUTPUT_DIR, "intersected_cropped_no_window"),
+    #                      remove_intersections=True, inner_sliding_window=False)
 
-    # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
+    generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
 
     # classify(EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_OUTPUT_DIR)

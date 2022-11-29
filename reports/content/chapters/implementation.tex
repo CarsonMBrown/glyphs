@@ -1,10 +1,10 @@
 \section{Binarization}
 
-A perfect binarized version of a papyrus image is defined by a background color and ink color, where the ink is black, and the background is white. Each pixel in an image is altered so that it is either black or white, depending on if it is ink or anything else (background). As no ground truth for ink was given to train on, all the methods for binarization are based on either pre-trained CNNs or algorithmic solutions utilized in similar problems.
+A perfect binarized version of a papyrus image is defined by a background color and ink color, where the ink is black, and the background is white. Each pixel in an image is altered so that it is either black or white, depending on if it is ink or anything else (background). As no ground truth for ink was given to train on, all of the methods for binarization are based on either pre-trained CNNs or algorithmic solutions utilized in similar problems.
 
 \subsection{Clustering}
 
-Clustering based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3d space with their red, green, and blue values being used to determine their location \seefig{pixelClustering}. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background \seefig{binarizationClustering}.
+Clustering-based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3D space with their red, green, and blue values being used to determine their location \seefig{pixelClustering}. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background \seefig{binarizationClustering}.
 
 \begin{figure}
     \caption{RGB Pixel Clustering In 3D Space}
@@ -12,36 +12,36 @@ Clustering based binarization is performed with k-means clustering. For each ima
     \begin{center}
       \begin{subfigure}[b]{0.45\textwidth}
            \centering
-           \caption{Pixel Clustering on An Image With Low Color Variation}
+           \caption{Pixel Clustering on an Image With Low Color Variation}
            \label{fig:goodPixelClustering}
            \includegraphics[width=\textwidth]{{binarization/good_pixel_clustering.png}}
        \end{subfigure}
        \hfill
        \begin{subfigure}[b]{0.45\textwidth}
            \centering
-           \caption{Pixel Clustering on An Image With High Color Variation}
+           \caption{Pixel Clustering on an Image With High Color Variation}
            \label{fig:badPixelClustering}
            \includegraphics[width=\textwidth]{{binarization/bad_pixel_clustering.png}}
        \end{subfigure}
     \end{center}
-    Two examples of clustering pixels using RGB color representation to place each pixel in space. These clusterings were generated using Gaussian Mixture Models (GMMs) clustering with $k=5$, with each cluster being colored by the color represented by location in RGB space of the cluster's centroid.
+    Two examples of clustering pixels using RGB color representation to place each pixel in space. These clusterings were generated using Gaussian Mixture Models (GMMs) clustering with $k=5$, with each cluster being displayed by the color represented by the location in RGB space of the cluster's centroid.
 \end{figure}
 
 \subsection{Gabor Filter}
 
-Filtering based binarizations are generated utilizing the Gabor filtering  \cite{Gabor1949, Gabor1948} to find clusters of pixels that are not like those around them, which could be glyphs. Gabor filtering is based on a linear filter, but when multiple linear filters are grouped together with a set rotation applied to each subsequent filter, a 2d filter can be generated to generate a simplification of Gabor wavelets \cite{Gabor1949, Gabor1948}. Using these 2d filters, this method of binarization seeks to find features in an image that has a specific frequency, which in the case of glyphs might be the width or height of a single line in a glyph.
+Filtering-based binarizations are generated utilizing the Gabor filtering  \cite{Gabor1949, Gabor1948} to find clusters of pixels that are not like those around them, which could be glyphs. Gabor filtering is based on a linear filter, but when multiple linear filters are grouped together with a set rotation applied to each subsequent filter, a 2D filter can be generated to create an approximation of Gabor wavelets \cite{Gabor1949, Gabor1948}. Using these 2D filters, this method of binarization seeks to find features in an image that have a specific frequency, which in the case of glyphs might be the width or height of a single line in a glyph.
 
-This method requires an assumption on the wave frequency that may generate the glyphs, so a manual heuristic method was utilized to generate the function that most accurately generated the correct wave for the images in the training dataset.
+This method requires an assumption on the wave frequency that may generate the glyphs, so a manual heuristic method is utilized to generate the function that most accurately generated the correct wave for the images in the training dataset.
 
-To utilize the approximation on a Gabor wavelet on the input, the input is read in and converted to a greyscale image before having the collection of Gabor filters applied. This reduces the channels from three to one and allows the Gabor wavelet approximation to work on the image. The outputs of each filter in the wavelet approximation are then averaged together to generate a new greyscale image, which can then be binarized using naive thresholding.
+To utilize the approximation on a Gabor wavelet on the input, the input is read in and converted to a greyscale image before having the collection of Gabor filters applied. This reduces the channels from three to one and allows the Gabor wavelet approximation to work on the image. The outputs of each filter in the wavelet approximation are then averaged together to generate a new greyscale image, which can be binarized using naive thresholding.
 
 \subsection{Input Invarient Thresholding}
 
-In a similar fashion to utilizing the Gabor filter or Gabor wavelet, thresholding utilizing an input invariant method, such as the one proposed by \cite{Bar-Yosef2005, Bar-Yosef2007} requires consistency in the input or a strong method for determining the correct threshold. Using clustering, as discussed above, could be a potential method to find a threshold, however the method them becomes a variant of clustering, so this method was not implemented past the initial stage of picking an arbitrarily chosen threshold value and binarizing the input by converting it greyscale and then binarizing the greyscale image by converting all values darker than the threshold to black and all other values to white.
+In a similar fashion to utilizing the Gabor filter or Gabor wavelet, thresholding utilizing an input invariant method, such as the one proposed by Bar-Yosef et al. \cite{Bar-Yosef2005, Bar-Yosef2007} requires consistency in the input or a strong method for determining the correct threshold. Using clustering, as discussed above, could be a potential method to find a threshold; however, the method then becomes a variant of clustering. Therefore, this method was not implemented past the initial stage of picking an arbitrarily chosen threshold value and binarizing the input by converting it to greyscale and then binarizing the greyscale image by converting all values darker than the threshold to black and all other values to white.
 
 \subsection{DP-Linknet}
 
-Although it was out of the scope of this project to train a CNN to binarize an image, Convolutional Neural Networks have already been generated and trained on the problem of binarization of historical texts. DP-Linknet \cite{Xiong} is one such CNN, trained on historical texts and implemented in Python utilizing common deep learning tools such as PyTorch \cite{PyTorch} and Scikit-Learn \cite{Scikit}. As the Python source code for DP-Linknet is publicly available on \href{https://github.com/beargolden/DP-LinkNet}{GitHub}, it was a simple task to implement it into the project and add a simple API that integrates the CNN into the pipeline.
+Although it was out of the scope of this project to train a CNN to binarize an image with manually generated training data, Convolutional Neural Networks have already been generated and trained on the problem of binarization of historical texts. DP-Linknet \cite{Xiong} is one such CNN, trained on historical texts and implemented in Python utilizing common deep learning tools such as PyTorch \cite{PyTorch} and Scikit-Learn \cite{Scikit}. As the Python source code for DP-Linknet is publicly available on \href{https://github.com/beargolden/DP-LinkNet}{GitHub}, it was a simple task to implement it into the project and add a simple API that integrates the CNN into the pipeline.
 
 \textit{Note: All code contained in the} \code{src/binarization/dp\_linknet} \textit{folder is either directly from the GitHub reposity or highly based on that code. I take no credit for this code, as little of my own work was done to integrate the work of Xiong et al. into this project.}
 
@@ -52,7 +52,7 @@ Although it was out of the scope of this project to train a CNN to binarize an i
 
 \subsection{Bounding Boxes}
 
-Bounding boxes are represented internally by an object that holds the PASCAL Visual Object Classes (VOC) representation of a bounding box \seefig{pascalbbox}. Using this method of representation, compared to a tuple or list, allows for operations on bounding boxes to be standardized and for bounding boxes to be represented in a way that is abstracted from their format. Allowing this abstract bounding box format assists with the problem of having multiple constraints on how bounding boxes are utilized in the pipeline, such as importing and exporting COCO formatted bounding boxes \seefig{cocobbox}, calculating metrics based on PASCAL VOC formatted bounding boxes \seefig{pascalbbox}, and utilizing tools and methods that require YOLO formatted bounding boxes \seefig{yolobbox}. Bounding box objects are then able to utilize internal methods for operations such as finding the IOU (intersection over union) \seefig{IOU} between two bounding boxes, one dimensional IOU \seefig{1dIOU}, and generating cropped images from lists of bounding boxes.
+The rectangular areas that contain glyphs (bounding boxes) are represented internally by an object that holds the PASCAL Visual Object Classes (VOC) representation of a bounding box \seefig{pascalbbox}. Using this method of representation, compared to Python's Tuple or List objects, allows for operations on bounding boxes to be standardized and for bounding boxes to be represented in a way that is abstracted from their format. Allowing this abstract bounding box format assists with the problem of having multiple constraints on how bounding boxes are utilized in the pipeline, such as importing and exporting COCO-formatted bounding boxes \seefig{cocobbox}, calculating metrics based on PASCAL VOC-formatted bounding boxes \seefig{pascalbbox}, and utilizing tools and methods that require YOLO-formatted bounding boxes \seefig{yolobbox}. Bounding box objects are then able to utilize internal methods for operations such as finding the IOU (intersection over union) \seefig{IOU} between two bounding boxes, calculating the one dimensional IOU \seefig{1dIOU}, and generating cropped images from lists of bounding boxes.
 
 \begin{figure}
     \caption{PASCAL VOC Bounding Box Examples}
@@ -60,25 +60,25 @@ Bounding boxes are represented internally by an object that holds the PASCAL Vis
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples_pascal.png}}
     \end{center}
-    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). For these examples, the red lines denote the pixels that are inside of the bounding boxes. In the PASCAL VOC bounding box format, bounding boxes are described using the top left corner (marked in green) of the box in absolute pixels, and the bottom right corner of the box (marked in blue) in absolute pixels. In this example, the boxes shown above would be denoted in the PASCAL VOC format as follows: $N:(6, 13, 82, 97)$, $\Upsilon:(1, 3, 89, 103)$, $\Xi:(6, 16, 126, 96)$.
+    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). For these examples, the red lines denote the pixels that are inside of the bounding boxes. In the PASCAL VOC bounding box format, bounding boxes are described using the top left corner (marked in green) of the box in absolute pixels, and the bottom right corner of the box (marked in blue) in absolute pixels. In this example, the boxes shown above would be denoted in the PASCAL VOC-format as follows: $N:(6, 13, 82, 97)$, $\Upsilon:(1, 3, 89, 103)$, $\Xi:(6, 16, 126, 96)$.
 \end{figure}
 
 \begin{figure}
-    \caption{COCO Format Bounding Box Examples}
+    \caption{COCO-Format Bounding Box Examples}
     \label{fig:cocobbox}
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples_coco.png}}
     \end{center}
-    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the COCO bounding box format, bounding boxes are described using the top left corner (marked in green) of the box  in absolute pixels and the box's width (purple) and height (blue) in absolute pixels. In this example, the boxes shown above would be denoted in the COCO format as follows: $N:(6, 13, 76, 84)$, $\Upsilon:(1, 3, 88, 100)$, $\Xi:(6, 16, 120, 80)$.
+    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the COCO bounding box format, bounding boxes are described using the top left corner (marked in green) of the box  in absolute pixels and the box's width (purple) and height (blue) in absolute pixels. In this example, the boxes shown above would be denoted in the COCO-format as follows: $N:(6, 13, 76, 84)$, $\Upsilon:(1, 3, 88, 100)$, $\Xi:(6, 16, 120, 80)$.
 \end{figure}
 
 \begin{figure}
-    \caption{YOLO Format Bounding Box Examples}
+    \caption{YOLO-format Bounding Box Examples}
     \label{fig:yolobbox}
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{bounding/bbox_examples_yolo.png}}
     \end{center}
-    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the YOLO bounding box format, bounding boxes are described using the center of the box (marked in green) in relative coordinates (based on image width and height) and the box's width (purple) and height (blue) also in relative coordinates. In this example, the boxes shown above would be denoted in the YOLO format as follows (rounded to three decimal places): $N:(0.319, 0.519, , 0.532, 0.739)$, $\Upsilon:(0.469, 0.469, 0.917, 0.885)$, $\Xi:(0.431, 0.487, 0.784, 0.696)$.
+    Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the YOLO bounding box format, bounding boxes are described using the center of the box (marked in green) in relative coordinates (based on image width and height) and the box's width (purple) and height (blue) also in relative coordinates. In this example, the boxes shown above would be denoted in the YOLO-format as follows (rounded to three decimal places): $N:(0.319, 0.519, , 0.532, 0.739)$, $\Upsilon:(0.469, 0.469, 0.917, 0.885)$, $\Xi:(0.431, 0.487, 0.784, 0.696)$.
 \end{figure}
 
 \begin{figure}
@@ -130,20 +130,29 @@ Bounding boxes are represented internally by an object that holds the PASCAL Vis
 
 \subsection{Connected Component Labeling}
 
-Bounding boxes can be generated by the pipeline utilizing a method called connected-component labeling. In this method, which is implemented by OpenCV \cite{OpenCV}, touching similarly colored pixels are grouped together to form blobs in a recursive manner until no more blobs can be grouped. Each blob is given a label and a minimal bounding box (in PASCAL VOC format) that contains the entire blob \seefig{boundingCC}. These bounding boxes are then converted to a bounding box object, which allow them to be utilized by the rest of the pipeline.
+Bounding boxes can be generated by the pipeline utilizing a method called connected-component labeling. In this method, which is implemented by OpenCV \cite{OpenCV}, adjacent (8-connectivity) \seefig{connectivity}, similarly colored pixels are grouped together to form blobs in a recursive manner until no more blobs can be grouped. Each blob is given a label and a minimal bounding box (in PASCAL VOC-format) that contains the entire blob \seefig{boundingCC}. These bounding boxes are then converted to a bounding box object, which allows them to be utilized by the rest of the pipeline.
 
-\subsection{Region Based Convolution Neural Networks}
+\begin{figure}
+  \caption{Pixel Connectivity TYpes}
+  \label{fig:connectivity}
+  \begin{center}
+        \includegraphics[width=\textwidth]{{misc/connectivity.png}}
+  \end{center}
+  In the left figure (which represents 4-connectivity), the center pixel (dark grey) is considered adjacent to the pixels that share an edge with it (light grey) and not the pixels that share a corner with it (white). In the right figure (which represents 8-connectivity), the center pixel (dark grey) is considered adjacent to the pixels that share an edge with it and the pixels and that share a corner with it (light grey). Note that the $n$ in $n$-connectivity refers to how many pixels can be considered adjacent to any given pixel.
+\end{figure}
+
+\subsection{Region-Based Convolution Neural Networks}
 
 Another method for bounding in the pipeline utilizes a region-based convolution neural networks (RCNN) called YOLOv5 \cite{YOLOv5}. The RCNN was trained on the ground truth glyph images in two ways. In the first, YOLOv5 was trained on all twenty-four glyph classes, to allow YOLO to both classify and bound the glyphs. For the second training attempt, the RCNN was trained on glyphs as a single class, preventing YOLO from learning about the separate classes, but allowing it to much more efficiently learn how to bound glyphs and separate them from the noisy background that is papyrus.
 
-Training was preformed utilizing the native YOLOv5 code, downloaded from \href{https://github.com/ultralytics/yolov5}{GitHub}, using the largest network architecture provided (called YOLOv5x). The trained network consists of $~86.7$ million parameters and was trained on mosaic images of glyphs resized to 640px squares over the course of over 600 epochs. After training, the epoch with the best results was extracted and exported for use by PyTorch, which allows the network to be loaded and utilized in the pipeline with no external code required (\textit{see below note for details}).
+Training was performed utilizing the native YOLOv5 code, downloaded from \href{https://github.com/ultralytics/yolov5}{GitHub}, using the largest network architecture provided (called YOLOv5x). The trained network consists of $~86.7$ million parameters and was trained on mosaic images of glyphs resized to 640px squares over the course of over 600 epochs. After training, the epoch with the best results was extracted and exported for use by PyTorch, which allows the network to be loaded and utilized in the pipeline with no external code required (\textit{see below note for details}).
 
-\textit{Note: YOLOv5 is the product of work by Glenn Jocher (Ultralytics) and hundreds of contributors. I take no credit for the implementation of this network, as all credit for this work should go to Jocher et al. into this project. However, all training and hyperparameter tuning was done by me, as well as integrating the network into this project. The code for YOLOv5 is included in the submission of the project solely to allow the pipeline to function offline, as the network architecture would need to be downloaded from their git repo each time the pipeline was run.}
+\textit{Note: YOLOv5 is the product of work by Glenn Jocher (Ultralytics) and hundreds of contributors. I take no credit for the implementation of this network, as all credit for this work should go to Jocher et al. However, all training and hyperparameter tuning was done by me, as well as integrating the network into this project. The code for YOLOv5 is included in the submission of the project solely to allow the pipeline to function offline, as the network architecture would otherwise need to be downloaded from their git repo each time the pipeline was run.}
 
 \subsubsection{RCCN Sliding Window}
 \todo{NEW}
 
-Utilizing the YOLOv5x trained network, glyphs can be detected utilizing a sliding window to keep the image sizes closer to the size that the network was trained on. Using an overlapping sliding window with an internal window \seefig{slidingWindow}, full images are split up into smaller images that allow YOLO to bound glyphs and. The bounded glyphs are then accepted if they are in the internal window and added to the list of all glyphs bounding boxes as bounding box objects. Clear outliers and invalid glyph bounding boxes are then be removed by heuristic approaches that clean the list of bounding boxes to generate a list of high-quality potential glyph bounding boxes.
+Utilizing the YOLOv5x trained network, glyphs can be detected utilizing a sliding window to keep the image sizes closer to the size that the network was trained on. Using an overlapping sliding window with an internal window \seefig{slidingWindow}, full images are split up into smaller images that allow YOLO to bound glyphs. The bounded glyphs are then accepted if they are in the internal window and added to the list of all glyphs bounding boxes as bounding box objects. Clear outliers and invalid glyph bounding boxes are then removed by heuristic approaches that clean the list of bounding boxes to generate a list of high-quality potential glyph bounding boxes.
 
 \begin{figure}
     \caption{Sliding Window Region Examples}
@@ -178,7 +187,7 @@ Utilizing the YOLOv5x trained network, glyphs can be detected utilizing a slidin
 
 \subsubsection{Binarization-Assisted CNN}
 
-The close cropping approach based on connected component labeling on binarized images can be conjunction with the larger bounding boxes generated from the RCNN based methods. This allows the bounding boxes generated by the RCNN to be used as initial potential regions, which can then be cropped down to closely fit the glyph they contain \seefig{boundingBinaryAssistedCNN}. This approach to creating tight bounding boxes on binarized images is able to approximate minimal bounding boxes for the raw input images, which would otherwise be difficult to generate tight-to-ink bounding boxes for, as the ground-truth training data is not tightly bound.
+The close cropping approach based on connected component labeling on binarized images can be done in conjunction with the larger bounding boxes generated from the RCNN based methods. This allows the bounding boxes generated by the RCNN to be used as initial potential regions, which can be cropped down to closely fit the glyph they contain \seefig{boundingBinaryAssistedCNN}. This approach to creating tight bounding boxes on binarized images is able to approximate minimal bounding boxes for the raw input images, which would otherwise be difficult to generate tight-to-ink bounding boxes for, as the ground-truth training data is not tightly bound.
 
 \section{Line Bounding}
 
@@ -186,11 +195,11 @@ Once bounding boxes for individual glyphs are generated, they can be grouped tog
 
 \subsection{Point Of Interest Clustering}
 
-The first approach to line bounding is based on the work of Garz et al. \cite{Garz2011, Garz2012}, which utilizes points of interest to group lines together. In this approach, gaussians and the SIFT algorithm are utilized to find points of interest, which are clustered by the DBSCAN algorithm, with an adaption proposed by Daszykowski et al. \cite{Daszykowski}.
+The first approach to line bounding is based on the work of Garz et al. \cite{Garz2011, Garz2012}, which utilizes points of interest to group lines together. In this approach, gaussians and the SIFT algorithm are utilized to find points of interest, which are clustered using Density-Based Spatial Clustering of Applications with Noise (DBSCAN) \cite{Ester} with an adaption that allows for the algorithm to be size invariant.
 
 \subsubsection{Difference of Gaussians}
 
-The first step in this algorithm requires that features be extracted from the images in a scale-invariant way, such that any image size may be utilized without the need for scaling, which could cause information to be lost. To do this, the Difference of Gaussians (DOG) method is utilized. Using the implementation of this algorithm provided by OpenCV \cite{OpenCV}, a collection of gaussian kernels is generated and used to blur a greyscale image to extract high frequency spatial data. As multiple gaussian blurs are preformed, only signals in the image that are between the frequencies of the gaussian kernels remain after the differences of the all the gaussian blurred images is taken and used to construct a new image. This results in an image that contains only the high frequency data of the original image, regardless of the size of the original image.
+The first step in this algorithm requires that features be extracted from the images in a scale-invariant way, such that any image size may be utilized without the need for scaling, which could cause information to be lost. To do this, the Difference of Gaussians (DOG) method is utilized. Using the implementation of this algorithm provided by OpenCV \cite{OpenCV}, a collection of gaussian kernels is generated and used to blur a greyscale image to extract high frequency spatial data. As multiple gaussian blurs are performed, only signals in the image that are between the frequencies of the gaussian kernels remain after the differences of all the gaussian blurred images is taken and used to construct a new image. This results in an image that contains only the high frequency data of the original image, regardless of the size of the original image.
 
 \subsubsection{Points of Interest \& SIFT}
 
@@ -200,15 +209,15 @@ Using the scale-invariant feature transform algorithm (SIFT) \cite{Lowe}, on the
 
 \subsubsection{Adaptive DBSCAN}
 
-Once points of interest are generated using SIFT, they are clustered by a scale invariant version of Density-Based Spatial Clustering of Applications with Noise (DBSCAN) \cite{Ester} proposed by Daszykowski et al. \cite{Daszykowski}. This method works by first generating $n$ random points in a region with the same size as the image, where $n$ is the number of points of interest that need to be clustered. Then the distance to the $m$th closest point is found for each point, where $m = \frac{n}{25}$. The $95$th percentile is then taken for these distances, which is used as the $\epsilon$ parameter for DBSCAN (the maximum distance for a point to be added to a cluster), with $m$ acting as the minimum number of points required to form a cluster.
+Once points of interest are generated using SIFT, they are clustered by a scale invariant version of DBSCAN proposed by Daszykowski et al. \cite{Daszykowski}. This method works by first generating $n$ random points in a region with the same size as the image, where $n$ is the number of points of interest that need to be clustered. Then the distance to the $m$th closest point is found for each point, where $m = \frac{n}{25}$. The $95$th percentile is then taken for these distances, which is used as the $\epsilon$ parameter for DBSCAN (the maximum distance for a point to be added to a cluster), with $m$ acting as the minimum number of points required to form a cluster.
 
-The clusters produced by this method can then be considered to be lines, while points outside of clusters are noise or glyphs that are not within lines.
+The clusters produced by this method can be considered to be lines, while points outside of clusters are noise or glyphs that are not within lines.
 
 \subsection{Adjacent and Overlaping Glyph Clustering}
 
-Another method for clustering glyphs is to utilize domain knowledge to link glyph bounding boxes horizontally using close and overlapping bounding boxes. Using this method, glyphs are linked into lines by linking glyphs based on proximity in the x and y directions. Horizontally overlapping bounding boxes are linked if they overlap in they each contain the y coordinate at the center of the other bounding box. Boxes are similarly linked if they are relatively close to each other, based on the average width of the two glyph bounding boxes \seefig{linesOverlap}.
+Another method for clustering glyphs is to utilize domain knowledge to link glyph bounding boxes horizontally using close and overlapping bounding boxes. Using this method, glyphs are linked into lines based on proximity in the x and y directions. Horizontally overlapping bounding boxes are linked if they overlap and they each contain the y coordinate at the center of the other bounding box. Boxes are similarly linked if they are relatively close to each other, based on the average width of the two glyph bounding boxes \seefig{linesOverlap}.
 
-Once rough grouping are generated using this method, the lines are cleaned of extranious and overlarge bounding boxes by removing bounding boxes that have no effect on the validity of the line based on this linking method. Lines are then joined together if possible, to form longer lines.
+Once rough grouping are generated using this method, the lines are cleaned of extranious and overlarge bounding boxes by removing bounding boxes that have no effect on the validity of the line based on this linking method. Lines are then joined together, if possible, to form longer lines.
 
 \subsection{Line Based Bounding Box Cropping}
 
@@ -218,10 +227,10 @@ Once glyphs are linked into lines, the bounding boxes of the glyphs in each line
 
 \subsection{Ground Truth Glyph Examples}
 
-The ground truth data provided by the contest contained image files, each with multiple bounding boxes and glyphs. To extract this data for the purposes of training and evaluation of classification and bounding methods, each original image was copied and cropped to contain only one glyph, generating a single cropped image, cut to the exact bounding box given, for each glyph \seefig{ground_truth_glyphs}. To extract the isolated glyph images for training, the following method is used. For each image in the training data, the image was loaded, and the COCO file provided by the contest was utilized to find each annotated glyph. For each glyph, the loaded image was duplicated and cropped to the bounding box provided in the COCO file. The cropped image was then saved to file either separated by glyph class, or without any class label.
+The ground truth data provided by the contest contained image files, each with multiple bounding boxes and glyphs. To extract this data for the purposes of training and evaluation of classification and bounding methods, each original image was copied and cropped to contain only one glyph, generating a single cropped image, cut to the exact bounding box given, for each glyph \seefig{ground_truth_glyphs}. To extract the isolated glyph images for training, the following method was used. For each image in the training data, the image was loaded, and the COCO file provided by the contest was utilized to find each annotated glyph. For each glyph, the loaded image was duplicated and cropped to the bounding box provided in the COCO file. The cropped image was then saved to file either separated by glyph class, or without any class label.
 Each cropped glyph file was saved with information on which image the glyph was cropped from, the style it was written in \seefig{xi_footmarktype}, and the preservation of the glyph \seefig{omega_basetype}.
 
-These methods were used to extract glyph images from both the binarized images and un-altered images. Similar processes were also used to generate training data for the various CNNs, and external tools utilized in the project.
+These methods were used to extract glyph images from both the binarized images and unaltered images. Similar processes were also used to generate training data for the various CNNs, and external tools utilized in the project.
 
 \begin{figure}
     \caption{Ground Truth Glyph Examples}
@@ -229,7 +238,7 @@ These methods were used to extract glyph images from both the binarized images a
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{glyphs/ground_truth_glyphs.png}}
     \end{center}
-    Four examples of the bounded glyphs provided by the contest training data. All the glyphs provided in the training and test data are uppercase and bounded by hand-drawn bounding boxes, which appear here. The first glyph, a $\Gamma$, is well formed, but has the noise from another glyph on the left side and is truncated by the bounding box on the right side. Similarly, the second glyph, an $A$, is well formed, but has the noise from another glyph on the left side and is truncated by the bounding box on the right and bottom sides. The third glyph, an $I$, is not cut off, but does have a line from a neighboring glyph as well. It also shows the edge of the papyrus. The fourth glyph, another $A$, is an example of the varying image quality of the training data, showing obvious artifacting or distortion.
+    Four examples of the bounded glyphs provided by the contest training data. All of the glyphs provided in the training and test data are uppercase and bounded by hand-drawn bounding boxes, which appear here. The first glyph, a $\Gamma$, is well-formed, but has the noise from another glyph on the left side and is truncated by the bounding box on the right side. Similarly, the second glyph, an $A$, is well-formed, but has the noise from another glyph on the left side and is truncated by the bounding box on the right and bottom sides. The third glyph, an $I$, is not cut off, but does have a line from a neighboring glyph as well. It also shows the edge of the papyrus. The fourth glyph, another $A$, is an example of the varying image quality of the training data, showing obvious artifacting or distortion.
 \end{figure}
 
 \begin{figure}
@@ -238,7 +247,7 @@ These methods were used to extract glyph images from both the binarized images a
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{glyphs/xi_footmarktype.png}}
     \end{center}
-    Examples of the six unique styles for the letter $\Xi$, as determined by the authors of the contest this project was based on. Numbered from 1-6 left to right. The furthest right image of a $\Xi$ was resized for the purpose of display in the figure, which has increased the blurriness of the image.
+    Examples of the six unique styles for the letter $\Xi$, as determined by the authors of the contest this project is based on. Numbered from 1-6 left to right. The furthest right image of a $\Xi$ was resized for the purpose of display in the figure, which has increased the blurriness of the image.
 \end{figure}
 
 \begin{figure}
@@ -247,7 +256,7 @@ These methods were used to extract glyph images from both the binarized images a
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{glyphs/omega_basetype.png}}
     \end{center}
-    Examples of the three levels of preservation for the letter $\Omega$ (appearing as the unical manuscript form, which looks similar to a larger lowercase modern $\omega$), as determined by the authors of the contest this project was based on. Numbered from 1-3, left to right. There are three examples of each level to display three examples of the various degradations that lead to being in each level. The least degraded level (1) is defined as a complete or nearly complete glyph. The second least degraded level (2) is defined as an incomplete letter that unambiguously belongs to one class. The most degraded level in the dataset (3), requires context to determine its actual class, as the glyph may appear to potentially be one of multiple classes when viewed in isolation.
+    Examples of the three levels of preservation for the letter $\Omega$ (appearing as the unical manuscript form, which looks similar to a larger lowercase modern $\omega$), as determined by the authors of the contest this project is based on. Numbered from 1-3, left to right. There are three examples of each level to display three examples of the various degradations that result in assignment to each level. The least degraded level (1) is defined as a complete or nearly complete glyph. The second least degraded level (2) is defined as an incomplete letter that unambiguously belongs to one class. The most degraded level in the dataset (3), requires context to determine its actual class, as the glyph may appear to potentially be one of multiple classes when viewed in isolation.
 \end{figure}
 
 \subsection{Tightly Bound Glyph Examples}
@@ -261,11 +270,11 @@ Using methods described further down, tightly bound glyph images \seefig{fig:cro
     \begin{center}
     \includegraphics[width=0.75\textwidth]{{glyphs/cropped_ground_truth_glyphs.png}}
     \end{center}
-    Four examples of the cropped glyphs generated by the pipeline. The first glyph, a $T$, is well formed and is tightly bounded on all sides besides the top. Similarly, the second glyph, an $O$, is well formed, but has empty space on the bottom and right side. The third glyph, a $M$, is tightly bounded on all sides but the bottom and has degradation. The fourth glyph, an $H$, is poorly formed, with significant amounts of smudging, but is tightly bound on all sides. Glyphs are not reliably tightly bound on all sides, as the center is maintained when cropping, causing up to two sides of a well-formed glyph to have padding. Poorly formed glyphs are sometimes less tightly bound due to issues in their edges.\end{figure}
+    Four examples of the cropped glyphs generated by the pipeline. The first glyph, a $T$, is well-formed and is tightly bounded on all sides besides the top. Similarly, the second glyph, an $O$, is well-formed, but has empty space on the bottom and right side. The third glyph, a $M$, is tightly bounded on all sides but the bottom and has degradation. The fourth glyph, an $H$, is poorly formed, with significant amounts of smudging, but is tightly bound on all sides. Glyphs are not reliably tightly bound on all sides, as the center is maintained when cropping, causing up to two sides of a well-formed glyph to have padding. Poorly formed glyphs are sometimes less tightly bound due to issues in their edges.\end{figure}
 
 \subsection{Greek Language Corpus}
 
-To form the training data for a language model, the entirety of the Greek section of the Perseus Digital Library \cite{Perseus} dataset was downloaded. The data was converted from XML to plain text and cleaned of all non-standard Greek letters utilizing a mix of regex, python string functions and a list of the glyphs that appear in the training set of images. When removing invalid characters, the passages that they appeared in were also removed to ensure the integrity of the training data. To ensure the language data was as close to the image training data as possible, all diacritics and punctuation marks were removed, and the letters were converted to their uppercase variant. The remaining data contains $~46,400,000$ glyphs. This data was used to generate five smaller files for the purposes of training language models by randomly selecting chunks from the data.
+To form the training data for a language model, the entirety of the Greek section of the Perseus Digital Library \cite{Perseus} dataset was downloaded. The data was converted from XML to plain text and cleaned of all non-standard Greek letters utilizing a mix of regex, python string functions, and a list of the glyphs that appear in the training set of images. When removing invalid characters, the passages that they appeared in were also removed to ensure the integrity of the training data. To ensure the language data is as close to the image training data as possible, all diacritics and punctuation marks were removed, and the letters were converted to their uppercase variant. The remaining data contains $~46,400,000$ glyphs. This data was used to generate five smaller files for the purposes of training language models by randomly selecting chunks from the data.
 
 \section{Classification}
 
@@ -277,17 +286,17 @@ Due to the potentially time-consuming nature of developing and training CNNs to 
 \subsubsection{GMM Clustering}
 \todo{NEW}
 
-Using the feature vectors generated by AlexNet, GMM clustering on the training data was utilized to generate one gaussian distribution in $N$-dimensional space for each class of glyphs. Using this method, clusters were trained on feature vectors generated from both binarized and un-altered images. The trained clusters can then be utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class.
+Using the feature vectors generated by AlexNet, GMM clustering on the training data was utilized to generate one gaussian distribution in $N$-dimensional space for each class of glyphs. Using this method, clusters were trained on feature vectors generated from both binarized and unaltered images. The trained clusters can be utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class.
 
 \subsubsection{Random Forest Clustering}
 \todo{NEW}
 
-Similarly, using the feature vectors generated by AlexNet, Random Forest Clustering was utilized to generate decision trees in $N$-dimensional space. Using this method, binary decision trees of varied sizes were trained on feature vectors generated from both binarized and un-altered images. The trained trees were then combined and utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class with the percentage of decision trees in the forest that pick a class being the likelihood of a feature vector being in that class.
+Similarly, using the feature vectors generated by AlexNet, Random Forest Clustering was utilized to generate decision trees in $N$-dimensional space. Using this method, binary decision trees of varied sizes were trained on feature vectors generated from both binarized and unaltered images. The trained trees were then combined and utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class with the percentage of decision trees in the forest that pick a class being the likelihood of a feature vector being in that class.
 
 \subsubsection{$K$ Nearest Neighbors}
 \todo{NEW}
 
-Finally, a K-Nearest Neighbors network was also generated on the training data. Using this method, feature vectors are classified based on how close they are to feature vectors of known classes. Feature vectors were classified for both binarized and un-altered images. The built networks are utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class with the percentage of feature vectors of that class in the K-Nearest neighbors of a given feature vector being the likelihood of a feature vector being in that class.
+Finally, a K-Nearest Neighbors network was also generated on the training data. Using this method, feature vectors are classified based on how close they are to feature vectors of known classes. Feature vectors were classified for both binarized and unaltered images. The built networks are utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class with the percentage of feature vectors of that class in the K-Nearest neighbors of a given feature vector being the likelihood of a feature vector being in that class.
 
 \subsubsection{Neural Networks}
 \todo{NEW}

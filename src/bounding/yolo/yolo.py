@@ -69,6 +69,14 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
                 valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
                 bboxes += valid_bboxes
             else:
+                # remove boxes that touch edge
+                valid_bbox_window = BBox(
+                    dx + 5 if dx != 0 else 5,
+                    dy + 5 if dy != 0 else 5,
+                    window_x_max - 5 if window_x_max != x_max else x_max - 5,
+                    window_y_max - 5 if window_y_max != y_max else y_max - 5
+                )
+                valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
                 bboxes += potential_bboxes
 
             # if exporting images

@@ -34,8 +34,8 @@ class MNISTCNN(nn.Module):
     transform_train_3 = transforms.Compose([
         transforms.Resize(input_size - 1, max_size=input_size),
         transforms.Pad(input_size - 1, fill=(255, 255, 255)),
-        transforms.RandomPerspective(.2),
-        transforms.RandomAffine(degrees=30, translate=(0.4, 0.4), scale=(0.6, 1.4), shear=0.3),
+        transforms.RandomPerspective(.15),
+        transforms.RandomAffine(degrees=15, translate=(0.35, 0.35), scale=(0.7, 1.3), shear=0.3),
         transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=.2),
         transforms.CenterCrop(input_size),
         transforms.ToTensor(),
@@ -114,7 +114,6 @@ class MNISTCNN(nn.Module):
         return "mnist"
 
 
-# 0.6615824081012569 32,color
 class MNISTCNN_LSTM(nn.Module):
     """
     BASED ON:
@@ -166,7 +165,6 @@ class MNISTCNN_LSTM(nn.Module):
 
         self.fc = nn.Sequential(
             nn.Linear(output_size * 2, output_size)
-
         )
 
     def forward(self, x):
@@ -182,3 +180,73 @@ class MNISTCNN_LSTM(nn.Module):
     @staticmethod
     def get_name():
         return "mnist_lstm"
+
+
+class MNISTCNN_DEEP_LSTM(nn.Module):
+    """
+    BASED ON:
+    https://github.com/cdeotte/MNIST-CNN-99.75/blob/master/CNN.ipynb
+    https://www.kaggle.com/code/enwei26/mnist-digits-pytorch-cnn-99
+    """
+    input_size = 32
+
+    def __init__(self, input_size, output_size):
+        super().__init__()
+        self.dropout = .5
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(3, 32, 3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(32),
+            nn.Conv2d(32, 32, 3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(32),
+            nn.Conv2d(32, 32, 3, stride=2, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(32),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(self.dropout)
+        )
+
+        self.conv2 = nn.Sequential(
+            nn.Conv2d(32, 64, 3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.Conv2d(64, 64, 3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.Conv2d(64, 64, 3, stride=2, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(self.dropout)
+        )
+
+        self.conv3 = nn.Sequential(
+            nn.Conv2d(64, 128, 3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout(self.dropout)
+        )
+
+        self.lstm = nn.LSTM(128, output_size, bidirectional=True)
+
+        self.fc = nn.Sequential(
+            nn.Linear(output_size * 2, output_size * 2),
+            nn.Linear(output_size * 2, output_size * 2),
+            nn.Linear(output_size * 2, output_size)
+        )
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+
+        x = x.view(x.size(0), -1)
+        x, _ = self.lstm(x)
+        x = self.fc(x)
+        return F.log_softmax(x, dim=1)
+
+    @staticmethod
+    def get_name():
+        return "mnist_deep_lstm"
