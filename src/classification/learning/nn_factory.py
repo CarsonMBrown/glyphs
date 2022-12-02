@@ -1,15 +1,18 @@
 import os
 import random
 
+import cv2
 import numpy as np
 import torch
 from PIL import Image
 from matplotlib import pyplot as plt
 from sklearn.metrics import precision_recall_fscore_support, top_k_accuracy_score, confusion_matrix, \
     ConfusionMatrixDisplay
+from torch import log_softmax
 from torch.utils.data import DataLoader
 
 from src.classification.learning.torch_dataloader import VectorLoader
+from src.util.bbox import BBox
 from src.util.glyph_util import get_classes_as_glyphs
 
 SAVE_PATH = os.path.join("weights", "nn")
@@ -183,7 +186,7 @@ def set_seed(seed):
 
 def train_model(lang_file, annotations_file, training_data_path, validation_data_path, model_class, *, epochs=300,
                 batch_size=8, num_workers=0, resume=False, start_epoch=0, shuffle=False, name=None,
-                loader=VectorLoader, transforms=None):
+                loader=VectorLoader, transforms=None, loss_fn=torch.nn.NLLLoss):
     # Load validation set for model init, not loading train set yet
     if transforms is None:
         transforms = [None]
@@ -220,9 +223,11 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    loss_fn = torch.nn.NLLLoss()
+    loss_fn = loss_fn()
+
     # optimizer = torch.optim.SGD(model.parameters(), lr=0.1, weight_decay=0.0004, momentum=0.9)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    optimizer1 = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer2 = torch.optim.Adam(model.parameters(), lr=0.0001)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -230,7 +235,10 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     if resume:
         start_epoch += 1
         for i in range(0, start_epoch + 1):
-            optimizer.step()
+            if i < 50:
+                optimizer1.step()
+            else:
+                optimizer2.step()
             # scheduler.step()
 
     for epoch in range(start_epoch, epochs + 1):
@@ -238,7 +246,10 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
         # Make sure gradient tracking is on, and do a pass over the data
         model.train(True)
-        avg_loss = train_one_epoch(training_loader, optimizer, model, loss_fn)
+        if epoch < 10:
+            avg_loss = train_one_epoch(training_loader, optimizer1, model, loss_fn)
+        else:
+            avg_loss = train_one_epoch(training_loader, optimizer2, model, loss_fn)
 
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
             model, validation_loader, loss_fn=loss_fn, seed=0)
@@ -304,9 +315,9 @@ def train_one_epoch(training_loader, optimizer, model, loss_fn):
     return last_loss
 
 
-def classify(model, lines, img, transform):
+def classify(model, lines, img, transform, softmax=False):
     """
-    Using the given model, returns the class probabilities for each line given,
+    Using the given model, returns the class probabilities for the given line(s),
     where each line is a list of BBoxes in order of their occurrence
     :param model:
     :param lines:
@@ -317,9 +328,14 @@ def classify(model, lines, img, transform):
     if torch.cuda.is_available():
         model = model.to('cuda')
 
+    top_1_log_prob = 0
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    if len(lines) > 0 and isinstance(lines[0], BBox):
+        lines = [lines]
     for line in lines:
         with torch.no_grad():
-            # convert bounding boxes to tensors
             input_imgs = [transform(Image.fromarray(bbox.crop(img))) for bbox in line]
             for i in input_imgs:
                 i.unsqueeze(0)
@@ -332,3 +348,7 @@ def classify(model, lines, img, transform):
             probs_list = tensor_outputs.tolist()
             for i, bbox in enumerate(line):
                 bbox.add_class_probabilities(probs_list[i])
+                if softmax:
+                    probs_list[i] = log_softmax(torch.tensor(probs_list[i]), dim=0)
+                top_1_log_prob += max(probs_list[i])
+    return top_1_log_prob

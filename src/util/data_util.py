@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 
 from src.bounding.bound import get_minimal_bounding_boxes_v2
-from src.util.bbox_util import BBox
+from src.util.bbox import BBox
 from src.util.dir_util import split_image_name_extension, get_file_name
 from src.util.glyph_util import glyph_to_name, glyph_to_glyph
 from src.util.img_util import plot_lines

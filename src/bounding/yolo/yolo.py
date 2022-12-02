@@ -4,7 +4,7 @@ import cv2
 import torch
 
 from src.evaluation.bbox_eval import get_unique_bboxes, get_non_enclosed_bboxes
-from src.util.bbox_util import BBox
+from src.util.bbox import BBox
 from src.util.img_util import plot_bboxes
 
 # don't load model until needed
@@ -30,16 +30,17 @@ def find_glyphs(img, *, model_local=True):
     return model(img)
 
 
-def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=None, inner_sliding_window=True):
+def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_export_path=None,
+                         inner_sliding_window=True, confidence_min=None):
     """
     :param img: img to get bboxes from (IN BGR)
     :param window_size: size of the sliding window to use
     :param window_step: step to take between windows
-    :param export_path: if not None, the draws each sliding window to this path as an image
+    :param bbox_gif_export_path: if not None, the draws each sliding window to this path as an image
     :return: returns a list of bounding boxes
     """
-    if export_path is not None:
-        os.makedirs(export_path, exist_ok=True)
+    if bbox_gif_export_path is not None:
+        os.makedirs(bbox_gif_export_path, exist_ok=True)
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -55,7 +56,8 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
             found_glyphs = find_glyphs(img[dy:window_y_max, dx:window_x_max])
             potential_bboxes = get_bounding_boxes(found_glyphs,
                                                   offset_x=dx,
-                                                  offset_y=dy)
+                                                  offset_y=dy,
+                                                  confidence_min=confidence_min)
             # init valid bbox so it can be drawn if needed
             valid_bbox_window = BBox(0, 0, 0, 0)
             if inner_sliding_window:
@@ -69,18 +71,24 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
                 valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
                 bboxes += valid_bboxes
             else:
+                border = int(window_size * .01)
                 # remove boxes that touch edge
                 valid_bbox_window = BBox(
-                    dx + 5 if dx != 0 else 5,
-                    dy + 5 if dy != 0 else 5,
-                    window_x_max - 5 if window_x_max != x_max else x_max - 5,
-                    window_y_max - 5 if window_y_max != y_max else y_max - 5
+                    dx + border if dx != 0 else border,
+                    dy + border if dy != 0 else border,
+                    window_x_max - border if window_x_max != x_max else x_max - border,
+                    window_y_max - border if window_y_max != y_max else y_max - border
                 )
                 valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
-                bboxes += potential_bboxes
+                unique_bboxes = []
+                for bbox in valid_bboxes:
+                    pair, iou = bbox.get_pair(bboxes)
+                    if iou < .8:
+                        unique_bboxes.append(bbox)
+                bboxes += unique_bboxes
 
             # if exporting images
-            if export_path is not None:
+            if bbox_gif_export_path is not None:
                 window = BBox(dx, dy, window_x_max, window_y_max)
                 temp_img = cv2.cvtColor(img.copy(), cv2.COLOR_RGB2BGR)
 
@@ -89,7 +97,7 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, export_path=N
                     plot_bboxes(temp_img, [valid_bbox_window], color=(0, 255, 0), wait=None)
                 plot_bboxes(temp_img, potential_bboxes, color=(0, 0, 255), wait=None)
                 plot_bboxes(temp_img, bboxes, color=(0, 0, 0), wait=None)
-                cv2.imwrite(os.path.join(export_path, f"window_{dx}_{dy}.png"), temp_img)
+                cv2.imwrite(os.path.join(bbox_gif_export_path, f"window_{dx}_{dy}.png"), temp_img)
 
     unique_bboxes = get_unique_bboxes(bboxes)
     non_internal_bboxes = get_non_enclosed_bboxes(unique_bboxes)
@@ -104,10 +112,14 @@ def results_to_list(result):
     return result.pandas().xyxy[0].values
 
 
+# .513 is best based on yolo results and fscore does not increase significantly with higher
 def get_bounding_boxes(result, *, offset_x=0, offset_y=0, confidence_min=0.513):
+    if confidence_min is None:
+        confidence_min = 0.513
     """returns a list of bounding boxes"""
     return [BBox(min_x + offset_x, min_y + offset_y, max_x + offset_x, max_y + offset_y)
-            for min_x, min_y, max_x, max_y, confidence, _, _ in results_to_list(result) if confidence > confidence_min]
+            for min_x, min_y, max_x, max_y, confidence, _, _ in results_to_list(result)
+            if confidence > confidence_min]
 
 
 def get_bounding_box_confidence(result):

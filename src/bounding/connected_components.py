@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from src.util.bbox_util import BBox
+from src.util.bbox import BBox
 from src.util.dir_util import get_input_img_paths, init_output_dir
 from src.util.img_util import load_image, save_image
 
@@ -12,7 +12,11 @@ CENTROID_COLOR = [0, 255, 0]
 def get_connected_component_bounding_boxes(img):
     """Takes in a black and white (with black as ink) img and gets the bounding boxes of the connected components"""
     # Apply the Component analysis function
-    x, y = img.shape
+    x, y = 0, 0
+    if len(img.shape) == 3:
+        x, y, _ = img.shape
+    elif len(img.shape) == 2:
+        x, y = img.shape
     if x > 0 and y > 0:
         _, _, values, _ = cv2.connectedComponentsWithStats(~img, connectivity=8, ltype=cv2.CV_32S)
         # convert bounding boxes to BBoxes and return

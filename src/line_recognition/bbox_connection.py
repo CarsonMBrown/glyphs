@@ -1,6 +1,6 @@
 from math import floor, ceil
 
-from src.util.bbox_util import get_bbox_pairs
+from src.util.bbox import get_bbox_pairs
 from src.util.line_util import get_line_centers
 
 

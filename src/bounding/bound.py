@@ -1,5 +1,5 @@
 from src.bounding.connected_components import get_connected_component_bounding_boxes, bound_and_render
-from src.util.bbox_util import BBox
+from src.util.bbox import BBox, get_mean_dims
 
 
 def export_connected_component(img_in_dir, img_out_dir):
@@ -51,11 +51,13 @@ def get_minimal_bounding_boxes_v2(binary_img, bboxes, *, split=False, bboxes_in_
         return [get_minimal_bounding_boxes_v2(binary_img, line, split=split,
                                               maintain_center=maintain_center) for line in bboxes]
 
+    _, min_height = get_mean_dims(bboxes)
     potentially_cropped_bboxes = [crop_to_content(bbox,
                                                   get_connected_component_bounding_boxes(bbox.crop(binary_img)),
                                                   allow_partial=True,
                                                   initial_offset=(bbox.x_min, bbox.y_min),
-                                                  maintain_center=maintain_center)
+                                                  maintain_center=maintain_center,
+                                                  min_height=min_height)
                                   for bbox in bboxes]
     if split:
         # store list of cropped bounding boxes (which will have blobs in the binary image)
@@ -82,13 +84,15 @@ def get_minimal_line_bounding_boxes(binary_img, lines):
     for line in lines:
         new_line = []
         for bbox in line:
-            cropped_bbox, _ = crop_to_content(bbox, cc_bboxes, maintain_center=True)
+            _, min_height = get_mean_dims(line)
+            cropped_bbox, _ = crop_to_content(bbox, cc_bboxes, maintain_center=True, min_height=min_height)
             new_line.append(cropped_bbox)
         new_lines.append(new_line)
     return new_lines
 
 
-def crop_to_content(bbox, cc_bboxes, *, maintain_center=False, allow_partial=True, initial_offset=(0, 0)):
+def crop_to_content(bbox, cc_bboxes, *, min_height=0, maintain_center=False, allow_partial=True,
+                    initial_offset=(0, 0)):
     cropped = False
     offset_x, offset_y = initial_offset
     bbox.offset(-offset_x, -offset_y)
@@ -113,6 +117,8 @@ def crop_to_content(bbox, cc_bboxes, *, maintain_center=False, allow_partial=Tru
         else:
             bbox = recenter_bbox(bbox, x_min, y_min, x_max, y_max)
             bbox.offset(offset_x, offset_y)
+        if min_height > 0:
+            bbox.grow_to(0, min_height)
     else:
         bbox.offset(offset_x, offset_y)
     return bbox, cropped

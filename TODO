@@ -4,6 +4,8 @@ TODO:
   https://github.com/cdeotte/MNIST-CNN-99.75/blob/master/CNN.ipynb
   fix bounding issues (attempt removing sliding window)
 
+  More detail on GMMs 
+
   kl diverivenge
 
   image distortion model (only if bboxes can be tight)

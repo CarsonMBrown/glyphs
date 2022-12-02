@@ -2,14 +2,15 @@ import os.path
 from functools import partial
 
 import cv2
-from numpy import arange
+import torch
+from numpy import arange, argmax, int64
 from tqdm import tqdm
 
 from src.binarization import binarize
 from src.bounding.bound import get_minimal_bounding_boxes_v2
 from src.bounding.yolo import yolo
 from src.classification.learning import nn_factory
-from src.classification.learning.mnist_nn import MNISTCNN, MNISTCNN_DEEP_LSTM
+from src.classification.learning.mnist_nn import MNISTCNN, MNISTCNN_DEEP_LSTM, MNISTCNN_DEEP_ACTIVATED_LSTM
 from src.classification.learning.resnext_lstm import ResNextLongLSTM, ResNext101LSTM
 from src.classification.learning.torch_dataloader import ImageLoader
 from src.classification.markov import markov
@@ -21,7 +22,7 @@ from src.util.data_util import load_truth, CocoReader, write_meta
 from src.util.dir_util import get_input_img_paths, init_output_dir, write_generated_bboxes, get_file_name
 from src.util.glyph_util import get_classes_as_glyphs
 from src.util.img_util import plot_bboxes, plot_lines, load_image
-from src.util.line_util import get_line_centers, unpack_lines
+from src.util.line_util import get_line_centers, unpack_lines, clean_lines, generate_line_variants
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -74,6 +75,7 @@ TRAIN_GENERATED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "generated")
 TRAIN_GENERATED_RAW_GLYPHS_DIR = os.path.join(TRAIN_GENERATED_GLYPHS_DIR, "raw")
 TRAIN_GENERATED_INTERSECTED_GLYPHS_DIR = os.path.join(TRAIN_GENERATED_GLYPHS_DIR, "intersected")
 TRAIN_GENERATED_CROPPED_GLYPHS_DIR = os.path.join(TRAIN_GENERATED_GLYPHS_DIR, "cropped")
+TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2 = TRAIN_GENERATED_CROPPED_GLYPHS_DIR + "_2"
 TRAIN_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "cropped_raw")
 TRAIN_RAW_QUALITY_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw_high_quality")
 TRAIN_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "binarized")
@@ -82,7 +84,15 @@ EVAL_GENERATED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "generated")
 EVAL_GENERATED_RAW_GLYPHS_DIR = os.path.join(EVAL_GENERATED_GLYPHS_DIR, "raw")
 EVAL_GENERATED_INTERSECTED_GLYPHS_DIR = os.path.join(EVAL_GENERATED_GLYPHS_DIR, "intersected")
 EVAL_GENERATED_CROPPED_GLYPHS_DIR = os.path.join(EVAL_GENERATED_GLYPHS_DIR, "cropped")
+EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2 = EVAL_GENERATED_CROPPED_GLYPHS_DIR + "_2"
 EVAL_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "cropped_raw")
+TEST_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "test", "raw")
+TEST_GENERATED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "test", "generated")
+TEST_GENERATED_RAW_GLYPHS_DIR = os.path.join(TEST_GENERATED_GLYPHS_DIR, "raw")
+TEST_GENERATED_INTERSECTED_GLYPHS_DIR = os.path.join(TEST_GENERATED_GLYPHS_DIR, "intersected")
+TEST_GENERATED_CROPPED_GLYPHS_DIR = os.path.join(TEST_GENERATED_GLYPHS_DIR, "cropped")
+TEST_GENERATED_CROPPED_GLYPHS_DIR_V2 = TEST_GENERATED_CROPPED_GLYPHS_DIR + "_2"
+TEST_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "test", "cropped_raw")
 BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "binarized")
 EVAL_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "binarized")
 
@@ -105,22 +115,25 @@ meta_data_file = os.path.join(TRAIN_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv"), \
 
 
 def train_model():
-    # nn_factory.train_model(quick_lang_file, meta_data_file,
-    #                        TRAIN_GENERATED_CROPPED_GLYPHS_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
-    #                        ResNextLongLSTM,
-    #                        epochs=200, batch_size=24, num_workers=0, resume=True,
-    #                        start_epoch=1, loader=ImageLoader,
-    #                        transforms=[ResNext101LSTM.transform_train_padded,
-    #                                    ResNext101LSTM.transform_classify_padded],
-    #                        name="generated_cropped_padded")
-
-    nn_factory.train_model(lang_file, meta_data_file,
+    nn_factory.train_model(quick_lang_file, meta_data_file,
                            TRAIN_GENERATED_CROPPED_GLYPHS_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
-                           MNISTCNN_DEEP_LSTM,
-                           epochs=400, batch_size=64, num_workers=0, resume=False,
+                           ResNextLongLSTM,
+                           epochs=200, batch_size=24, num_workers=0, resume=False,
                            start_epoch=0, loader=ImageLoader,
+                           transforms=[ResNext101LSTM.transform_train_padded,
+                                       ResNext101LSTM.transform_classify_padded],
+                           name="generated_cropped_padded",
+                           loss_fn=torch.nn.CrossEntropyLoss)
+
+    # TODO FRI
+    nn_factory.train_model(lang_file, meta_data_file,
+                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
+                           MNISTCNN_DEEP_ACTIVATED_LSTM,
+                           epochs=600, batch_size=64, num_workers=0, resume=True,
+                           start_epoch=44, loader=ImageLoader,
                            transforms=[MNISTCNN.transform_train_3,
-                                       MNISTCNN.transform_classify_2]
+                                       MNISTCNN.transform_classify_2],
+                           loss_fn=torch.nn.NLLLoss
                            )
 
 
@@ -206,17 +219,20 @@ def display_lines(img, lines, *, save_path=None, wait=True):
     return img
 
 
-def generate_lines(img, *, binary_img=None, remove_intersections=False, inner_sliding_window=True):
-    valid_bboxes = generate_bboxes(img, inner_sliding_window=inner_sliding_window)
+def generate_lines(img, *, binary_img=None, remove_intersections=False, inner_sliding_window=True,
+                   bbox_gif_export_path=None):
+    valid_bboxes = generate_bboxes(img, inner_sliding_window=inner_sliding_window,
+                                   bbox_gif_export_path=bbox_gif_export_path)
     lines = bboxes_to_lines(binary_img, remove_intersections, valid_bboxes)
     return lines
 
 
 def generate_line_image(img, *, binary_img=None, remove_intersections=False, inner_sliding_window=True, save_path=None,
-                        wait=True):
+                        wait=True, bbox_gif_export_path=None):
     lines = generate_lines(img, binary_img=binary_img,
                            remove_intersections=remove_intersections,
-                           inner_sliding_window=inner_sliding_window)
+                           inner_sliding_window=inner_sliding_window,
+                           bbox_gif_export_path=bbox_gif_export_path)
     display_lines(img, lines, save_path=save_path, wait=wait)
 
 
@@ -225,44 +241,46 @@ def generate_line_images(img_in_dir, binary_img_in_dir, save_path, remove_inters
     init_output_dir(save_path)
     for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
         x = get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
-                                   skip_existing=True, verbose=False, formattable_output=0)
+                                   verbose=False, formattable_output=0)
         print(color_img_path)
         if x is None:
             continue
         color_img, binary_img, img_output = x
         generate_line_image(color_img, binary_img=binary_img, save_path=img_output,
                             remove_intersections=remove_intersections, inner_sliding_window=inner_sliding_window,
-                            wait=False)
+                            wait=False, bbox_gif_export_path=None)
 
 
-def get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
-                           skip_existing=False, verbose=False, formattable_output=0):
+def get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path, verbose=False,
+                           formattable_output=0):
     color_img, img_output = load_image(img_in_dir, save_path, color_img_path, formattable_output=formattable_output,
-                                       skip_existing=skip_existing, verbose=verbose)
+                                       skip_existing=False, verbose=verbose)
     if color_img is None:
-        print("NO IMAGE: " + color_img_path)
+        print("NO COLOR IMAGE: " + color_img_path)
         return None
-    binary_img, _ = load_image(binary_img_in_dir, save_path, binary_img_path, skip_existing=skip_existing,
+    binary_img, _ = load_image(binary_img_in_dir, save_path, binary_img_path, skip_existing=False,
                                gray_scale=True, verbose=verbose)
     if binary_img is None:
-        print("NO IMAGE: " + binary_img_path)
+        print("NO BINARY IMAGE: " + binary_img_path)
         return None
     return color_img, binary_img, img_output
 
 
-def get_image_output_tuples(img_in_dir, binary_img_in_dir, save_path, skip_existing=False, verbose=False,
+def get_image_output_tuples(img_in_dir, binary_img_in_dir, save_path, verbose=False,
                             formattable_output=0):
     images_output_pairs = []
     for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
         x = get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
-                                   skip_existing, verbose, formattable_output)
+                                   verbose, formattable_output)
         if x is not None:
             images_output_pairs.append(*x)
     return images_output_pairs
 
 
-def generate_bboxes(img, *, inner_sliding_window=True):
-    bboxes = yolo.sliding_glyph_window(img, inner_sliding_window=inner_sliding_window)
+def generate_bboxes(img, *, inner_sliding_window=True, bbox_gif_export_path=None, confidence_min=None):
+    bboxes = yolo.sliding_glyph_window(img, inner_sliding_window=inner_sliding_window,
+                                       bbox_gif_export_path=bbox_gif_export_path,
+                                       confidence_min=confidence_min)
     valid_bboxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
     return valid_bboxes
 
@@ -277,7 +295,7 @@ def bboxes_to_lines(binary_img, remove_intersections, bboxes):
                                               split=False,
                                               bboxes_in_lines=True,
                                               maintain_center=True)
-    return lines
+    return clean_lines(lines)
 
 
 def get_input_paths(img_in_dir, binary_img_in_dir):
@@ -304,13 +322,27 @@ def classify_images(img_in_dir, binary_img_in_dir, img_out_dir):
                                                                                      formattable_output=1):
         lines = generate_lines(color_img, binary_img=None, remove_intersections=False)
         display_lines(color_img, lines, save_path=img_output.format("_lines"), wait=False)
-        nn_factory.classify(model, lines, color_img, ResNext101LSTM.transform_classify)
+        lines = classify_lines(lines, model, color_img, ResNext101LSTM.transform_classify)
         output.append((color_img_path, lines))
     write_csv("out.csv", output)
 
 
-def classify_lines(lines, model, img):
-    nn_factory.classify(model, lines, img, ResNext101LSTM.transform_classify)
+def classify_lines(lines, model, img, transform):
+    nn_factory.classify(model, lines, img, transform)
+    return lines
+
+
+def classify_lines_with_variants(lines, model, img, transform, softmax=False):
+    new_lines = []
+    for line in lines:
+        potential_lines = generate_line_variants(line)
+        best = argmax([nn_factory.classify(model, potential_line, img, transform, softmax) for
+                       potential_line in potential_lines])
+        if not isinstance(best, int64):
+            print(type(best))
+            best = best[0]
+        new_lines.append(potential_lines[best])
+    return new_lines
 
 
 def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *, crop=False,
@@ -321,16 +353,15 @@ def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *
     remove_intersections = crop or remove_intersections
     for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
         truth_bboxes = load_truth(coco, get_file_name(color_img_path))
-        color_img, img_output = load_image(img_in_dir, out_dir, color_img_path, formattable_output=1,
-                                           skip_existing=False, verbose=False)
-        if color_img is None:
-            print("NO IMAGE: " + color_img_path)
+        x = get_image_output_tuple(img_in_dir,
+                                   binary_img_in_dir,
+                                   color_img_path,
+                                   binary_img_path,
+                                   out_dir,
+                                   formattable_output=1)
+        if x is None:
             continue
-        binary_img, _ = load_image(binary_img_in_dir, out_dir, binary_img_path, skip_existing=False,
-                                   gray_scale=True, verbose=False)
-        if binary_img is None:
-            print("NO IMAGE: " + binary_img_path)
-            continue
+        color_img, binary_img, img_output = x
         pred_bboxes = unpack_lines(generate_lines(color_img,
                                                   binary_img=binary_img if crop else None,
                                                   remove_intersections=remove_intersections))
@@ -346,38 +377,69 @@ def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *
 
 def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
     with open(os.path.join("output_data", "pipeline_metrics.csv"), mode="w") as csv_file:
-        csv_file.write("inner_sliding_window, intersect, crop, bbox_precision, bbox_recall, bbox_fscore, "
-                       "avg_iou, class_precision, class_recall, class_fscore\n")
-        model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
+        csv_file.write(
+            "confidence_min, inner_sliding_window, intersect, crop, complex_nn, "
+            "vary_lines, bbox_precision, bbox_recall, "
+            "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n")
+        cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=604, resume=False)
+        full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
         for inner_window in [True, False]:
-            img_bboxes_pairs, truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
-                                                                     binary_img_in_dir,
-                                                                     inner_sliding_window=inner_window)
-            truth_pred_iou_tuples = []
-            for crop in [True, False]:
-                for intersect in [True, False]:
+            for confidence_min in arange(.2, .91, .1):
+                confidence_min = round(confidence_min, 2)
+                img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
+                                                                                  binary_img_in_dir,
+                                                                                  inner_sliding_window=inner_window,
+                                                                                  confidence_min=confidence_min)
+                for crop, intersect, complex_nn in n_choices(3, [True, False]):
+                    truth_pred_iou_tuples = []
                     with tqdm(desc="Generating Lines", total=len(img_bboxes_pairs)) as pbar:
                         for i, (color_img, binary_img, template_bboxes) in enumerate(img_bboxes_pairs):
                             bboxes = [bbox.copy() for bbox in template_bboxes]
+                            truth_bboxes = [bbox.copy() for bbox in template_truth_bboxes[i]]
                             lines = bboxes_to_lines(binary_img=binary_img if crop else None,
                                                     remove_intersections=intersect,
                                                     bboxes=bboxes)
-                            classify_lines(lines, model, color_img)
+
+                            if complex_nn:
+                                lines = classify_lines(lines, full_size_model, color_img,
+                                                       ResNext101LSTM.transform_classify_cropped)
+                            else:
+                                lines = classify_lines(lines, cropped_model, color_img,
+                                                       MNISTCNN.transform_classify_2)
+                            # if vary_lines:
+                            #     if complex_nn:
+                            #         lines = classify_lines(lines, full_size_model, color_img,
+                            #                                ResNext101LSTM.transform_classify_cropped)
+                            #     else:
+                            #         lines = classify_lines(lines, cropped_model, color_img,
+                            #                                MNISTCNN.transform_classify_2)
+                            # else:
+                            #     if complex_nn:
+                            #         lines = classify_lines_with_variants(lines, full_size_model, color_img,
+                            #                                              ResNext101LSTM.transform_classify_cropped)
+                            #     else:
+                            #         lines = classify_lines_with_variants(lines, cropped_model, color_img,
+                            #                                              MNISTCNN.transform_classify_2)
+
                             pred_bboxes = unpack_lines(lines)
-                            truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes[i], pred_bboxes)
+                            truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
                             pbar.update(1)
 
-                        bbox_precision, bbox_recall, bbox_fscore, avg_IOU = get_iou_metrics(truth_pred_iou_tuples)
-                        class_precision, class_recall, class_fscore = get_class_metrics(truth_pred_iou_tuples)
+                        bbox_precision, bbox_recall, bbox_fscore, avg_IOU = \
+                            get_iou_metrics(truth_pred_iou_tuples)
+                        class_precision, class_recall, class_fscore = get_class_metrics(
+                            truth_pred_iou_tuples)
 
                         csv_file.write(
-                            f"{inner_window}, {intersect}, {crop}, {bbox_precision}, {bbox_recall}, "
+                            f"{confidence_min}, {inner_window}, {intersect}, {crop}, {complex_nn}, "
+                            f"{False}, {bbox_precision}, {bbox_recall}, "
                             f"{bbox_fscore}, {avg_IOU}, {class_precision}, {class_recall}, {class_fscore}\n")
 
 
-def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sliding_window=True):
+def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sliding_window=True,
+                            confidence_min=None):
     coco = CocoReader(coco_dir)
-    input_paths = get_input_paths(img_in_dir, binary_img_in_dir)[0:]
+    input_paths = get_input_paths(img_in_dir, binary_img_in_dir)[0:2]
     img_bboxes_pairs = []
     truth_bboxes = []
     with tqdm(desc="Bounding Boxes", total=len(input_paths)) as pbar:
@@ -396,7 +458,7 @@ def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
             img_bboxes_pairs.append((
                 color_img,
                 binary_img,
-                generate_bboxes(color_img, inner_sliding_window=inner_sliding_window)
+                generate_bboxes(color_img, inner_sliding_window=inner_sliding_window, confidence_min=confidence_min)
             ))
 
             pbar.update(1)
@@ -404,16 +466,52 @@ def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
     return img_bboxes_pairs, truth_bboxes
 
 
+def n_choices(n, choices):
+    x = [[c] for c in choices]
+    for _ in range(n - 1):
+        new_x = []
+        for C in x:
+            for c in choices:
+                new_x.append(C + [c])
+        x = new_x
+    return x
+
+
 if __name__ == '__main__':
     print("Starting...")
 
-    # train_model()
     # eval_model()
     # deep_eval_model()
     # generate_line_images(EVAL_RAW_DIR, EVAL_BINARIZED_DIR,
     #                      os.path.join(EVAL_OUTPUT_DIR, "intersected_cropped_no_window"),
     #                      remove_intersections=True, inner_sliding_window=False)
 
+    # if False:
+    #     generate_line_image(
+    #         cv2.imread(
+    #             r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.jpg"),
+    #         binary_img=cv2.imread(
+    #             r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\binarized\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.png",
+    #             cv2.IMREAD_GRAYSCALE),
+    #         remove_intersections=True, inner_sliding_window=False,
+    #         wait=False,
+    #         bbox_gif_export_path=r"C:\Users\Carson Brown\git\glyphs\output_data\sliding_window\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8")
+    #
+    # generate_line_image(
+    #     cv2.imread(
+    #         r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.jpg"),
+    #     binary_img=cv2.imread(
+    #         r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\binarized\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.png",
+    #         cv2.IMREAD_GRAYSCALE),
+    #     save_path=r"C:\Users\Carson Brown\git\glyphs\output_data\line_generation\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.png",
+    #     remove_intersections=True, inner_sliding_window=False,
+    #     wait=False)
+
+    # generate_training_images(COCO_TRAINING_DIR, TRAIN_RAW_DIR, TRAIN_BINARIZED_DIR,
+    #                          TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2)
+    # generate_training_images(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2)
+    # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR)
+    # train_model()
     generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
 
     # classify(EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_OUTPUT_DIR)
