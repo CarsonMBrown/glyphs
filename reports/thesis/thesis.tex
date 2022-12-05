@@ -29,6 +29,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{refcheck}
+\usepackage{float}
 
 \usepackage[style=numeric,sorting=nyt]{biblatex}
 
@@ -135,10 +136,11 @@ headsepline, % Uncomment to get a line under the header
 %-------------------------------------------------------------------------------
 
 \addchaptertocentry{Abstract} % Add the abstract to the table of contents
+\todo{NEW}
 
-% \begin{abstract}
-% 	TODO
-% \end{abstract}
+\begin{abstract}
+	Annotating and transcribing papyrus is a time-consuming and complicated process that requires expertise in both language and papyrus to correctly transcribe damaged texts. This report proposes a fully autonomous pipeline that takes digital images of papyrus and outputs bounding boxes and classifications for each glyph, as well as grouping glyphs into potential lines. The pipeline consists of a binarization step, where glyphs are digitally separated from the papyrus using various methods, a glyph bounding step, a line grouping step, and finally a classification step, each with options that can be used to increase recall or precision. The processes for generating the pipeline and various alternative approaches are discussed, along with an evaluation of the pipeline and its component modules.
+\end{abstract}
 
 %-------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
@@ -147,7 +149,7 @@ headsepline, % Uncomment to get a line under the header
 % TODO
 % \addchaptertocentry{Acknowledgements} % Add the acknowledgements to the table of contents
 % \begin{acknowledgements}
-% 	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on this project. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that led to this project. Finally, I would like to thank my family and friends, who have supported me throughout this process, your support is invaluable.
+% 	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on this project. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that led to this project. Finally, I would like to thank my family and friends who have supported me throughout this process, your support is invaluable.
 % \end{acknowledgements}
 
 %-------------------------------------------------------------------------------
@@ -225,10 +227,8 @@ I declare that the material submitted for assessment is my own work except where
 % Total Words: (Nov 29)
 % 6,882
 
-% This doc: 206 words (Nov 23)
-% Includes declaration, dedication, and quote
-
-% Abstract: TODO
+% This doc: 325 words (Dec 05)
+% Includes abstract declaration, dedication, and quote
 
 % 316 Words (Nov 29)
 \chapter{Introduction}

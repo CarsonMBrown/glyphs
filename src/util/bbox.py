@@ -12,8 +12,9 @@ class BBox:
     width, height, area, center = None, None, None, None
     uuid = None
     probabilities = None
+    confidence = None
 
-    def __init__(self, x_min, y_min, x_max, y_max, *, probabilities=None, uuid=None):
+    def __init__(self, x_min, y_min, x_max, y_max, *, probabilities=None, uuid=None, confidence=None):
         """Creates a bounding box using the pascal format and an optional list of class probabilities and uuid"""
         self.x_min = int(x_min)
         self.y_min = int(y_min)
@@ -23,6 +24,7 @@ class BBox:
         self.recalculate_reference_values()
         # init probabilities and uuid
         self.probabilities = probabilities
+        self.confidence = confidence
         if uuid is None:
             self.uuid = uuid4()
 
@@ -106,7 +108,8 @@ class BBox:
         self.recalculate_reference_values()
 
     def copy(self):
-        return BBox(self.x_min, self.y_min, self.x_max, self.y_max, probabilities=self.probabilities, uuid=self.uuid)
+        return BBox(self.x_min, self.y_min, self.x_max, self.y_max, probabilities=self.probabilities,
+                    uuid=self.uuid, confidence=self.confidence)
 
     def is_copy(self, other: "BBox"):
         if not isinstance(other, BBox):

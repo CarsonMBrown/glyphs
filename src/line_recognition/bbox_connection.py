@@ -94,11 +94,7 @@ def remove_oversize_bboxes(lines, max_sub_bboxes=1):
             num = sum([bbox.contains_point(other_center) for other_center in all_centers])
             if num > max_sub_bboxes:
                 potential_removals.append(bbox)
-        # only remove boxes if they can be removed without damaging the integrity of the line
-        for p_r in potential_removals:
-            if is_line_valid([bbox for bbox in line if bbox != p_r]):
-                oversize_bboxes.append(p_r)
-                line.remove(p_r)
+        oversize_bboxes += remove_bboxes(line, potential_removals)
     return oversize_bboxes
 
 
@@ -118,12 +114,18 @@ def remove_duplicate_bboxes(lines, iou_threshold=.75):
         for i, bbox in enumerate(line):
             potential_removals += [bbox_other for bbox_other in line[i + 1:] if
                                    bbox.iou(bbox_other) > iou_threshold]
-        # only remove boxes if they can be removed without damaging the integrity of the line
-        for p_r in potential_removals:
-            if is_line_valid([bbox for bbox in line if bbox != p_r]):
-                duplicate_bboxes.append(p_r)
-                line.remove(p_r)
+        duplicate_bboxes += remove_bboxes(line, potential_removals)
     return duplicate_bboxes
+
+
+def remove_bboxes(line, potential_removals):
+    removed = []
+    # only remove boxes if they can be removed without damaging the integrity of the line
+    for p_r in potential_removals:
+        if p_r in line and is_line_valid([bbox for bbox in line if bbox != p_r]):
+            removed.append(p_r)
+            line.remove(p_r)
+    return removed
 
 
 def join_lines(lines):

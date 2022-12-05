@@ -2,6 +2,7 @@ import os.path
 from functools import partial
 
 import cv2
+import numpy
 import torch
 from numpy import arange, argmax, int64
 from tqdm import tqdm
@@ -22,7 +23,8 @@ from src.util.data_util import load_truth, CocoReader, write_meta
 from src.util.dir_util import get_input_img_paths, init_output_dir, write_generated_bboxes, get_file_name
 from src.util.glyph_util import get_classes_as_glyphs
 from src.util.img_util import plot_bboxes, plot_lines, load_image
-from src.util.line_util import get_line_centers, unpack_lines, clean_lines, generate_line_variants
+from src.util.line_util import get_line_centers, unpack_lines, clean_lines, generate_line_variants, \
+    generate_line_variants_at_indexes
 
 DATASET_DIR = "dataset"
 IMAGE_DIR = os.path.join(DATASET_DIR, "images")
@@ -277,10 +279,12 @@ def get_image_output_tuples(img_in_dir, binary_img_in_dir, save_path, verbose=Fa
     return images_output_pairs
 
 
-def generate_bboxes(img, *, inner_sliding_window=True, bbox_gif_export_path=None, confidence_min=None):
+def generate_bboxes(img, *, inner_sliding_window=True, bbox_gif_export_path=None, confidence_min=None, cache_name=None,
+                    duplicate_threshold=None):
     bboxes = yolo.sliding_glyph_window(img, inner_sliding_window=inner_sliding_window,
                                        bbox_gif_export_path=bbox_gif_export_path,
-                                       confidence_min=confidence_min)
+                                       confidence_min=confidence_min, cache_name=cache_name,
+                                       duplicate_threshold=duplicate_threshold)
     valid_bboxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
     return valid_bboxes
 
@@ -345,6 +349,26 @@ def classify_lines_with_variants(lines, model, img, transform, softmax=False):
     return new_lines
 
 
+def classify_lines_with_adaptive_variants(lines, model, img, transform, softmax=False, variants_per_line=1):
+    new_lines = []
+    for line in lines:
+        log_probs = nn_factory.classify(model, line, img, transform, softmax)
+        indexes_to_vary = list(numpy.argsort(numpy.array(log_probs)))[-variants_per_line:]
+        potential_lines = generate_line_variants_at_indexes(line, allowed_indexes=indexes_to_vary)
+
+        max_prob = None
+        best_line = None
+        for potential_line in potential_lines:
+            log_probs = nn_factory.classify(model, potential_line, img, transform, softmax)
+            log_prob = sum(log_probs)
+            if max_prob is None or max_prob < log_prob:
+                max_prob = log_prob
+                best_line = potential_line
+
+        new_lines.append(best_line)
+    return new_lines
+
+
 def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *, crop=False,
                              remove_intersections=False):
     init_output_dir(out_dir)
@@ -378,68 +402,63 @@ def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *
 def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
     with open(os.path.join("output_data", "pipeline_metrics.csv"), mode="w") as csv_file:
         csv_file.write(
-            "confidence_min, inner_sliding_window, intersect, crop, complex_nn, "
+            "confidence_min, duplicate_threshold, inner_sliding_window, intersect, crop, complex_nn, "
             "vary_lines, bbox_precision, bbox_recall, "
             "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n")
-        cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=604, resume=False)
+        cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
         full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
         for inner_window in [True, False]:
-            for confidence_min in arange(.2, .91, .1):
-                confidence_min = round(confidence_min, 2)
-                img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
-                                                                                  binary_img_in_dir,
-                                                                                  inner_sliding_window=inner_window,
-                                                                                  confidence_min=confidence_min)
-                for crop, intersect, complex_nn in n_choices(3, [True, False]):
-                    truth_pred_iou_tuples = []
-                    with tqdm(desc="Generating Lines", total=len(img_bboxes_pairs)) as pbar:
-                        for i, (color_img, binary_img, template_bboxes) in enumerate(img_bboxes_pairs):
-                            bboxes = [bbox.copy() for bbox in template_bboxes]
-                            truth_bboxes = [bbox.copy() for bbox in template_truth_bboxes[i]]
-                            lines = bboxes_to_lines(binary_img=binary_img if crop else None,
-                                                    remove_intersections=intersect,
-                                                    bboxes=bboxes)
+            for confidence_min in arange(0.57, 0.63, .0025):
+                confidence_min = round(confidence_min, 3)
+                for duplicate_threshold in arange(0.5, 1.01, .05):
+                    duplicate_threshold = round(duplicate_threshold, 2)
+                    img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
+                                                                                      binary_img_in_dir,
+                                                                                      inner_sliding_window=inner_window,
+                                                                                      confidence_min=confidence_min,
+                                                                                      duplicate_threshold=duplicate_threshold)
+                    crop, intersect, complex_nn, vary_lines = False, False, True, False
+                    for crop, intersect in n_choices(2, [True, False]):
+                        truth_pred_iou_tuples = []
+                        with tqdm(desc=f"Generating Lines w/ confidence:{confidence_min}",
+                                  total=len(img_bboxes_pairs)) as pbar:
+                            for i, (color_img, binary_img, template_bboxes) in enumerate(img_bboxes_pairs):
+                                bboxes = [bbox.copy() for bbox in template_bboxes]
+                                truth_bboxes = [bbox.copy() for bbox in template_truth_bboxes[i]]
+                                lines = bboxes_to_lines(binary_img=binary_img if crop else None,
+                                                        remove_intersections=intersect,
+                                                        bboxes=bboxes)
+                                if complex_nn:
+                                    model, transform = full_size_model, ResNext101LSTM.transform_classify_cropped
+                                else:
+                                    model, transform = cropped_model, MNISTCNN.transform_classify_2
 
-                            if complex_nn:
-                                lines = classify_lines(lines, full_size_model, color_img,
-                                                       ResNext101LSTM.transform_classify_cropped)
-                            else:
-                                lines = classify_lines(lines, cropped_model, color_img,
-                                                       MNISTCNN.transform_classify_2)
-                            # if vary_lines:
-                            #     if complex_nn:
-                            #         lines = classify_lines(lines, full_size_model, color_img,
-                            #                                ResNext101LSTM.transform_classify_cropped)
-                            #     else:
-                            #         lines = classify_lines(lines, cropped_model, color_img,
-                            #                                MNISTCNN.transform_classify_2)
-                            # else:
-                            #     if complex_nn:
-                            #         lines = classify_lines_with_variants(lines, full_size_model, color_img,
-                            #                                              ResNext101LSTM.transform_classify_cropped)
-                            #     else:
-                            #         lines = classify_lines_with_variants(lines, cropped_model, color_img,
-                            #                                              MNISTCNN.transform_classify_2)
+                                if vary_lines:
+                                    lines = classify_lines_with_adaptive_variants(lines, model, color_img, transform,
+                                                                                  softmax=complex_nn)
+                                else:
+                                    lines = classify_lines(lines, model, color_img, transform)
 
-                            pred_bboxes = unpack_lines(lines)
-                            truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
-                            pbar.update(1)
+                                pred_bboxes = unpack_lines(lines)
+                                truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
+                                pbar.update(1)
 
-                        bbox_precision, bbox_recall, bbox_fscore, avg_IOU = \
-                            get_iou_metrics(truth_pred_iou_tuples)
-                        class_precision, class_recall, class_fscore = get_class_metrics(
-                            truth_pred_iou_tuples)
+                            bbox_precision, bbox_recall, bbox_fscore, avg_IOU = \
+                                get_iou_metrics(truth_pred_iou_tuples)
+                            class_precision, class_recall, class_fscore = get_class_metrics(
+                                truth_pred_iou_tuples)
 
-                        csv_file.write(
-                            f"{confidence_min}, {inner_window}, {intersect}, {crop}, {complex_nn}, "
-                            f"{False}, {bbox_precision}, {bbox_recall}, "
-                            f"{bbox_fscore}, {avg_IOU}, {class_precision}, {class_recall}, {class_fscore}\n")
+                            csv_file.write(
+                                f"{confidence_min}, {duplicate_threshold}, {inner_window}, "
+                                f"{intersect}, {crop}, {complex_nn}, "
+                                f"{vary_lines}, {bbox_precision}, {bbox_recall}, "
+                                f"{bbox_fscore}, {avg_IOU}, {class_precision}, {class_recall}, {class_fscore}\n")
 
 
 def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sliding_window=True,
-                            confidence_min=None):
+                            confidence_min=None, duplicate_threshold=None):
     coco = CocoReader(coco_dir)
-    input_paths = get_input_paths(img_in_dir, binary_img_in_dir)[0:2]
+    input_paths = get_input_paths(img_in_dir, binary_img_in_dir)[0:]
     img_bboxes_pairs = []
     truth_bboxes = []
     with tqdm(desc="Bounding Boxes", total=len(input_paths)) as pbar:
@@ -458,7 +477,8 @@ def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
             img_bboxes_pairs.append((
                 color_img,
                 binary_img,
-                generate_bboxes(color_img, inner_sliding_window=inner_sliding_window, confidence_min=confidence_min)
+                generate_bboxes(color_img, inner_sliding_window=inner_sliding_window, confidence_min=confidence_min,
+                                cache_name=color_img_path, duplicate_threshold=duplicate_threshold)
             ))
 
             pbar.update(1)

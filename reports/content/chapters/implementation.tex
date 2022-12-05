@@ -6,7 +6,7 @@ A perfect binarized version of a papyrus image is defined by a background color 
 
 Clustering-based binarization is performed with k-means clustering. For each image, the pixels of the image were placed in a 3D space with their red, green, and blue values being used to determine their location \seefig{pixelClustering}. Pixels were then clustered in groups using k-means clustering. The pixel cluster which contained the value closest to black was then utilized as the ink cluster, with all pixels not in that cluster being labeled as the background \seefig{binarizationClustering}.
 
-\begin{figure}
+\begin{figure}[H]
     \caption{RGB Pixel Clustering In 3D Space}
     \label{fig:pixelClustering}
     \begin{center}
@@ -24,7 +24,7 @@ Clustering-based binarization is performed with k-means clustering. For each ima
            \includegraphics[width=\textwidth]{{binarization/bad_pixel_clustering.png}}
        \end{subfigure}
     \end{center}
-    Two examples of clustering pixels using RGB color representation to place each pixel in space. These clusterings were generated using Gaussian Mixture Models (GMMs) clustering with $k=5$, with each cluster being displayed by the color represented by the location in RGB space of the cluster's centroid.
+    Two examples of clustering pixels using RGB color representation to place each pixel in space. These clusterings were generated using K-means Clustering with $k=3$, with each cluster being displayed by the color represented by the location in RGB space of the cluster's centroid.
 \end{figure}
 
 \subsection{Gabor Filter}
@@ -54,7 +54,7 @@ Although it was out of the scope of this project to train a CNN to binarize an i
 
 The rectangular areas that contain glyphs (bounding boxes) are represented internally by an object that holds the PASCAL Visual Object Classes (VOC) representation of a bounding box \seefig{pascalbbox}. Using this method of representation, compared to Python's Tuple or List objects, allows for operations on bounding boxes to be standardized and for bounding boxes to be represented in a way that is abstracted from their format. Allowing this abstract bounding box format assists with the problem of having multiple constraints on how bounding boxes are utilized in the pipeline, such as importing and exporting COCO-formatted bounding boxes \seefig{cocobbox}, calculating metrics based on PASCAL VOC-formatted bounding boxes \seefig{pascalbbox}, and utilizing tools and methods that require YOLO-formatted bounding boxes \seefig{yolobbox}. Bounding box objects are then able to utilize internal methods for operations such as finding the IOU (intersection over union) \seefig{IOU} between two bounding boxes, calculating the one dimensional IOU \seefig{1dIOU}, and generating cropped images from lists of bounding boxes.
 
-\begin{figure}
+\begin{figure}[H]
     \caption{PASCAL VOC Bounding Box Examples}
     \label{fig:pascalbbox}
     \begin{center}
@@ -63,7 +63,7 @@ The rectangular areas that contain glyphs (bounding boxes) are represented inter
     Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). For these examples, the red lines denote the pixels that are inside of the bounding boxes. In the PASCAL VOC bounding box format, bounding boxes are described using the top left corner (marked in green) of the box in absolute pixels, and the bottom right corner of the box (marked in blue) in absolute pixels. In this example, the boxes shown above would be denoted in the PASCAL VOC-format as follows: $N:(6, 13, 82, 97)$, $\Upsilon:(1, 3, 89, 103)$, $\Xi:(6, 16, 126, 96)$.
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \caption{COCO-Format Bounding Box Examples}
     \label{fig:cocobbox}
     \begin{center}
@@ -72,7 +72,7 @@ The rectangular areas that contain glyphs (bounding boxes) are represented inter
     Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the COCO bounding box format, bounding boxes are described using the top left corner (marked in green) of the box  in absolute pixels and the box's width (purple) and height (blue) in absolute pixels. In this example, the boxes shown above would be denoted in the COCO-format as follows: $N:(6, 13, 76, 84)$, $\Upsilon:(1, 3, 88, 100)$, $\Xi:(6, 16, 120, 80)$.
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \caption{YOLO-format Bounding Box Examples}
     \label{fig:yolobbox}
     \begin{center}
@@ -81,7 +81,7 @@ The rectangular areas that contain glyphs (bounding boxes) are represented inter
     Three examples of bounding boxes, on a $N$, $\Upsilon$, and a $\Xi$ (left to right). In the YOLO bounding box format, bounding boxes are described using the center of the box (marked in green) in relative coordinates (based on image width and height) and the box's width (purple) and height (blue) also in relative coordinates. In this example, the boxes shown above would be denoted in the YOLO-format as follows (rounded to three decimal places): $N:(0.319, 0.519, , 0.532, 0.739)$, $\Upsilon:(0.469, 0.469, 0.917, 0.885)$, $\Xi:(0.431, 0.487, 0.784, 0.696)$.
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \caption{2D Intersection Over Union (IOU) Examples}
     \label{fig:IOU}
     \begin{center}
@@ -101,13 +101,13 @@ The rectangular areas that contain glyphs (bounding boxes) are represented inter
     \end{center}
     The IOU of two bounding boxes is a measure of how similar they are (with a range denoted by the interval $[0,1]$). It is calculated using the following formula, where $a$ and $b$ are bounding boxes represented by sets of pixels.
     \begin{equation}
-      \ref{eq:IOU}
+      \label{eq:IOU}
       IOU(a,b) = \frac{a \cap b}{a \cup b}
     \end{equation}
     Figure \ref{fig:lowIOU} is an example of two bounding boxes with a low IOU value as the union of the sets (green and blue regions) is much larger than the intersection of the sets (blue region). Figure \ref{fig:highIOU} is an example of two bounding boxes with a high IOU value as the union of the sets (green and blue regions) is similar to the intersection of the sets (blue region).
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \caption{1D Intersection Over Union (IOU) Examples}
     \label{fig:1dIOU}
     \begin{center}
@@ -132,13 +132,22 @@ The rectangular areas that contain glyphs (bounding boxes) are represented inter
 
 Bounding boxes can be generated by the pipeline utilizing a method called connected-component labeling. In this method, which is implemented by OpenCV \cite{OpenCV}, adjacent (8-connectivity) \seefig{connectivity}, similarly colored pixels are grouped together to form blobs in a recursive manner until no more blobs can be grouped. Each blob is given a label and a minimal bounding box (in PASCAL VOC-format) that contains the entire blob \seefig{boundingCC}. These bounding boxes are then converted to a bounding box object, which allows them to be utilized by the rest of the pipeline.
 
-\begin{figure}
-  \caption{Pixel Connectivity TYpes}
+\begin{figure}[H]
+  \caption{Pixel Connectivity Types}
   \label{fig:connectivity}
   \begin{center}
         \includegraphics[width=\textwidth]{{misc/connectivity.png}}
   \end{center}
   In the left figure (which represents 4-connectivity), the center pixel (dark grey) is considered adjacent to the pixels that share an edge with it (light grey) and not the pixels that share a corner with it (white). In the right figure (which represents 8-connectivity), the center pixel (dark grey) is considered adjacent to the pixels that share an edge with it and the pixels and that share a corner with it (light grey). Note that the $n$ in $n$-connectivity refers to how many pixels can be considered adjacent to any given pixel.
+\end{figure}
+
+\begin{figure}[H]
+  \caption{Connected Component Bounding Example}
+  \label{fig:boundingCC}
+  \begin{center}
+        \includegraphics[width=\textwidth]{{bounding/cc/G_26734_c_crop.png}}
+  \end{center}
+  An example of a binarized file bounding using the connected component method using 8-connectivity. The red boxes denote the edges of bounding boxes (with the red pixels inside the bounding box). The green dots renote the centroid of the blob being bound for each box.
 \end{figure}
 
 \subsection{Region-Based Convolution Neural Networks}
@@ -150,11 +159,10 @@ Training was performed utilizing the native YOLOv5 code, downloaded from \href{h
 \textit{Note: YOLOv5 is the product of work by Glenn Jocher (Ultralytics) and hundreds of contributors. I take no credit for the implementation of this network, as all credit for this work should go to Jocher et al. However, all training and hyperparameter tuning was done by me, as well as integrating the network into this project. The code for YOLOv5 is included in the submission of the project solely to allow the pipeline to function offline, as the network architecture would otherwise need to be downloaded from their git repo each time the pipeline was run.}
 
 \subsubsection{RCCN Sliding Window}
-\todo{NEW}
 
 Utilizing the YOLOv5x trained network, glyphs can be detected utilizing a sliding window to keep the image sizes closer to the size that the network was trained on. Using an overlapping sliding window with an internal window \seefig{slidingWindow}, full images are split up into smaller images that allow YOLO to bound glyphs. The bounded glyphs are then accepted if they are in the internal window and added to the list of all glyphs bounding boxes as bounding box objects. Clear outliers and invalid glyph bounding boxes are then removed by heuristic approaches that clean the list of bounding boxes to generate a list of high-quality potential glyph bounding boxes.
 
-\begin{figure}
+\begin{figure}[H]
     \caption{Sliding Window Region Examples}
     \label{fig:slidingWindow}
     \begin{center}
@@ -183,7 +191,9 @@ Utilizing the YOLOv5x trained network, glyphs can be detected utilizing a slidin
 \end{figure}
 
 \subsubsection{RCNN Duplicate Removal}
-\todo{TODO: IMPLEMENT AND DISCUSS, ADD FIGURES}
+\todo{NEW}
+
+Duplicates bounding boxes are removed using an IOU threshold and the confidence of each bounding box. When two bounding boxes have an IOU over the threshold (which can be configured to modify both bounding box F1 Score and classification F1 Score), the bounding boxes with the lower confidence scores (generated by YOLO) are discarded and the bounding box with the highest confidence score is kept.
 
 \subsubsection{Binarization-Assisted CNN}
 
@@ -223,6 +233,13 @@ Once rough grouping are generated using this method, the lines are cleaned of ex
 
 Once glyphs are linked into lines, the bounding boxes of the glyphs in each line can be cut down such that there is no overlap between bounding boxes. For each pair of overlapping bounding boxes, the center of the overlapping region is set as the edge for both bounding boxes, such that the bounding boxes touch, but do not overlap \seefig{boundingBoxOverlapCrop}.
 
+\subsection{Line Variation Generation}
+\todo{NEW}
+
+Once lines are formed, they can also be used to modify bounding boxes to fix issues such as a bounding box covering two glyphs, or one glyph being covered by two bounding boxes \seefig{boundingErrors}.
+
+Using lines and the probability of glyph classifications based on language models, the least likely bounding boxes are altered to generate lines with a higher likelihood. Starting with the lowest likelihood bounding box (based on classification certainty) bounding boxes are merged with their neighbors and split to generate two bounding boxes to attempt to increase the total probability of the line. This method can be done with individual bounding boxes or to whole lines, but as it generates exponentially more potential lines for each bounding box that can be altered, it is recommended that it be capped to only work on the least likely bounding boxes with an exact count being limited by the processing time available.
+
 \section{Train/Test Data Extraction}
 
 \subsection{Ground Truth Glyph Examples}
@@ -232,7 +249,7 @@ Each cropped glyph file was saved with information on which image the glyph was 
 
 These methods were used to extract glyph images from both the binarized images and unaltered images. Similar processes were also used to generate training data for the various CNNs, and external tools utilized in the project.
 
-\begin{figure}
+\begin{figure}[H]
     \caption{Ground Truth Glyph Examples}
     \label{fig:ground_truth_glyphs}
     \begin{center}
@@ -241,7 +258,7 @@ These methods were used to extract glyph images from both the binarized images a
     Four examples of the bounded glyphs provided by the contest training data. All of the glyphs provided in the training and test data are uppercase and bounded by hand-drawn bounding boxes, which appear here. The first glyph, a $\Gamma$, is well-formed, but has the noise from another glyph on the left side and is truncated by the bounding box on the right side. Similarly, the second glyph, an $A$, is well-formed, but has the noise from another glyph on the left side and is truncated by the bounding box on the right and bottom sides. The third glyph, an $I$, is not cut off, but does have a line from a neighboring glyph as well. It also shows the edge of the papyrus. The fourth glyph, another $A$, is an example of the varying image quality of the training data, showing obvious artifacting or distortion.
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \caption{Styles of $\Xi$ in the Training Data}
     \label{fig:xi_footmarktype}
     \begin{center}
@@ -250,7 +267,7 @@ These methods were used to extract glyph images from both the binarized images a
     Examples of the six unique styles for the letter $\Xi$, as determined by the authors of the contest this project is based on. Numbered from 1-6 left to right. The furthest right image of a $\Xi$ was resized for the purpose of display in the figure, which has increased the blurriness of the image.
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \caption{Examples of Preservation Levels in $\Omega$'s in Training Data}
     \label{fig:omega_basetype}
     \begin{center}
@@ -260,11 +277,10 @@ These methods were used to extract glyph images from both the binarized images a
 \end{figure}
 
 \subsection{Tightly Bound Glyph Examples}
-\todo{NEW}
 
-Using methods described further down, tightly bound glyph images \seefig{fig:cropped_ground_truth_glyphs} were able to be generated and stored for use in training and evaluation using non-arbitrary bounding boxes. After generating bounding boxes, automatically cropped tightly to the glyph, ground truth bounding boxes were paired with the generated bounding boxes and used to automatically assign the known class to the generated bounding box, so the generated bounding boxes could be stored and later utilized for training and evaluation of classification models on real data generated by the pipeline, instead of using the models trained on the ground truth bounding boxes.
+Using methods described further down, tightly bound glyph images \seefig{cropped_ground_truth_glyphs} were able to be generated and stored for use in training and evaluation using non-arbitrary bounding boxes. After generating bounding boxes, automatically cropped tightly to the glyph, ground truth bounding boxes were paired with the generated bounding boxes and used to automatically assign the known class to the generated bounding box, so the generated bounding boxes could be stored and later utilized for training and evaluation of classification models on real data generated by the pipeline, instead of using the models trained on the ground truth bounding boxes.
 
-\begin{figure}
+\begin{figure}[H]
     \caption{Ground Truth Glyph Examples}
     \label{fig:cropped_ground_truth_glyphs}
     \begin{center}
@@ -279,53 +295,43 @@ To form the training data for a language model, the entirety of the Greek sectio
 \section{Classification}
 
 \subsection{Transfer Learning}
-\todo{NEW}
 
 Due to the potentially time-consuming nature of developing and training CNNs to classify images, a section of a pre-trained AlexNet \cite{Krizhevsky} was utilized to convert individual glyph images to feature vectors of size $9,216$ to utilize in supervised and unsupervised learning. AlexNet is used as it is a proven network that has shown promise as an engine for image similarity research \cite{Vadicamo, Yuan}. This was done by taking all the convolutional layers of AlexNet and the first fully connected layer and utilizing the output of those layers as a feature vector for the use of various unsupervised learning methods and later neural networks. Images are first shrunk such that their smaller dimension is 240 and then a center crop of size 224 is taken before the pixels are normalized to the distributions expected by AlexNet. All unsupervised methods are based on the implementations by Scikit-Learn \cite{Scikit}. The supervised learning is implemented with PyTorch neural networks \cite{PyTorch}, partially based on the code provided in this PyTorch \href{https://pytorch.org/tutorials/intermediate/torchvision\_tutorial.html}{RCNN training example} and the starter code provided as a part of the contest \cite{Contest}.
 
 \subsubsection{GMM Clustering}
-\todo{NEW}
 
 Using the feature vectors generated by AlexNet, GMM clustering on the training data was utilized to generate one gaussian distribution in $N$-dimensional space for each class of glyphs. Using this method, clusters were trained on feature vectors generated from both binarized and unaltered images. The trained clusters can be utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class.
 
 \subsubsection{Random Forest Clustering}
-\todo{NEW}
 
 Similarly, using the feature vectors generated by AlexNet, Random Forest Clustering was utilized to generate decision trees in $N$-dimensional space. Using this method, binary decision trees of varied sizes were trained on feature vectors generated from both binarized and unaltered images. The trained trees were then combined and utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class with the percentage of decision trees in the forest that pick a class being the likelihood of a feature vector being in that class.
 
 \subsubsection{$K$ Nearest Neighbors}
-\todo{NEW}
 
 Finally, a K-Nearest Neighbors network was also generated on the training data. Using this method, feature vectors are classified based on how close they are to feature vectors of known classes. Feature vectors were classified for both binarized and unaltered images. The built networks are utilized to classify unseen feature vectors with the generated chances that a feature vector is the result of an image in each class with the percentage of feature vectors of that class in the K-Nearest neighbors of a given feature vector being the likelihood of a feature vector being in that class.
 
 \subsubsection{Neural Networks}
-\todo{NEW}
 
 With the feature vectors output by the modified AlexNet network, it is also possible to train deep neural networks to classify glyphs. Using the size of the feature vector as the input size ($9,216$) and the number of glyphs ($24$) as the output, several dense NNs were generated to classify glyphs, each taking a single feature vector as input and outputing a vector that can be put throught the softmax algorithm to generate a percentage likelihood of the feature vector being from an image of each class of glyph.
 
 \subsection{Convolutional Neural Networks}
-\todo{NEW}
 
 Once it was clear that neural networks were out-performing unsupervised learning approaches by a significant margin, CNNs were generated and trained to explore the possibility of further increasing the accuracy of the pipeline. These CNNs are all based on the convolutional layers of pre-trained, and high-preforming CNNS, starting with AlexNet \cite{Krizhevsky} and moving to ResNeXt \cite{Xie}. By extracting the convolutional and pooling layers from these neural networks and attaching a densely connected network on the end with the correct number of output classes, these networks can be adapted to the problem of glyph classification quickly and with minimal training required.
 
 \subsection{LSTM-Based Neural Networks}
-\todo{NEW}
 
 LSTM layers are layers in a neural network that allow the model to utilize knowledge of previous and sometimes latter elements in a batch for the classification (or regression) for each input to the network. They work saving an internal hidden state that is altered by and utilized in the output of the layer. These layers can be trained to discard their hidden state or alter their hidden state to increase the accuracy of a model that interacts with ordered information such as language data. These layers can be one-directional, or bi-directional. Bi-directional LSTM layers work by duplicating their input, and mirroring it, generating twice the number of outputs, where half of the output of the layer is assuming the batch was passed in backwards.
 
 Similarly, to the CNNs discussed above, bi-directional LSTM layers can be added to NNs by extracting the convolutional layers from the front of the models and inserting an LSTM layer between the convolutional and the final densely connected layer that generates the output of the model. In addition, densely connected layers can be inserted between the LSTM layer and the convolutional and pooling layers to add an initial classification step before the memory layer and the final classification layer. By utilizing bi-directional LSTM layers, the networks can use the context on both sides of the glyph it is classifying to increase accuracy.
 
 \subsubsection{Training Methodology}
-\todo{NEW}
 
 To train these neural networks, techniques to augment the limited ground truth data are utilized. In training, each glyph image is passed into the CNN or NN with a random rotation ($\pm 15^\circ$), perspective ($20\%$), color jitter (brightness$<50\%$, contrast$<50\%$, saturation$<50\%$, hue$<30\%$), and blur ($0-20\%$) applied. When training, images are also grouped into batches using the text in the Perseus dataset to randomly pick glyph images from each class in the order they appear in the ancient Greek language dataset. Models are then trained with dropout $0-50\%$ and ReLU layers between the densely connected layers.
 
 \subsection{Stochastic Language Models}
-\todo{NEW}
 
 Using Markov chains, more traditional language models are also trained on the Perseus dataset. Based on the occurrence of glyphs in the dataset, Markov chains are generated to be used in predicting the occurrence of glyphs after or before other glyphs. These models can be utilized with or without log probabilities to generate the likelihood of a string of any given size.
 
 \subsubsection{Partially Observable Markov Decision Process}
-\todo{NEW}
 
 Using partially observable Markov decision processes \cite{Astrom} was explored using the pomdp-py python library \cite{Zheng} and the class probabilities given by a language-indifferent classification model. This method allows for Markov states to be defined with uncertainty, allowing for decisions to be made assuming incomplete information. However, there was not time to explore this method further and refine the existing methods, so this method could not be fully explored as a part of the pipeline.

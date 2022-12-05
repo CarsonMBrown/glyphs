@@ -3,12 +3,14 @@ import os.path
 import cv2
 import torch
 
-from src.evaluation.bbox_eval import get_unique_bboxes, get_non_enclosed_bboxes
+from src.evaluation.bbox_eval import get_non_enclosed_bboxes
 from src.util.bbox import BBox
 from src.util.img_util import plot_bboxes
 
 # don't load model until needed
 model = None
+
+cache = {}
 
 
 def find_glyphs(img, *, model_local=True):
@@ -25,18 +27,24 @@ def find_glyphs(img, *, model_local=True):
             model = torch.hub.load(r'C:\yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt',
                                    source='local')
         else:
-            model = torch.hub.load('ultralytics/yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt', trust_repo=True)
+            model = torch.hub.load('ultralytics/yolov5', 'custom', 'weights/yolov5/mono_raw_xl_300.pt',
+                                   trust_repo=True)
 
     return model(img)
 
 
+# TODO: HYPER PARAM TUNING ON WINDOW SIZE AND STEP
 def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_export_path=None,
-                         inner_sliding_window=True, confidence_min=None):
+                         inner_sliding_window=True, confidence_min=None, cache_name=None, duplicate_threshold=.8):
     """
     :param img: img to get bboxes from (IN BGR)
     :param window_size: size of the sliding window to use
     :param window_step: step to take between windows
     :param bbox_gif_export_path: if not None, the draws each sliding window to this path as an image
+    :param inner_sliding_window: if a smaller inner window should be used
+    :param confidence_min: min confidence to keep bboxes
+    :param cache_name: where to save bboxes in memory, None to not save
+    :param duplicate_threshold: IOU threshold to not add a bbox
     :return: returns a list of bounding boxes
     """
     if bbox_gif_export_path is not None:
@@ -53,7 +61,13 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
             window_y_max = y_max if dy + window_step + window_size >= y_max else dy + window_size
 
             # get bboxes fully contained by the window
-            found_glyphs = find_glyphs(img[dy:window_y_max, dx:window_x_max])
+            if cache_name is not None and str(f"{cache_name}{dy}{dx}") in cache:
+                found_glyphs = cache[f"{cache_name}{dy}{dx}"]
+            else:
+                found_glyphs = find_glyphs(img[dy:window_y_max, dx:window_x_max])
+                if cache_name is not None:
+                    cache[f"{cache_name}{dy}{dx}"] = found_glyphs
+
             potential_bboxes = get_bounding_boxes(found_glyphs,
                                                   offset_x=dx,
                                                   offset_y=dy,
@@ -85,6 +99,10 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
                     pair, iou = bbox.get_pair(bboxes)
                     if iou < .8:
                         unique_bboxes.append(bbox)
+                    else:
+                        if bbox.confidence > pair.confidence:
+                            bboxes.remove(pair)
+                            unique_bboxes.append(bbox)
                 bboxes += unique_bboxes
 
             # if exporting images
@@ -99,8 +117,7 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
                 plot_bboxes(temp_img, bboxes, color=(0, 0, 0), wait=None)
                 cv2.imwrite(os.path.join(bbox_gif_export_path, f"window_{dx}_{dy}.png"), temp_img)
 
-    unique_bboxes = get_unique_bboxes(bboxes)
-    non_internal_bboxes = get_non_enclosed_bboxes(unique_bboxes)
+    non_internal_bboxes = get_non_enclosed_bboxes(bboxes)
     return non_internal_bboxes
 
 
@@ -112,12 +129,12 @@ def results_to_list(result):
     return result.pandas().xyxy[0].values
 
 
-# .513 is best based on yolo results and fscore does not increase significantly with higher
-def get_bounding_boxes(result, *, offset_x=0, offset_y=0, confidence_min=0.513):
+# .6075 best based on yolo results and fscore does not increase significantly with higher
+def get_bounding_boxes(result, *, offset_x=0, offset_y=0, confidence_min=0.6075):
     if confidence_min is None:
         confidence_min = 0.513
     """returns a list of bounding boxes"""
-    return [BBox(min_x + offset_x, min_y + offset_y, max_x + offset_x, max_y + offset_y)
+    return [BBox(min_x + offset_x, min_y + offset_y, max_x + offset_x, max_y + offset_y, confidence=confidence)
             for min_x, min_y, max_x, max_y, confidence, _, _ in results_to_list(result)
             if confidence > confidence_min]
 

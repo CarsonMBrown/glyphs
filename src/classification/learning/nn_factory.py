@@ -328,7 +328,7 @@ def classify(model, lines, img, transform, softmax=False):
     if torch.cuda.is_available():
         model = model.to('cuda')
 
-    top_1_log_prob = 0
+    log_probabilities = []
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -350,5 +350,5 @@ def classify(model, lines, img, transform, softmax=False):
                 bbox.add_class_probabilities(probs_list[i])
                 if softmax:
                     probs_list[i] = log_softmax(torch.tensor(probs_list[i]), dim=0)
-                top_1_log_prob += max(probs_list[i])
-    return top_1_log_prob
+                log_probabilities.append(max(probs_list[i]))
+    return log_probabilities

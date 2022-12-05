@@ -46,7 +46,7 @@ def get_iou_metrics(truth_pred_tuples):
     tp = len([1 for _, _, iou in truth_pred_tuples if iou > 0])
     fp = len([1 for truth, _, iou in truth_pred_tuples if truth is None])
     fn = len([1 for _, pred, iou in truth_pred_tuples if pred is None])
-    avg_IOU = mean([iou for truth, _, iou in truth_pred_tuples if truth is not None] + [0])
+    avg_IOU = mean([iou for truth, _, iou in truth_pred_tuples if iou > 0])
     precision, recall = tp / (tp + fp) if (tp + fp) > 0 else 0, tp / (tp + fn) if (tp + fn) > 0 else 0
     fscore = ((2 * precision * recall) / (precision + recall)) if precision + recall > 0 else 0
     return precision, recall, fscore, avg_IOU

@@ -9,7 +9,7 @@ BOUNDING_COLOR = [0, 0, 255]
 CENTROID_COLOR = [0, 255, 0]
 
 
-def get_connected_component_bounding_boxes(img):
+def get_connected_component_bounding_boxes(img, remove_internal_centroids=False, remove_internal_regions=False):
     """Takes in a black and white (with black as ink) img and gets the bounding boxes of the connected components"""
     # Apply the Component analysis function
     x, y = 0, 0
@@ -18,9 +18,16 @@ def get_connected_component_bounding_boxes(img):
     elif len(img.shape) == 2:
         x, y = img.shape
     if x > 0 and y > 0:
-        _, _, values, _ = cv2.connectedComponentsWithStats(~img, connectivity=8, ltype=cv2.CV_32S)
+        to_remove = []
+        _, _, values, centroids = cv2.connectedComponentsWithStats(~img, connectivity=8,
+                                                                   ltype=cv2.CV_32S)
+        if remove_internal_regions:
+            to_remove += get_internal_regions(values)
+        if remove_internal_centroids:
+            to_remove += get_internal_centroids(centroids, values)
+
         # convert bounding boxes to BBoxes and return
-        return [BBox.from_coco(x, y, w, h) for x, y, w, h, _ in values]
+        return [BBox.from_coco(x, y, w, h) for i, (x, y, w, h, _) in enumerate(values) if i not in to_remove]
     else:
         return [BBox(0, 0, x, y)]
 
@@ -39,11 +46,12 @@ def bound_and_render(img_in_dir, img_out_dir):
     bounding_boxes = []
 
     for img_path in img_list:
-        img, img_output = load_image(img_in_dir, img_out_dir, img_path, invert=True)
+        img, img_output = load_image(img_in_dir, img_out_dir, img_path, invert=False, skip_existing=False,
+                                     gray_scale=True)
 
         # Apply the Component analysis function
-        analysis = cv2.connectedComponentsWithStats(img, 8, cv2.CV_32S)
-        (totalLabels, label_ids, values, centroids) = analysis
+        analysis = cv2.connectedComponentsWithStats(~img, 8, cv2.CV_32S)
+        totalLabels, label_ids, values, centroids = analysis
 
         color_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
         imgY, imgX = np.shape(img)
@@ -80,7 +88,6 @@ def bound_and_render(img_in_dir, img_out_dir):
                 color_img[Y + dy][X + W - 1] = BOUNDING_COLOR
 
         save_image(img_output, color_img)
-        return bounding_boxes
 
 
 def get_internal_centroids(centroids, values):
