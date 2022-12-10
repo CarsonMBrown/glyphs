@@ -15,8 +15,9 @@ As these existing pipelines were assessed in the early phases of the project, a 
 With Tesseract, using the ancient Greek corpus, and using both raw and binarized images, the output was comparable to noise, with the transcription lengths being an order of magnitude different from the ground truths.
 
 \subsection{Ocular}
+\todo{NEW}
 
-Similarly, training Ocular on both raw and binarized full images and individual glyph images, the output was comparable to noise, with the transcription lengths being an order of magnitude different from the ground truths and each glyph being an alpha or lambda more than $95\%$ of the time regardless of the dataset that Ocular was trained on.
+Similarly, training Ocular on both raw and binarized full images and individual glyph images, the output was comparable to noise, with the transcription lengths being an order of magnitude different from the ground truths and $A$ and $\Lambda$ making up over $95\%$ of the returned glyphs. This result happened regardless of the dataset that Ocular was trained on, with binarized and non-binarized images performing the same and singular glyph images performing the same as whole images.
 
 \section{Binarization}
 
@@ -249,7 +250,7 @@ Precision and recall are measured not on pixels, but on glyphs. A prediction is 
 \subsection{Connected Components}
 \todo{NEW}
 
-Glyph bounding using connected components fails to precisely generate bounding boxes due to the flaws in the binarization methods used. Otherwise, the method can tightly bound boxes with a high amount of recall. By removing regions that with centroids in other regions or by removing regions fully inside other regions (which includes the before method), the precision and F1 Score can be increased, at the cost of recall \seefig{ccBoundingEval}.
+Glyph bounding using connected components fails to precisely generate bounding boxes due to the flaws in the binarization methods used. Otherwise, the method can tightly bound boxes with a high amount of recall. By removing regions that with centroids in other regions or by removing regions fully inside other regions (which includes the before method), the precision and F1 score can be increased, at the cost of recall \seefig{ccBoundingEval}.
 
 \begin{figure}[H]
     \caption{Test Results for Connected Component Bounding and Cleaning}
@@ -267,16 +268,41 @@ Glyph bounding using connected components fails to precisely generate bounding b
 \end{figure}
 
 \subsection{Region-Based Convolution Neural Networks}
-\todo{TODO: Dec 08}
+\todo{NEW}
+
+YOLO, when trained on color images, performs better than when trained on binarized images. In addition, by training YOLO to recognize all glyphs as one class instead of each glyph class as its own class increases accuracy \seefig{evalYOLORaw}. In addition, networks were trained with and without freezing the backbone layers, which are the layers defined as the initial convolutional layers (layers 0-9) \cite{YoloBackbone} that process the input before the main convolutions are performed. This allowed for faster training with a potential for lost accuracy.
+
+\textit{The accuracy metrics taken for each YOLO model were generated on the evaluation set to ensure that the final test set evaluation could be done on unseen data. Therefore, the classification metrics in this sub-section will not map directly to the results of the same classification methods when utilized in the final pipeline.}
+
+\begin{figure}[H]
+    \caption{Evaluation Results for YOLO Bounding}
+    \label{fig:evalYOLORaw}
+    \centering
+    \begin{tabular}{ | c | c | c | c | c | }
+        \hline
+        Training Set & Backbone Layers & Image Type & Model Size & F1 Score \\
+        \hline
+        Multi-Class & Frozen & Color & YOLOv5x (largest) & 0.07 \\
+        Mono-Class & Frozen & Binary & YOLOv5l (large) & 0.63 \\
+        Mono-Class & Frozen & Color & YOLOv5l (large) & 0.68 \\
+        Mono-Class & Frozen & Color & YOLOv5x (largest) & 0.69 \\
+        Mono-Class & Unfrozen & Color & YOLOv5x (largest) & 0.74 \\
+        Mono-Class & Unfrozen & Color & YOLOv5x (largest) & 0.72* \\
+        \hline
+    \end{tabular}
+    *All the models were trained for 300 epochs, with the exception of this one, which was trained for 600 epochs, with the metrics being taken on only the last 300 epochs.
+\end{figure}
 
 \subsubsection{RCCN Sliding Window}
-\todo{TODO: Dec 08}
+\todo{TODO: Dec 09}
+
+By introducing a sliding window to the
 
 \subsubsection{RCNN Duplicate Removal}
-\todo{TODO: Dec 08}
+\todo{TODO: Dec 09}
 
 \subsubsection{Binarization-Assisted CNN}
-\todo{TODO: Dec 08}
+\todo{TODO: Dec 09}
 
 \section{Line Bounding}
 \todo{NEW}
@@ -284,37 +310,121 @@ Glyph bounding using connected components fails to precisely generate bounding b
 As in glyph bounding, no ground truth information was provided for which glyphs where in the same line, so a visual approximation must be used to determine which methods are best, at least when comparing results of each metric without taking the rest of the pipeline into account.
 
 \subsection{Point Of Interest Clustering}
-\todo{TODO: Dec 09}
+\todo{TODO: Dec 11}
 
 \subsection{Adjacent Glyph Clustering}
-\todo{TODO: Dec 09}
+\todo{TODO: Dec 11}
 
 \subsection{Overlaping Glyph Clustering}
-\todo{TODO: Dec 09}
+\todo{TODO: Dec 11}
 
 \section{Classification}
 
+\textit{The accuracy metrics taken for the classification methods were generated on the evaluation set to ensure that the final test set evaluation could be done on unseen data. Therefore, the classification metrics in this section will not map directly to the results of the same classification methods when utilized in the final pipeline.}
+
 \subsection{Transfer Learning}
-\todo{TODO: Dec 10}
+\todo{NEW}
+
+Using the feature vectors generated with AlexNet on the non-NN methods, the best results were obtained using the binarizations of the images generated by DP-Linknet. Using GMMs, Random Forests, and $K$-Nearest Neighbors (k-NN) \seefig{classificationEuclideanNonNN} were generated with the full color and binarized images and Euclidean distance calculations \seeeq{distanceEuclidian}, with the best results for each method being shown, where F1 score is the average of the per-glyph F1 score weighted by glyph class occurrence frequency.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for Euclidean Non-NN Transfer Learning Classification}
+    \label{fig:classificationEuclideanNonNN}
+    \centering
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        Classification Method & Color F1 Score & Binary F1 Score \\
+        \hline
+        GMM & 0.07 & 0.08 \\
+        Random Forest & 0.11 & 0.19 \\
+        KNN & 0.08 & 0.14 \\
+        \hline
+    \end{tabular}
+\end{figure}
+
+By generating a new set of training data by training the classifications on exactly one randomly chosen template for each class and footmark type, the results were mostly unchanged, but were significantly increased by manually cleaning the templates to remove noise and other small imperfections in the characters \seefig{classificationKNNTemplates}. These results were generated using only a k-NN classifier as it was the fastest to train and did not require as many example images to train an accurate model. These results show that the k-NN classifier can be trained on very few images and generate comparable results to a dataset that is magnitudes larger, which shows promise for classification on similar problems with significantly less training data.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for Templated k-NN Transfer Learning Classification}
+    \label{fig:classificationKNNTemplates}
+    \centering
+    \begin{tabular}{ | c | c | c | c | }
+        \hline
+        Template Type & Distance & Best $k$ Value & Weighted F1 Score \\
+        \hline
+        Color & Euclidean & 5 & 0.08 \\
+        Cleaned Binary & Euclidean & 5 & 0.27 \\
+        Cleaned Binary & Manhattan & 4 & 0.34 \\
+        Cleaned Binary & Cosine & 5 & 0.39 \\
+        \hline
+    \end{tabular}
+\end{figure}
+
+Using pretrained neural networks to classify the data generated better results, both on binarized and color images of glyphs \seefig{classificationFeatureVectorNN}. Using these networks a higher classification accuracy was attainable with unaltered training data, producing better results with less manual work being required.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for NN Transfer Learning Classification}
+    \label{fig:classificationFeatureVectorNN}
+    \centering
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        Network & Image Type & Weighted F1 Score \\
+        \hline
+        Linear & Binary & 0.666 \\
+        Linear & Color & 0.626 \\
+        Simple-LSTM & Color & 0.593 \\
+        LSTM-to-Linear & Color & 0.662 \\
+        Linear-to-LSTM & Binary & 0.710 \\
+        Linear-to-LSTM & Color & 0.668 \\
+        \hline
+    \end{tabular}
+\end{figure}
 
 \subsection{Convolutional Neural Networks}
-\todo{TODO: Dec 10}
+\todo{NEW}
+
+Using architectures based on the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite{Xie}, and MNIST9975 \cite{Deotte}. The network based on AlexNet generates similar results to those based on the feature vectors generated by AlexNet, but has a higher weighted F1 score. The networks based on ResNext preform even better, at the cost of time, taking much longer to train and evaluate \seefig{classificationCNN}. In these larger, more complex models, the binarized images preformed worse across all the models than the color images, so only the peak color image F1 score is used for evaluation. Each network was trained for approximately $100$ epochs on the same train and evaluation image and word sets.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for CNN Classification}
+    \label{fig:classificationCNN}
+    \centering
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        Base Network & Modified Network Name & Weighted F1 Score \\
+        \hline
+        AlexNet & Alex LSTM & 0.754 \\
+        ResNet50 & ResNet LSTM & 0.786 \\
+        ResNext50 & ResNext50 Classify-to-LSTM & 0.700 \\
+        ResNext50 & ResNext50 LSTM-To-Dense & 0.835 \\
+        ResNext50 & ResNext50 LSTM-To-Dense & 0.836 \\
+        ResNext101 & ResNext101 LSTM-Dense & TODO \\
+        \hline
+    \end{tabular}
+\end{figure}
 
 \subsection{Stochastic Language Models}
-\todo{TODO: Dec 10}
+\todo{TODO: Dec 09}
+
+\todo{talk about uncertainty markov and top n markov}
 
 \subsection{Neural Netork Language Models}
-\todo{TODO: Dec 10}
+\todo{TODO: Dec 09}
+
+\todo{talk about batchsize vs accuracy on resnet50 and shuffle test}
+
+\section{Pipeline}
+\todo{TODO: DEC 14}
 
 
 \section{Evaluation Metric Analysis}
 
 \subsection{Ground Truth Comparison}
-\todo{TODO: Dec 10}
+\todo{TODO: Dec 12}
 
 \subsection{Visual Analysis}
-\todo{TODO: Dec 10}
+\todo{TODO: Dec 12}
 
 \subsection{BLEU Score}
-\todo{TODO: Dec 10}
+\todo{TODO: Dec 12}
 \cite{Callison-Burch}

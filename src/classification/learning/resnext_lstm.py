@@ -62,7 +62,7 @@ class ResNext50LSTM(nn.Module):
 class ResNextLongLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
-        dropout = 0.0
+        dropout = 0.5
         self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
         self.resnext.fc = nn.LSTM(self.resnext.fc.in_features, output_size * 2, num_layers=1, bidirectional=True)
         self.classifier = nn.Sequential(
@@ -144,46 +144,30 @@ class ResNext101LSTM(nn.Module):
     transform_train = transforms.Compose([
         transforms.Resize(240),
         transforms.RandomPerspective(distortion_scale=0.2, p=.5),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-        transforms.RandomAffine(degrees=10, shear=10),
-        transforms.RandomResizedCrop(224, scale=(0.8, 1.2), ratio=(0.8, 1.2)),
-        transforms.RandomAdjustSharpness(1.2, p=.1),
-        transforms.RandomAdjustSharpness(1.1, p=.1),
-        transforms.RandomAdjustSharpness(.9, p=.1),
-        transforms.RandomAdjustSharpness(.8, p=.1),
+        transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=.3),
+        transforms.RandomAffine(degrees=15, translate=(0.4, 0.4), scale=(0.6, 1.4), shear=0.4),
+        transforms.RandomAdjustSharpness(sharpness_factor=.8, p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
         transforms.RandomAutocontrast(),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-
-    transform_train_cropped = transforms.Compose([
-        transforms.Resize(224),
-        transforms.RandomPerspective(distortion_scale=0.1, p=.5),
-        transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-        transforms.RandomAffine(degrees=5, shear=5),
-        # transforms.RandomResizedCrop(224, scale=(0.9, 1.0), ratio=(0.9, 1.1)),
-        # transforms.RandomAdjustSharpness(1.2, p=.1),
-        # transforms.RandomAdjustSharpness(1.1, p=.1),
-        # transforms.RandomAdjustSharpness(.9, p=.1),
-        # transforms.RandomAutocontrast(),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
     transform_train_padded = transforms.Compose([
         transforms.Resize(223, max_size=224),
+        transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=.3),
         transforms.Pad(112, fill=(255, 255, 255)),
-        transforms.RandomPerspective(.15),
-        transforms.RandomAffine(degrees=15, translate=(0.35, 0.35), scale=(0.7, 1.3), shear=0.3),
-        transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=.2),
-        transforms.RandomResizedCrop(224, scale=(0.9, 1.0), ratio=(0.9, 1.1)),
-        transforms.RandomAdjustSharpness(1.2, p=.1),
-        transforms.RandomAdjustSharpness(1.1, p=.1),
-        transforms.RandomAdjustSharpness(.9, p=.1),
-        transforms.RandomAutocontrast(),
-        transforms.CenterCrop(224),
         transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        transforms.RandomPerspective(.2),
+        transforms.RandomAffine(degrees=15, translate=(0.4, 0.4), scale=(0.6, 1.4), shear=0.4),
+        transforms.RandomAutocontrast(p=.5),
+        transforms.RandomAdjustSharpness(sharpness_factor=.8, p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=.9, p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=1.1, p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
+        transforms.CenterCrop(224)
     ])
 
     transform_classify = transforms.Compose([
@@ -191,13 +175,6 @@ class ResNext101LSTM(nn.Module):
         transforms.CenterCrop(224),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
-
-    transform_classify_cropped = transforms.Compose([
-        transforms.Resize(224),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
     transform_classify_padded = transforms.Compose([
@@ -209,18 +186,17 @@ class ResNext101LSTM(nn.Module):
 
     def __init__(self, input_size, output_size):
         super().__init__()
+        dropout = .5
         self.resnext = resnext101_32x8d(ResNeXt101_32X8D_Weights.IMAGENET1K_V2)
         self.resnext.fc = nn.LSTM(self.resnext.fc.in_features, output_size * 1, num_layers=1, bidirectional=True)
         self.classifier = nn.Sequential(
-            nn.Dropout(p=.2),
+            nn.Dropout(p=dropout),
             nn.ReLU(),
             nn.Linear(output_size * 2, output_size * 2),
-            nn.Dropout(p=.2),
+            nn.Dropout(p=dropout),
             nn.ReLU(),
             nn.Linear(output_size * 2, output_size)
         )
-
-        self.h_0, self.c_0 = None, None
 
     def forward(self, x):
         x, _ = self.resnext(x)

@@ -28,7 +28,6 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{refcheck}
 \usepackage{float}
 
 \usepackage[style=numeric,sorting=nyt]{biblatex}
@@ -51,6 +50,7 @@ headsepline, % Uncomment to get a line under the header
 \newcommand{\command}[1]{\\\\\code{#1}\\\\\noindent}
 
 \newcommand{\seefig}[1]{(Figure \ref{fig:#1})}
+\newcommand{\seeeq}[1]{(Equation \ref{eq:#1})}
 \newcommand{\codefigsize}{footnotesize}
 
 %-------------------------------------------------------------------------------
@@ -224,11 +224,11 @@ I declare that the material submitted for assessment is my own work except where
 \mainmatter % Begin numeric (1,2,3...) page numbering
 
 \pagestyle{thesis}
-% Total Words: (Nov 29)
-% 6,882
+% Total Words: (Dec 09) (Not including eval)
+% 7,910
 
 % This doc: 325 words (Dec 05)
-% Includes abstract declaration, dedication, and quote
+% Includes abstract, declaration, dedication, and quote
 
 % 316 Words (Nov 29)
 \chapter{Introduction}
@@ -254,16 +254,18 @@ I declare that the material submitted for assessment is my own work except where
 \chapter{Design}
 \chapterinput{design.tex}
 
-% 3,510 Words (Nov 29)
+% 3,828 Words (Dec 09)
 \chapter{Implementation}
 \chapterinput{implementation.tex}
 
 \chapter{Evaluation}
 \chapterinput{evaluation.tex}
 
+% 135 Words (Dec 07)
 \chapter{Conclusion}
 \chapterinput{conclusion.tex}
 
+% 208 Words (Dec 07)
 \chapter{Proposed Future Work}
 \chapterinput{future.tex}
 

@@ -117,41 +117,52 @@ meta_data_file = os.path.join(TRAIN_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv"), \
 
 
 def train_model():
+    nn_factory.train_model(lang_file, meta_data_file,
+                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
+                           MNISTCNN_DEEP_ACTIVATED_LSTM,
+                           epochs=200, batch_size=64, num_workers=0, resume=True,
+                           start_epoch=48, loader=ImageLoader,
+                           transforms=[MNISTCNN.transform_train_3,
+                                       MNISTCNN.transform_classify_2],
+                           loss_fn=torch.nn.NLLLoss
+                           )
+
     nn_factory.train_model(quick_lang_file, meta_data_file,
-                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR,
+                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                           ResNext101LSTM,
+                           epochs=50, batch_size=8, num_workers=0, resume=True,
+                           start_epoch=11, loader=ImageLoader,
+                           transforms=[ResNext101LSTM.transform_train,
+                                       ResNext101LSTM.transform_classify],
+                           loss_fn=torch.nn.CrossEntropyLoss,
+                           name="101Adam"
+                           )
+
+    nn_factory.train_model(lang_file, meta_data_file,
+                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
                            ResNextLongLSTM,
-                           epochs=200, batch_size=24, num_workers=0, resume=False,
+                           epochs=25, batch_size=24, num_workers=0, resume=False,
                            start_epoch=0, loader=ImageLoader,
                            transforms=[ResNext101LSTM.transform_train_padded,
                                        ResNext101LSTM.transform_classify_padded],
                            name="generated_cropped_padded",
                            loss_fn=torch.nn.CrossEntropyLoss)
 
-    # TODO FRI
-    nn_factory.train_model(lang_file, meta_data_file,
-                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
-                           MNISTCNN_DEEP_ACTIVATED_LSTM,
-                           epochs=600, batch_size=64, num_workers=0, resume=True,
-                           start_epoch=44, loader=ImageLoader,
-                           transforms=[MNISTCNN.transform_train_3,
-                                       MNISTCNN.transform_classify_2],
-                           loss_fn=torch.nn.NLLLoss
-                           )
-
 
 def eval_model():
-    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(os.path.join(DATASET_DIR, "perseus_25000.txt"),
-                                                                   meta_data_file,
-                                                                   EVAL_RAW_GLYPHS_DIR, batch_size=8,
+    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(quick_lang_file[-1],
+                                                                   meta_data_file[-1],
+                                                                   EVAL_RAW_GLYPHS_DIR, batch_size=16,
                                                                    loader=ImageLoader,
                                                                    transform=ResNext101LSTM.transform_classify)
     print("Epoch, Precision, Recall, FScore")
-    for epoch in range(0, 73):
+    for epoch in range(37, 55):
         model, _ = nn_factory.load_model(
-            ResNextLongLSTM, load_epoch=epoch, dataset=eval_dataset, resume=False)
+            ResNext101LSTM, load_epoch=epoch, dataset=eval_dataset, resume=False)
         avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="weighted",
                                                                       seed=0)
         print(f"{epoch}, {avg_precision}, {avg_recall}, {avg_fscore}")
+        del model
 
 
 def deep_eval_model():
@@ -331,12 +342,16 @@ def classify_images(img_in_dir, binary_img_in_dir, img_out_dir):
     write_csv("out.csv", output)
 
 
-def classify_lines(lines, model, img, transform):
+def classify_lines(lines, model, img, transform, flip_channels=True):
+    if flip_channels:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     nn_factory.classify(model, lines, img, transform)
     return lines
 
 
-def classify_lines_with_variants(lines, model, img, transform, softmax=False):
+def classify_lines_with_variants(lines, model, img, transform, softmax=False, flip_channels=True):
+    if flip_channels:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     new_lines = []
     for line in lines:
         potential_lines = generate_line_variants(line)
@@ -349,7 +364,10 @@ def classify_lines_with_variants(lines, model, img, transform, softmax=False):
     return new_lines
 
 
-def classify_lines_with_adaptive_variants(lines, model, img, transform, softmax=False, variants_per_line=1):
+def classify_lines_with_adaptive_variants(lines, model, img, transform, softmax=False, variants_per_line=1,
+                                          flip_channels=True):
+    if flip_channels:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     new_lines = []
     for line in lines:
         log_probs = nn_factory.classify(model, line, img, transform, softmax)
@@ -407,11 +425,12 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
             "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n")
         cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
         full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
-        for inner_window in [True, False]:
-            for confidence_min in arange(0.57, 0.63, .0025):
+
+        for inner_window in [False]:
+            for confidence_min in arange(0.60, 0.62, .005):
                 confidence_min = round(confidence_min, 3)
-                for duplicate_threshold in arange(0.5, 1.01, .05):
-                    duplicate_threshold = round(duplicate_threshold, 2)
+                for duplicate_threshold in arange(0.475, .5, .005):
+                    duplicate_threshold = round(duplicate_threshold, 3)
                     img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
                                                                                       binary_img_in_dir,
                                                                                       inner_sliding_window=inner_window,
@@ -435,9 +454,11 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
 
                                 if vary_lines:
                                     lines = classify_lines_with_adaptive_variants(lines, model, color_img, transform,
-                                                                                  softmax=complex_nn)
+                                                                                  softmax=complex_nn,
+                                                                                  flip_channels=False)
                                 else:
-                                    lines = classify_lines(lines, model, color_img, transform)
+                                    lines = classify_lines(lines, model, color_img, transform,
+                                                           flip_channels=False)
 
                                 pred_bboxes = unpack_lines(lines)
                                 truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
@@ -475,7 +496,7 @@ def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
                 print("NO IMAGE: " + binary_img_path)
                 continue
             img_bboxes_pairs.append((
-                color_img,
+                cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB),
                 binary_img,
                 generate_bboxes(color_img, inner_sliding_window=inner_sliding_window, confidence_min=confidence_min,
                                 cache_name=color_img_path, duplicate_threshold=duplicate_threshold)
@@ -489,11 +510,7 @@ def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
 def n_choices(n, choices):
     x = [[c] for c in choices]
     for _ in range(n - 1):
-        new_x = []
-        for C in x:
-            for c in choices:
-                new_x.append(C + [c])
-        x = new_x
+        x = [C + [c] for c in choices for C in x]
     return x
 
 
@@ -531,7 +548,6 @@ if __name__ == '__main__':
     #                          TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2)
     # generate_training_images(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2)
     # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR)
-    # train_model()
-    generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
 
-    # classify(EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_OUTPUT_DIR)
+    # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
+    train_model()

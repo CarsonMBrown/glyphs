@@ -97,7 +97,7 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
                 unique_bboxes = []
                 for bbox in valid_bboxes:
                     pair, iou = bbox.get_pair(bboxes)
-                    if iou < .8:
+                    if iou < duplicate_threshold:
                         unique_bboxes.append(bbox)
                     else:
                         if bbox.confidence > pair.confidence:

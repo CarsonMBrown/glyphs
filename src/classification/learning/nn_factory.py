@@ -33,6 +33,8 @@ def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size
         model.load_state_dict(torch.load(save_file))
         if not resume:
             model.eval()
+        if torch.cuda.is_available():
+            model = model.to('cuda')
         return model, model_path
     print("Model Not Found")
     return None, model_path
@@ -68,6 +70,7 @@ def eval_model(model, validation_loader, *, loss_fn=None, prediction_modifier=No
     if seed is not None:
         random.seed(seed)
     model.train(False)
+
     running_v_loss, running_precision, running_recall, running_fscore = 0.0, 0.0, 0.0, 0.0
     i = 0
     for i, v_data in enumerate(validation_loader):
@@ -225,9 +228,8 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     loss_fn = loss_fn()
 
-    # optimizer = torch.optim.SGD(model.parameters(), lr=0.1, weight_decay=0.0004, momentum=0.9)
     optimizer1 = torch.optim.Adam(model.parameters(), lr=0.001)
-    optimizer2 = torch.optim.Adam(model.parameters(), lr=0.0001)
+    optimizer2 = torch.optim.Adam(model.parameters(), lr=0.001)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))
@@ -235,7 +237,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     if resume:
         start_epoch += 1
         for i in range(0, start_epoch + 1):
-            if i < 50:
+            if i < 10:
                 optimizer1.step()
             else:
                 optimizer2.step()
@@ -254,7 +256,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
             model, validation_loader, loss_fn=loss_fn, seed=0)
 
-        # print(f'LOSS train {avg_loss} valid {avg_v_loss}')
+        print(f'LOSS train {avg_loss} valid {avg_v_loss}')
         print(f'PRECISION {avg_precision} RECALL {avg_recall} FSCORE {avg_fscore}')
 
         torch.save(model.state_dict(),
@@ -304,7 +306,7 @@ def train_one_epoch(training_loader, optimizer, model, loss_fn):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 100 == 100:
+        if i % 100 == 99:
             last_loss = running_loss / 100  # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             running_loss = 0.0
@@ -329,8 +331,6 @@ def classify(model, lines, img, transform, softmax=False):
         model = model.to('cuda')
 
     log_probabilities = []
-
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     if len(lines) > 0 and isinstance(lines[0], BBox):
         lines = [lines]

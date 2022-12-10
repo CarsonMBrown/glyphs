@@ -1,0 +1,96 @@
+"C:\Users\Carson Brown\.conda\envs\glyphs\python.exe" "C:/Users/Carson Brown/git/glyphs/src/main.py"
+Using cache found in C:\Users\Carson Brown/.cache\torch\hub\pytorch_vision_v0.10.0
+Starting...
+Image input directory: dataset\glyphs\eval\raw
+C:\Users\Carson Brown\.conda\envs\glyphs\lib\site-packages\torchvision\models\_utils.py:135: UserWarning: Using 'weights' as positional parameter(s) is deprecated since 0.13 and will be removed in 0.15. Please use keyword parameter(s) instead.
+  warnings.warn(
+transform Compose(
+    Resize(size=240, interpolation=bilinear, max_size=None, antialias=None)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+)
+Input Vector Size: None
+Image input directory: dataset\glyphs\train\raw
+transform Compose(
+    Resize(size=240, interpolation=bilinear, max_size=None, antialias=None)
+    RandomPerspective(p=0.5)
+    ColorJitter(brightness=[0.5, 1.5], contrast=[0.5, 1.5], saturation=[0.5, 1.5], hue=[-0.3, 0.3])
+    RandomAffine(degrees=[-15.0, 15.0], translate=(0.4, 0.4), scale=(0.6, 1.4), shear=[-0.4, 0.4])
+    RandomAdjustSharpness(sharpness_factor=0.8,p=0.1)
+    RandomAdjustSharpness(sharpness_factor=1.2,p=0.1)
+    RandomAutocontrast(p=0.5)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+)
+Training set has 25000 instances
+EPOCH 1:
+  batch 100 loss: 2.89932555437088
+  batch 200 loss: 2.929826749563217
+  batch 300 loss: 2.926691036224365
+  batch 400 loss: 2.8890613412857054
+  batch 500 loss: 2.8239524435997008
+  batch 600 loss: 2.868016550540924
+  batch 700 loss: 2.802406497001648
+  batch 800 loss: 2.8366758465766906
+  batch 900 loss: 2.7924988651275635
+  batch 1000 loss: 2.8946506667137144
+  batch 1100 loss: 2.7939705204963685
+  batch 1200 loss: 2.8371469306945802
+  batch 1300 loss: 2.77534948348999
+  batch 1400 loss: 2.804680063724518
+  batch 1500 loss: 2.681273041963577
+  batch 1600 loss: 2.707450692653656
+  batch 1700 loss: 2.7496346974372865
+  batch 1800 loss: 2.667996847629547
+  batch 1900 loss: 2.6147136270999907
+  batch 2000 loss: 2.6161471438407897
+  batch 2100 loss: 2.629248387813568
+  batch 2200 loss: 2.7130007910728455
+  batch 2300 loss: 2.6603956520557404
+  batch 2400 loss: 2.6829192185401918
+  batch 2500 loss: 2.68629221200943
+  batch 2600 loss: 2.643240523338318
+  batch 2700 loss: 2.6054416203498842
+  batch 2800 loss: 2.5943176198005675
+  batch 2900 loss: 2.602760044336319
+  batch 3000 loss: 2.5626112461090087
+  batch 3100 loss: 2.510704516172409
+LOSS train 2.510704516172409 valid 2.094081163406372
+PRECISION 0.3218399999999997 RECALL 0.3798 FSCORE 0.32910142857142866
+EPOCH 2:
+  batch 100 loss: 2.571527489423752
+  batch 200 loss: 2.518113514184952
+  batch 300 loss: 2.548828535079956
+  batch 400 loss: 2.517283697128296
+  batch 500 loss: 2.519005962610245
+  batch 600 loss: 2.4946476793289185
+  batch 700 loss: 2.5281938815116884
+  batch 800 loss: 2.497853870391846
+  batch 900 loss: 2.421217004656792
+  batch 1000 loss: 2.4548740351200102
+  batch 1100 loss: 2.431961714029312
+  batch 1200 loss: 2.4846873652935026
+  batch 1300 loss: 2.4145142340660097
+  batch 1400 loss: 2.385039281845093
+  batch 1500 loss: 2.347895679473877
+  batch 1600 loss: 2.3048149120807646
+  batch 1700 loss: 2.37223995923996
+  batch 1800 loss: 2.3466138768196108
+  batch 1900 loss: 2.315138349533081
+  batch 2000 loss: 2.2810853445529937
+  batch 2100 loss: 2.2569026696681975
+  batch 2200 loss: 2.318677053451538
+  batch 2300 loss: 2.203227894306183
+  batch 2400 loss: 2.2146267771720884
+  batch 2500 loss: 2.291896718740463
+  batch 2600 loss: 2.1932169914245607
+  batch 2700 loss: 2.314849408864975
+  batch 2800 loss: 2.248305813074112
+  batch 2900 loss: 2.266164983510971
+  batch 3000 loss: 2.2426358962059023
+  batch 3100 loss: 2.120274007320404
+LOSS train 2.120274007320404 valid 1.6102230548858643
+PRECISION 0.5010933333333333 RECALL 0.5396 FSCORE 0.49999952380952434
+EPOCH 3:

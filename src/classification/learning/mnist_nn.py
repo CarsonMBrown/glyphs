@@ -63,7 +63,7 @@ class MNISTCNN(nn.Module):
 
     def __init__(self, input_size, output_size):
         super().__init__()
-        self.dropout = .6
+        self.dropout = .5
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 32, 3, padding=1),
             nn.ReLU(),
