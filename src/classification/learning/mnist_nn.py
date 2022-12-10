@@ -265,7 +265,7 @@ class MNISTCNN_DEEP_ACTIVATED_LSTM(nn.Module):
 
     def __init__(self, input_size, output_size):
         super().__init__()
-        self.dropout = .5
+        self.dropout = 0
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 32, 3, padding=1),
             nn.ReLU(),
@@ -305,7 +305,6 @@ class MNISTCNN_DEEP_ACTIVATED_LSTM(nn.Module):
         self.lstm = nn.LSTM(128, output_size, bidirectional=True)
 
         self.fc = nn.Sequential(
-            nn.ReLU(),
             nn.Dropout(self.dropout),
             nn.Linear(output_size * 2, output_size * 2),
             nn.ReLU(),

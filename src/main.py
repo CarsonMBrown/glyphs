@@ -120,13 +120,12 @@ def train_model():
     nn_factory.train_model(lang_file, meta_data_file,
                            TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
                            MNISTCNN_DEEP_ACTIVATED_LSTM,
-                           epochs=200, batch_size=64, num_workers=0, resume=True,
-                           start_epoch=48, loader=ImageLoader,
+                           epochs=200, batch_size=64, num_workers=0, resume=False,
+                           start_epoch=0, loader=ImageLoader,
                            transforms=[MNISTCNN.transform_train_3,
                                        MNISTCNN.transform_classify_2],
                            loss_fn=torch.nn.NLLLoss
                            )
-
     nn_factory.train_model(quick_lang_file, meta_data_file,
                            TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
                            ResNext101LSTM,
@@ -426,10 +425,11 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
         cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
         full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
 
-        for inner_window in [False]:
-            for confidence_min in arange(0.60, 0.62, .005):
+        # TODO FALSE with conf in [.425-.475]
+        for inner_window in [True]:
+            for confidence_min in arange(0.28, 0.331, .01):
                 confidence_min = round(confidence_min, 3)
-                for duplicate_threshold in arange(0.475, .5, .005):
+                for duplicate_threshold in arange(0.4, .81, .1):
                     duplicate_threshold = round(duplicate_threshold, 3)
                     img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
                                                                                       binary_img_in_dir,
@@ -437,7 +437,7 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                                                                                       confidence_min=confidence_min,
                                                                                       duplicate_threshold=duplicate_threshold)
                     crop, intersect, complex_nn, vary_lines = False, False, True, False
-                    for crop, intersect in n_choices(2, [True, False]):
+                    for complex_nn in n_choices(1, [False]):
                         truth_pred_iou_tuples = []
                         with tqdm(desc=f"Generating Lines w/ confidence:{confidence_min}",
                                   total=len(img_bboxes_pairs)) as pbar:
@@ -448,7 +448,7 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                                                         remove_intersections=intersect,
                                                         bboxes=bboxes)
                                 if complex_nn:
-                                    model, transform = full_size_model, ResNext101LSTM.transform_classify_cropped
+                                    model, transform = full_size_model, ResNext101LSTM.transform_classify_padded
                                 else:
                                     model, transform = cropped_model, MNISTCNN.transform_classify_2
 
@@ -549,5 +549,5 @@ if __name__ == '__main__':
     # generate_training_images(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2)
     # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR)
 
-    # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
-    train_model()
+    generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
+    # train_model()

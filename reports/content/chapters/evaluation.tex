@@ -277,32 +277,56 @@ YOLO, when trained on color images, performs better than when trained on binariz
 \begin{figure}[H]
     \caption{Evaluation Results for YOLO Bounding}
     \label{fig:evalYOLORaw}
-    \centering
-    \begin{tabular}{ | c | c | c | c | c | }
-        \hline
-        Training Set & Backbone Layers & Image Type & Model Size & F1 Score \\
-        \hline
-        Multi-Class & Frozen & Color & YOLOv5x (largest) & 0.07 \\
-        Mono-Class & Frozen & Binary & YOLOv5l (large) & 0.63 \\
-        Mono-Class & Frozen & Color & YOLOv5l (large) & 0.68 \\
-        Mono-Class & Frozen & Color & YOLOv5x (largest) & 0.69 \\
-        Mono-Class & Unfrozen & Color & YOLOv5x (largest) & 0.74 \\
-        Mono-Class & Unfrozen & Color & YOLOv5x (largest) & 0.72* \\
-        \hline
-    \end{tabular}
-    *All the models were trained for 300 epochs, with the exception of this one, which was trained for 600 epochs, with the metrics being taken on only the last 300 epochs.
+    \begin{center}
+      \begin{tabular}{ | c | c | c | c | c | }
+          \hline
+          Training Set & Backbone Layers & Image Type & Model Size & F1 Score \\
+          \hline
+          Multi-Class & Frozen & Color & YOLOv5x (largest) & 0.07 \\
+          Mono-Class & Frozen & Binary & YOLOv5l (large) & 0.63 \\
+          Mono-Class & Frozen & Color & YOLOv5l (large) & 0.68 \\
+          Mono-Class & Frozen & Color & YOLOv5x (largest) & 0.69 \\
+          Mono-Class & Unfrozen & Color & YOLOv5x (largest) & 0.74 \\
+          Mono-Class & Unfrozen & Color & YOLOv5x (largest) & 0.72* \\
+          \hline
+      \end{tabular}
+    \end{center}
+    \vspace{5mm}
+    All the models were trained for 300 epochs, with the exception of this one, which was trained for 600 epochs, with the metrics being taken on only the last 300 epochs.
 \end{figure}
 
 \subsubsection{RCCN Sliding Window}
-\todo{TODO: Dec 09}
+\todo{NEW}
 
-By introducing a sliding window to the
+By using the model with the highest base F1 score and introducing a sliding window to the RCNN, the peak F1 score can be increased. This effect is amplified by introducing an inner sliding window, which reduces the recall for the benefit of more precision \seefig{evalYOLOSliding}.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for Sliding Window Assisted YOLO Bounding}
+    \label{fig:evalYOLOSliding}
+    \begin{center}
+      \begin{tabular}{ | c | c | c | c | c | }
+          \hline
+          Inner Sliding Window & Summary Type & Precision & Recall & F1 Score \\
+          \hline
+          True & Mean & 0.953	& 0.830 & 0.870 \\
+          True & Max F1 Score & 0.929 & 0.942 & 0.936 \\
+          False & Mean & 0.934 & 0.851 & 0.874 \\
+          False & Max F1 Score & 0.926 & 0.936 & 0.931 \\
+          \hline
+      \end{tabular}
+    \end{center}
+    \vspace{5mm}
+    All results are taken with a sliding window of $800$ pixels and a step size of $200$ pixels. The results are averaged over the confidence thresholds $t$ required for the bounding boxes to be saved $s.t.$ $0.1 \leq t \leq .85$ with a step size of $.05$.
+\end{figure}
 
 \subsubsection{RCNN Duplicate Removal}
-\todo{TODO: Dec 09}
+
+By utilizing the confidence level produced by YOLO to break ties between overlapping bounding boxes in addition to a minimum confidence level and an IOU threshold to consider two bounding boxes overlapping, duplicates can be much more effectively removed, increasing the maximum F1 score of the bounding boxes \seefig{evalYOLODuplicates}.
+
+\todo{TODO: Dec 11, Add Data}
 
 \subsubsection{Binarization-Assisted CNN}
-\todo{TODO: Dec 09}
+\todo{TODO: Dec 11}
 
 \section{Line Bounding}
 \todo{NEW}
@@ -310,13 +334,15 @@ By introducing a sliding window to the
 As in glyph bounding, no ground truth information was provided for which glyphs where in the same line, so a visual approximation must be used to determine which methods are best, at least when comparing results of each metric without taking the rest of the pipeline into account.
 
 \subsection{Point Of Interest Clustering}
-\todo{TODO: Dec 11}
+\todo{NEW}
+
+Using point of interest clustering fails to generate valid lines as the noise in both the binarized and color images prevents the glyphs from being clustered correctly, with causes higher frequency noise to be made into lines, instead of the glyphs. Given more time, the application of de-noising techniques could be explored to make this method more effective.
 
 \subsection{Adjacent Glyph Clustering}
-\todo{TODO: Dec 11}
+\todo{TODO: Dec 12}
 
 \subsection{Overlaping Glyph Clustering}
-\todo{TODO: Dec 11}
+\todo{TODO: Dec 12}
 
 \section{Classification}
 
@@ -404,27 +430,97 @@ Using architectures based on the convolutional layers of AlexNet \cite{Krizhevsk
 \end{figure}
 
 \subsection{Stochastic Language Models}
-\todo{TODO: Dec 09}
+\todo{NEW}
 
-\todo{talk about uncertainty markov and top n markov}
+Utilizing a trained ResNext50 CNN with no LSTM layers to evaluate the stochastic language models resulted in results consistently worse than those of any of the CNNs with an LSTM. By evaluating all parameters $\alpha$ in $[0,1]$ with a step size of $0.05$ and then $.01$ around the peak, the best value for $\alpha$ was $0.03$ with an F1 score of $0.681$, compared the baseline F1 score of $0.680$ using an $\alpha$ of $0$. With an $\alpha$ of $1$, the F1 score dropped even further to $0.636$. In addition, the language models were used to break ties in LSTM-based CNNs, which resulted in similar results when breaking ties between the top $n$ choices of the CNN \seefig{classificationMarkovTopN} and when breaking ties between the top choices when there was an difference between the top choices of less than a set uncertainty threshold $u$ \seefig{classificationMarkovUncertainty}. Therefore, it can be concluded that while a stochastic language model can be utilized to augment a non-LSTM classifier, a single LSTM layer generates results far better without requiring extra algorithmic steps in the classification process. However, utilizing an additional language model to assist the an LSTM-based classifier could potentially increase accuracy in approximately $0.02\%$ of the classifications.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for Top $n$ Tie Breaking Using Stochastic Language Models}
+    \label{fig:classificationMarkovTopN}
+    \centering
+    \begin{tabular}{ | c | c | }
+        \hline
+        $n$ Choices Considered & Weighted F1 Score \\
+        \hline
+        $1$ & $0.832$ \\
+        $2$ & $0.632$ \\
+        $3$ & $0.479$ \\
+        \hline
+    \end{tabular}
+\end{figure}
+
+\begin{figure}[H]
+    \caption{Evaluation Results for Uncertainty Tie Breaking Using Stochastic Language Models}
+    \label{fig:classificationMarkovUncertainty}
+    \centering
+    \begin{tabular}{ | c | c | }
+        \hline
+        Uncertainty Threshold & Weighted F1 Score \\
+        \hline
+        $0.0$ & 0.8320 \\
+        $0.01$ & 0.8322 \\
+        $0.02$ & 0.8319 \\
+        $0.03$ & 0.8318 \\
+        $0.04$ & 0.8316 \\
+        $0.05$ & 0.8317 \\
+        \hline
+    \end{tabular}
+\end{figure}
 
 \subsection{Neural Netork Language Models}
-\todo{TODO: Dec 09}
+\todo{NEW}
 
-\todo{talk about batchsize vs accuracy on resnet50 and shuffle test}
+As is partially demonstrated in Figures \ref{ref:classificationFeatureVectorNN} and \ref{ref:classificationCNN}, adding a LSTM layer to the Classifiers increases the accuracy over a classifier without the ability to remember. This can also be shown by shuffling the glyphs to make random sequences of glyphs instead of the expected glyph orderings patterns that the language models can learn \seefig{classificationShuffle}. In addition, the number of glyphs in a line has a significant effect on classification accuracy, with longer lines (larger batch size) generating a higher average F1 score than shorter lines (smaller batch size) \seefig{classificationBatchSize}.
+
+\begin{figure}[H]
+    \caption{Evaluation Results for Shuffled Batches}
+    \label{fig:classificationShuffle}
+    \centering
+    \begin{tabular}{ | c | c | c | }
+        \hline
+        Shuffled & $n$ & Top $n$ Accuracy \\
+        \hline
+        True & 1 & 0.761 \\
+        True & 2 & 0.844 \\
+        True & 3 & 0.889 \\
+        True & 4 & 0.909 \\
+        True & 5 & 0.923 \\
+        False & 1 & 0.818 \\
+        False & 2 & 0.902 \\
+        False & 3 & 0.929 \\
+        False & 4 & 0.950 \\
+        False & 5 & 0.959 \\
+        \hline
+    \end{tabular}
+\end{figure}
+
+\begin{figure}[H]
+    \caption{Evaluation Results for the Effect of Batch Size on Weighted F1 Score}
+    \label{fig:classificationBatchSize}
+    \centering
+    \begin{tabular}{ | c | c | c | c | }
+        \hline
+        Batch Size & Precision & Recall & F1 Score \\
+        \hline
+        1 & 0.772 & 0.772 & 0.772 \\
+        2 & 0.792 & 0.793 & 0.792 \\
+        3 & 0.805 & 0.802 & 0.799 \\
+        4 & 0.821 & 0.806 & 0.803 \\
+        5 & 0.837 & 0.811 & 0.806 \\
+        \hline
+    \end{tabular}
+\end{figure}
 
 \section{Pipeline}
 \todo{TODO: DEC 14}
 
-
 \section{Evaluation Metric Analysis}
 
 \subsection{Ground Truth Comparison}
-\todo{TODO: Dec 12}
+\todo{TODO}
 
 \subsection{Visual Analysis}
-\todo{TODO: Dec 12}
 
 \subsection{BLEU Score}
-\todo{TODO: Dec 12}
+\todo{TODO}
 \cite{Callison-Burch}
