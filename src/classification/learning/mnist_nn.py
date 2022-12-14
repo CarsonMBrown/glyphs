@@ -255,6 +255,7 @@ class MNISTCNN_DEEP_LSTM(nn.Module):
     def get_name():
         return "mnist_deep_lstm"
 
+
 class MNISTCNN_DEEP_ACTIVATED_LSTM(nn.Module):
     """
     BASED ON:

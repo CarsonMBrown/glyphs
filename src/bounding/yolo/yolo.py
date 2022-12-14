@@ -35,7 +35,7 @@ def find_glyphs(img, *, model_local=True):
 
 # TODO: HYPER PARAM TUNING ON WINDOW SIZE AND STEP
 def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_export_path=None,
-                         inner_sliding_window=True, confidence_min=None, cache_name=None, duplicate_threshold=.8):
+                         inner_sliding_window=True, confidence_min=None, cache_name=None, duplicate_threshold=None):
     """
     :param img: img to get bboxes from (IN BGR)
     :param window_size: size of the sliding window to use
@@ -49,6 +49,11 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
     """
     if bbox_gif_export_path is not None:
         os.makedirs(bbox_gif_export_path, exist_ok=True)
+
+    if duplicate_threshold is None:
+        duplicate_threshold = .450 if inner_sliding_window else .330
+    if confidence_min is None:
+        confidence_min = .290 if inner_sliding_window else .475
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -82,8 +87,6 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
                     window_x_max - window_step if window_x_max != x_max else x_max,
                     window_y_max - window_step if window_y_max != y_max else y_max
                 )
-                valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
-                bboxes += valid_bboxes
             else:
                 border = int(window_size * .01)
                 # remove boxes that touch edge
@@ -93,17 +96,16 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
                     window_x_max - border if window_x_max != x_max else x_max - border,
                     window_y_max - border if window_y_max != y_max else y_max - border
                 )
-                valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
-                unique_bboxes = []
-                for bbox in valid_bboxes:
-                    pair, iou = bbox.get_pair(bboxes)
-                    if iou < duplicate_threshold:
-                        unique_bboxes.append(bbox)
-                    else:
-                        if bbox.confidence > pair.confidence:
-                            bboxes.remove(pair)
-                            unique_bboxes.append(bbox)
-                bboxes += unique_bboxes
+            valid_bboxes = [bbox for bbox in potential_bboxes if bbox.is_inside(valid_bbox_window)]
+            unique_bboxes = []
+            for bbox in valid_bboxes:
+                pair, iou = bbox.get_pair(bboxes)
+                if iou < duplicate_threshold:
+                    unique_bboxes.append(bbox)
+                elif bbox.confidence > pair.confidence:
+                    bboxes.remove(pair)
+                    unique_bboxes.append(bbox)
+            bboxes += unique_bboxes
 
             # if exporting images
             if bbox_gif_export_path is not None:

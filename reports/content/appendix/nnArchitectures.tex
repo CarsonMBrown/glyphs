@@ -1,0 +1,71 @@
+\begin{figure}
+  \caption{Linear Classifier}
+  \label{fig:nnLinear}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \begin{lstlisting}
+Linear(9216, 200),
+ReLU(),
+Dropout(p=.1),
+Linear(200, 200),
+ReLU(),
+Dropout(p=.1),
+Linear(200, 100),
+ReLU(),
+Dropout(p=.1),
+Linear(100, 24)
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+\end{figure}
+
+\begin{figure}
+  \caption{Simple LSTM Classifier}
+  \label{fig:nnSimpleLSTM}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \begin{lstlisting}
+self.lstm = LSTM(9216, 50, num_layers=1, bidirectional=True),
+Dropout(p=.1),
+Linear(100, 24)
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+\end{figure}
+
+\begin{figure}
+  \caption{Linear-to-LSTM Classifier}
+  \label{fig:nnLinear2LSTM}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \begin{lstlisting}
+Linear(9216, 100),
+ReLU(),
+Dropout(p=.1),
+Linear(100, 100),
+ReLU(),
+Dropout(p=.1),
+self.lstm = LSTM(100, 100, num_layers=4, bidirectional=True),
+ReLU(),
+Linear(200, 24)
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+\end{figure}
+
+\begin{figure}
+  \caption{LSTM-to-Linear Classifier}
+  \label{fig:nnLSTM2Linear}
+  \par\noindent\rule{\textwidth}{0.5pt}
+  \begin{\codefigsize}
+  \begin{lstlisting}
+LSTM(9216, 100, num_layers=4, bidirectional=True),
+ReLU(),
+Dropout(p=.1),
+Linear(200, 100),
+ReLU(),
+Linear(100, 24)
+  \end{lstlisting}
+  \end{\codefigsize}
+  \par\noindent\rule{\textwidth}{0.5pt}
+\end{figure}

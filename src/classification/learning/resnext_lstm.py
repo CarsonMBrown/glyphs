@@ -62,7 +62,7 @@ class ResNext50LSTM(nn.Module):
 class ResNextLongLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
-        dropout = 0.5
+        dropout = 0.0
         self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
         self.resnext.fc = nn.LSTM(self.resnext.fc.in_features, output_size * 2, num_layers=1, bidirectional=True)
         self.classifier = nn.Sequential(
@@ -83,7 +83,7 @@ class ResNextLongLSTM(nn.Module):
         return "resnext50_long_lstm"
 
 
-class ResNextDeepLSTM(nn.Module):
+class ResNextLongTallLSTM(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         dropout = .5
@@ -167,7 +167,8 @@ class ResNext101LSTM(nn.Module):
         transforms.RandomAdjustSharpness(sharpness_factor=.9, p=.1),
         transforms.RandomAdjustSharpness(sharpness_factor=1.1, p=.1),
         transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
-        transforms.CenterCrop(224)
+        transforms.CenterCrop(224),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
     transform_classify = transforms.Compose([
@@ -182,6 +183,7 @@ class ResNext101LSTM(nn.Module):
         transforms.Pad(112, fill=(0, 0, 0)),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
     def __init__(self, input_size, output_size):

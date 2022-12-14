@@ -5,7 +5,7 @@ from torchvision import transforms
 
 class AlexNetLSTM(nn.Module):
     preprocess = transforms.Compose([
-        transforms.RandomAffine(degrees=10, translate=(.1,.1), shear=10),
+        transforms.RandomAffine(degrees=10, translate=(.1, .1), shear=10),
         transforms.Resize(256),
         transforms.RandomCrop(224),
         transforms.RandomAdjustSharpness(.5, .5),

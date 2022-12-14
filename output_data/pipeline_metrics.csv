@@ -1,0 +1,2 @@
+confidence_min, duplicate_threshold, inner_sliding_window, intersect, crop, complex_nn, vary_lines, make_lines, bbox_precision, bbox_recall, bbox_fscore, avg_iou, class_precision, class_recall, class_fscore
+0.05, 0.2, False, False, False, [True], False, True, 0.9079732417284397, 0.9562071591774562, 0.9314661967912454, 0.7267067477964214, 0.7986347767373496, 0.7875348466746316, 0.7871449986388943

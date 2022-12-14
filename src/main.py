@@ -78,6 +78,7 @@ TRAIN_GENERATED_RAW_GLYPHS_DIR = os.path.join(TRAIN_GENERATED_GLYPHS_DIR, "raw")
 TRAIN_GENERATED_INTERSECTED_GLYPHS_DIR = os.path.join(TRAIN_GENERATED_GLYPHS_DIR, "intersected")
 TRAIN_GENERATED_CROPPED_GLYPHS_DIR = os.path.join(TRAIN_GENERATED_GLYPHS_DIR, "cropped")
 TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2 = TRAIN_GENERATED_CROPPED_GLYPHS_DIR + "_2"
+TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V3 = TRAIN_GENERATED_CROPPED_GLYPHS_DIR + "_3"
 TRAIN_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "cropped_raw")
 TRAIN_RAW_QUALITY_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "raw_high_quality")
 TRAIN_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "train", "binarized")
@@ -87,6 +88,7 @@ EVAL_GENERATED_RAW_GLYPHS_DIR = os.path.join(EVAL_GENERATED_GLYPHS_DIR, "raw")
 EVAL_GENERATED_INTERSECTED_GLYPHS_DIR = os.path.join(EVAL_GENERATED_GLYPHS_DIR, "intersected")
 EVAL_GENERATED_CROPPED_GLYPHS_DIR = os.path.join(EVAL_GENERATED_GLYPHS_DIR, "cropped")
 EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2 = EVAL_GENERATED_CROPPED_GLYPHS_DIR + "_2"
+EVAL_GENERATED_CROPPED_GLYPHS_DIR_V3 = EVAL_GENERATED_CROPPED_GLYPHS_DIR + "_3"
 EVAL_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "cropped_raw")
 TEST_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "test", "raw")
 TEST_GENERATED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "test", "generated")
@@ -94,6 +96,7 @@ TEST_GENERATED_RAW_GLYPHS_DIR = os.path.join(TEST_GENERATED_GLYPHS_DIR, "raw")
 TEST_GENERATED_INTERSECTED_GLYPHS_DIR = os.path.join(TEST_GENERATED_GLYPHS_DIR, "intersected")
 TEST_GENERATED_CROPPED_GLYPHS_DIR = os.path.join(TEST_GENERATED_GLYPHS_DIR, "cropped")
 TEST_GENERATED_CROPPED_GLYPHS_DIR_V2 = TEST_GENERATED_CROPPED_GLYPHS_DIR + "_2"
+TEST_GENERATED_CROPPED_GLYPHS_DIR_V3 = TEST_GENERATED_CROPPED_GLYPHS_DIR + "_3"
 TEST_CROPPED_RAW_GLYPHS_DIR = os.path.join(GLYPH_DIR, "test", "cropped_raw")
 BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "binarized")
 EVAL_BINARIZED_GLYPHS_DIR = os.path.join(GLYPH_DIR, "eval", "binarized")
@@ -119,33 +122,34 @@ meta_data_file = os.path.join(TRAIN_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv"), \
 def train_model():
     nn_factory.train_model(lang_file, meta_data_file,
                            TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
-                           MNISTCNN_DEEP_ACTIVATED_LSTM,
-                           epochs=200, batch_size=64, num_workers=0, resume=False,
+                           MNISTCNN_DEEP_LSTM,
+                           epochs=1000, batch_size=64, num_workers=700, resume=True,
                            start_epoch=0, loader=ImageLoader,
-                           transforms=[MNISTCNN.transform_train_3,
+                           transforms=[MNISTCNN.transform_train_2,
                                        MNISTCNN.transform_classify_2],
-                           loss_fn=torch.nn.NLLLoss
+                           loss_fn=torch.nn.NLLLoss,
+                           name="v3"
                            )
-    nn_factory.train_model(quick_lang_file, meta_data_file,
-                           TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
-                           ResNext101LSTM,
-                           epochs=50, batch_size=8, num_workers=0, resume=True,
-                           start_epoch=11, loader=ImageLoader,
-                           transforms=[ResNext101LSTM.transform_train,
-                                       ResNext101LSTM.transform_classify],
-                           loss_fn=torch.nn.CrossEntropyLoss,
-                           name="101Adam"
-                           )
+    # nn_factory.train_model(lang_file, meta_data_file,
+    #                        TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V3, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V3,
+    #                        ResNextLongLSTM,
+    #                        epochs=100, batch_size=24, num_workers=0, resume=False,
+    #                        start_epoch=0, loader=ImageLoader,
+    #                        transforms=[ResNext101LSTM.transform_train_padded,
+    #                                    ResNext101LSTM.transform_classify_padded],
+    #                        loss_fn=torch.nn.CrossEntropyLoss,
+    #                        name="v3"
+    #                        )
 
-    nn_factory.train_model(lang_file, meta_data_file,
-                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
-                           ResNextLongLSTM,
-                           epochs=25, batch_size=24, num_workers=0, resume=False,
-                           start_epoch=0, loader=ImageLoader,
-                           transforms=[ResNext101LSTM.transform_train_padded,
-                                       ResNext101LSTM.transform_classify_padded],
-                           name="generated_cropped_padded",
-                           loss_fn=torch.nn.CrossEntropyLoss)
+    # nn_factory.train_model(lang_file, meta_data_file,
+    #                        TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
+    #                        ResNextLongLSTM,
+    #                        epochs=25, batch_size=24, num_workers=0, resume=False,
+    #                        start_epoch=0, loader=ImageLoader,
+    #                        transforms=[ResNext101LSTM.transform_train_padded,
+    #                                    ResNext101LSTM.transform_classify_padded],
+    #                        name="generated_cropped_padded",
+    #                        loss_fn=torch.nn.CrossEntropyLoss)
 
 
 def eval_model():
@@ -420,33 +424,43 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
     with open(os.path.join("output_data", "pipeline_metrics.csv"), mode="w") as csv_file:
         csv_file.write(
             "confidence_min, duplicate_threshold, inner_sliding_window, intersect, crop, complex_nn, "
-            "vary_lines, bbox_precision, bbox_recall, "
+            "vary_lines, make_lines, bbox_precision, bbox_recall, "
             "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n")
         cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
         full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
 
-        # TODO FALSE with conf in [.425-.475]
-        for inner_window in [True]:
-            for confidence_min in arange(0.28, 0.331, .01):
+        for inner_window in [False, True]:
+            if inner_window:
+                min_confidence_val, max_confidence_val = .5, .8
+            else:
+                min_confidence_val, max_confidence_val = .05, .5
+            for confidence_min in arange(min_confidence_val, max_confidence_val, .05):
                 confidence_min = round(confidence_min, 3)
-                for duplicate_threshold in arange(0.4, .81, .1):
+                if inner_window:
+                    min_duplicate_val, max_duplicate_val = .2, .9
+                else:
+                    min_duplicate_val, max_duplicate_val = .2, .9
+                for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .05):
                     duplicate_threshold = round(duplicate_threshold, 3)
                     img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
                                                                                       binary_img_in_dir,
                                                                                       inner_sliding_window=inner_window,
                                                                                       confidence_min=confidence_min,
                                                                                       duplicate_threshold=duplicate_threshold)
-                    crop, intersect, complex_nn, vary_lines = False, False, True, False
-                    for complex_nn in n_choices(1, [False]):
+                    crop, intersect, complex_nn, vary_lines, make_lines = False, False, False, False, True
+                    for complex_nn in n_choices(1, [True]):
                         truth_pred_iou_tuples = []
                         with tqdm(desc=f"Generating Lines w/ confidence:{confidence_min}",
                                   total=len(img_bboxes_pairs)) as pbar:
                             for i, (color_img, binary_img, template_bboxes) in enumerate(img_bboxes_pairs):
                                 bboxes = [bbox.copy() for bbox in template_bboxes]
                                 truth_bboxes = [bbox.copy() for bbox in template_truth_bboxes[i]]
-                                lines = bboxes_to_lines(binary_img=binary_img if crop else None,
-                                                        remove_intersections=intersect,
-                                                        bboxes=bboxes)
+                                if make_lines:
+                                    lines = bboxes_to_lines(binary_img=binary_img if crop else None,
+                                                            remove_intersections=intersect,
+                                                            bboxes=bboxes)
+                                else:
+                                    lines = [[bbox] for bbox in bboxes]
                                 if complex_nn:
                                     model, transform = full_size_model, ResNext101LSTM.transform_classify_padded
                                 else:
@@ -472,7 +486,7 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                             csv_file.write(
                                 f"{confidence_min}, {duplicate_threshold}, {inner_window}, "
                                 f"{intersect}, {crop}, {complex_nn}, "
-                                f"{vary_lines}, {bbox_precision}, {bbox_recall}, "
+                                f"{vary_lines}, {make_lines}, {bbox_precision}, {bbox_recall}, "
                                 f"{bbox_fscore}, {avg_IOU}, {class_precision}, {class_recall}, {class_fscore}\n")
 
 
@@ -545,9 +559,11 @@ if __name__ == '__main__':
     #     wait=False)
 
     # generate_training_images(COCO_TRAINING_DIR, TRAIN_RAW_DIR, TRAIN_BINARIZED_DIR,
-    #                          TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2)
-    # generate_training_images(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2)
-    # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR)
+    #                          TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V3, remove_intersections=False, crop=False)
+    # generate_training_images(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V3,
+    #                          remove_intersections=False, crop=False)
+    # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR_V3,
+    #                          remove_intersections=False, crop=False)
 
     generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
     # train_model()

@@ -1,7 +1,6 @@
 import os
 import random
 
-import cv2
 import numpy as np
 import torch
 from PIL import Image
@@ -10,6 +9,7 @@ from sklearn.metrics import precision_recall_fscore_support, top_k_accuracy_scor
     ConfusionMatrixDisplay
 from torch import log_softmax
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from src.classification.learning.torch_dataloader import VectorLoader
 from src.util.bbox import BBox
@@ -228,7 +228,7 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     loss_fn = loss_fn()
 
-    optimizer1 = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer1 = torch.optim.Adam(model.parameters(), lr=0.1)
     optimizer2 = torch.optim.Adam(model.parameters(), lr=0.001)
 
     # Report split sizes
@@ -244,14 +244,14 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
             # scheduler.step()
 
     for epoch in range(start_epoch, epochs + 1):
-        print('EPOCH {}:'.format(epoch))
+        # print('EPOCH {}:'.format(epoch))
 
         # Make sure gradient tracking is on, and do a pass over the data
         model.train(True)
         if epoch < 10:
-            avg_loss = train_one_epoch(training_loader, optimizer1, model, loss_fn)
+            avg_loss = train_one_epoch(epoch, training_loader, optimizer1, model, loss_fn)
         else:
-            avg_loss = train_one_epoch(training_loader, optimizer2, model, loss_fn)
+            avg_loss = train_one_epoch(epoch, training_loader, optimizer2, model, loss_fn)
 
         avg_precision, avg_recall, avg_fscore, avg_v_loss = eval_model(
             model, validation_loader, loss_fn=loss_fn, seed=0)
@@ -275,14 +275,16 @@ def generate_dataloader(lang_file, annotations_file, data_path, *, batch_size=32
     return training_set, training_loader
 
 
-def train_one_epoch(training_loader, optimizer, model, loss_fn):
+def train_one_epoch(epoch, training_loader, optimizer, model, loss_fn):
     running_loss = 0.
     last_loss = 0.
 
     # Here, we use enumerate(training_loader) instead of
     # iter(training_loader) so that we can track the batch
     # index and do some intra-epoch reporting
-    for i, data in enumerate(training_loader):
+    pbar = tqdm(training_loader)
+    pbar.set_description(f"Epoch {epoch}")
+    for i, data in enumerate(pbar):
         # Every data instance is an input + label pair
         inputs, labels = data
 
@@ -306,9 +308,15 @@ def train_one_epoch(training_loader, optimizer, model, loss_fn):
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 100 == 99:
-            last_loss = running_loss / 100  # loss per batch
-            print('  batch {} loss: {}'.format(i + 1, last_loss))
+        if i % 25 == 24:
+            temp_loss = last_loss
+            last_loss = running_loss / 25  # loss per batch
+            d_loss = last_loss - temp_loss
+            # print('  batch {} loss: {}'.format(i + 1, last_loss))
+            if d_loss != last_loss:
+                pbar.set_description(f"Epoch {epoch}, loss={round(last_loss, 5)}, dLoss={round(d_loss, 5)} ")
+            else:
+                pbar.set_description(f"Epoch {epoch}, loss={round(last_loss, 5)} ")
             running_loss = 0.0
 
         optimizer.zero_grad()

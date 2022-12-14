@@ -13,7 +13,7 @@ class LinearToLSTM(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=.1),
         )
-        self.lstm = nn.LSTM(self.hidden_size, self.hidden_size, num_layers=4, bidirectional=True, dropout=0.1)
+        self.lstm = nn.LSTM(self.hidden_size, self.hidden_size, num_layers=1, bidirectional=True, dropout=0.1)
         self.label = nn.Sequential(
             nn.ReLU(),
             nn.Linear(self.hidden_size * 2, output_size)
