@@ -1,10 +1,10 @@
 \section{Experiment Design}
 
-To ensure experimental validity, all intermediate evaluation and hyperparameter tuning was performed on $23$ randomly selected images that were separate from both the training image set of $106$ images and the final test set of $23$ images. All examples and images, and some intermediate evaluations, are taken from the evaluation set, with final metrics being taken on the test set. No results are taken from the training set, as they would have little meaning.
+To ensure experimental validity, all intermediate evaluation and hyperparameter tuning was performed on $23$ randomly selected images that were separate from both the training image set of $106$ images and the final test set of $23$ images. This split generated $27,623$ glyph images for training with $7,759$ glyph images being available for evaluation and $6,835$ glyph images for testing. All examples and images, and some intermediate evaluations, are taken from the evaluation set, with final metrics being taken on the test set. No results are taken from the training set, as they would have little meaning.
 
 \section{Existing Pipelines}
 
-To attempt to generate a baseline to assess new methods against, Tesseract \cite{SmithTesseract}, a popular OCR engine sponsored by Google \cite{Vincent} and Ocular \cite{Berg-Kirkpatrick}, another OCR engine based on stochastic models, were integrated into the pipeline using pytesseract \cite{Lee} and by calling jar files from python respectively.
+To attempt to generate a baseline to assess new methods against, Tesseract \cite{SmithTesseract}, a popular OCR engine sponsored by Google \cite{Vincent} and Ocular \cite{Berg-Kirkpatrick}, another OCR engine based on stochastic models, were integrated into the pipeline using Pytesseract \cite{Lee} and by calling jar files from python respectively.
 
 \subsection{Evaluation Metrics}
 
@@ -15,17 +15,17 @@ As these existing pipelines were assessed in the early phases of the project, a 
 With Tesseract, using the ancient Greek corpus, and using both raw and binarized images, the output was comparable to noise, with the transcription lengths being an order of magnitude different from the ground truths.
 
 \subsection{Ocular}
-\todo{NEW}
 
 Similarly, training Ocular on both raw and binarized full images and individual glyph images, the output was comparable to noise, with the transcription lengths being an order of magnitude different from the ground truths and $A$ and $\Lambda$ making up over $95\%$ of the returned glyphs. This result happened regardless of the dataset that Ocular was trained on, with binarized and non-binarized images performing the same and singular glyph images performing the same as whole images.
 
 \section{Binarization}
 
 \subsection{Evaluation Metrics}
+\todo{NEW}
 
-As there was no ground-truth information provided to compare binarizations against, visual comparison was utilized to determine which binarization method was providing the highest quality binarizations. This was done on four different images, which contained various features that would allow for quick visual evidence of the effectiveness of the methods \seefig{binarizationRaw}. The four images are of assorted sizes, from different collections, and are degraded to different degrees, allowing them to function as a valuable quick assessment tool without introducing bias into the evaluation of the methods.
+As there was no ground-truth information provided to compare binarizations against, visual comparison was utilized to determine which binarization method was providing the highest quality binarizations. Evaluation was performed on four different images, which contained various features that would allow for quick visual evidence of the effectiveness of the methods \seefig{binarizationRaw}. Images from the training image set were utilized in hyperparameter for the binarization methods, which included generating binarizations of more than four images. The four images are of assorted sizes, from different collections, and are degraded to different degrees, allowing them to function as a valuable quick assessment tool without introducing bias into the evaluation of the methods using visually approximated signal-to-noise ratio as a metric.
 
-To assess each binarization method, these images were used to determine how much of the ink on the papyrus was being included, and if noise was being added to the image in the form of background pixels being black or ink pixels being white. This metric was designed to ensure that the signal-to-noise ratio would be low and that the recall and precision would be high, even if they were not directly measurable without a ground truth for each pixel.
+To assess each binarization method, these images, containing a total of approximately $300$ glyphs, were used to determine how much of the ink on the papyrus was being included, and if noise was being added to the image in the form of background pixels being black or ink pixels being white. This metric was designed to ensure that the signal-to-noise ratio would be low and that the recall and precision would be high, even if these metrics were not directly measurable without a expert-generated ground truth for each pixel.
 
 \begin{figure}[H]
     \caption{Four Images Utilized to Visually Assess Binarization Quality}
@@ -60,7 +60,7 @@ To assess each binarization method, these images were used to determine how much
 
 \subsection{Evaluation of Methods}
 
-The results of k-means clustering on the evaluation images are included for reference \seefig{binarizationClustering}. These images clearly show that the signal-to-noise ratio is far too high to be utilized as the general binarization solution for the pipeline, as the signal-to-noise ratio is sometimes less than $1$.
+The results of k-means clustering on the evaluation images are included for reference \seefig{binarizationClustering}. These images clearly show that the signal-to-noise ratio is far too high to be utilized as the general binarization solution for the pipeline, as the approximated signal-to-noise ratio is sometimes less than $1$, with significantly more noise than signal being generated.
 
 The results generated by clustering can be directly compared to those of a neural network to see how poor they are. The results generated by DP-Linknet \seefig{binarizationCNN} are visibly much better at including whole glyphs and less of the noise included in the image, especially the papyrus noise.
 
@@ -94,7 +94,7 @@ Using the results of the Gabor wavelet approximation \seefig{binarizationGabor},
             \includegraphics[width=\textwidth]{{binarization/clustering/PSI_XIV_1377r_crop.png}}
         \end{subfigure}
     \end{center}
-    The four images were used to assess binarization methods, binarized using k-means with $k=5$. Image A has a near zero signal-to-noise ratio. Image B has a much better signal-to-noise ratio for the glyphs, but also contains text that should not be included near the bottom of the image. Images l and D also contain glyph-signal, but are both noisy around the glyphs and include non-glyph information such as a ruler in Image D and the border and color scale in image C.
+    The four images were used to assess binarization methods, binarized using k-means with $k=5$. Image A has a poor signal-to-noise ratio. Image B has a much better signal-to-noise ratio for the glyphs, but also contains text that should not be included near the bottom of the image. Images l and D also contain glyph-signal, but are both noisy around the glyphs and include non-glyph information such as a ruler in Image D and the border and color scale in image C.
 \end{figure}
 
 \begin{figure}[H]
@@ -221,9 +221,6 @@ Using the results of the Gabor wavelet approximation \seefig{binarizationGabor},
     The four images used to assess binarization methods, binarized using DP-Linknet \cite{Xiong} with  confidence value of 2 and then masked by the binarizations of the Gabor-filtered images with the removed black parts of the image shown in grey. No changes were made to image A, as there was no detail that the CNN could recognize left in the Gabor-filtered image. The extra text from image B is mostly removed, with the glyph information intact. Similarly, images l and D have their glyph information intact, with the artificial noise in the image being partially removed.
 \end{figure}
 
-% \subsection{BiNet}
-% \todo{TODO: ADD CONTENT}
-
 \section{Glyph Bounding}
 
 \subsection{Evaluation Metrics}
@@ -231,7 +228,7 @@ Using the results of the Gabor wavelet approximation \seefig{binarizationGabor},
 
 As the ground-truth information provided for bounding boxes is not tight, perfectly accurate metrics on bounding are not possible without manually tightly rebounding each glyph. Therefore, IOU is used, along with glyph precision and recall measuring the approximate efficacy of methods, with the caveat that a method may have a lower IOU if it generates tighter bounding boxes than if the bounding box was less tight.
 
-Precision and recall are measured not on pixels, but on glyphs. A prediction is defined as a match tp a truth bounding box if the IOU between the two bounding boxes is greater than zero with each truth bounding box being paired with the prediction bounding box with the highest IOU value. The mean IOU is also recorded for all true positives as a method to determine how close the prediction bounding boxes are to the ground truth values.
+Precision and recall are measured not on the glyph level, ignoring the exact pixels and sizes of the bounding boxes. A prediction is defined as a match for a known bounding box if the IOU between the two bounding boxes is greater than zero. Each ground truth bounding box is then paired with the matched prediction bounding box with the highest IOU value such that no bounding box is paired with more than one other bounding box. The mean IOU is also recorded for all true positives as a method to determine how close the prediction bounding boxes are to the ground truth values.
 
 \begin{figure}[H]
     \caption{Test Results for Glyph Bounding Methods}
@@ -248,9 +245,8 @@ Precision and recall are measured not on pixels, but on glyphs. A prediction is 
 \end{figure}
 
 \subsection{Connected Components}
-\todo{NEW}
 
-Glyph bounding using connected components fails to precisely generate bounding boxes due to the flaws in the binarization methods used. Otherwise, the method can tightly bound boxes with a high amount of recall. By removing regions that with centroids in other regions or by removing regions fully inside other regions (which includes the before method), the precision and F1 score can be increased, at the cost of recall \seefig{ccBoundingEval}.
+Glyph bounding using connected components fails to precisely generate bounding boxes due to the flaws in the binarization methods used. Otherwise, the method can tightly bound boxes with a high amount of recall. By removing regions with centroids in other regions or by removing regions fully inside other regions (which includes the before method), the precision and F1 score can be increased, at the cost of recall \seefig{ccBoundingEval}.
 
 \begin{figure}[H]
     \caption{Test Results for Connected Component Bounding and Cleaning}
@@ -268,9 +264,8 @@ Glyph bounding using connected components fails to precisely generate bounding b
 \end{figure}
 
 \subsection{Region-Based Convolution Neural Networks}
-\todo{NEW}
 
-YOLO, when trained on color images, performs better than when trained on binarized images. In addition, by training YOLO to recognize all glyphs as one class instead of each glyph class as its own class increases accuracy \seefig{evalYOLORaw}. In addition, networks were trained with and without freezing the backbone layers, which are the layers defined as the initial convolutional layers (layers 0-9) \cite{YoloBackbone} that process the input before the main convolutions are performed. This allowed for faster training with a potential for lost accuracy.
+YOLO, when trained on color images, performs better than when trained on binarized images. In addition, by training YOLO to recognize all glyphs as one class instead of each glyph class as its own class the accuracy can be significantly increased \seefig{evalYOLORaw}. In addition, networks were trained with and without freezing the backbone layers, which are the layers defined as the initial convolutional layers (layers 0-9) \cite{YoloBackbone} that process the input before the main convolutions are performed. This allowed for faster training with a potential for lost accuracy.
 
 \textit{The accuracy metrics taken for each YOLO model were generated on the evaluation set to ensure that the final test set evaluation could be done on unseen data. Therefore, the classification metrics in this sub-section will not map directly to the results of the same classification methods when utilized in the final pipeline.}
 
@@ -292,11 +287,10 @@ YOLO, when trained on color images, performs better than when trained on binariz
       \end{tabular}
     \end{center}
     \vspace{5mm}
-    All the models were trained for 300 epochs, with the exception of this one, which was trained for 600 epochs, with the metrics being taken on only the last 300 epochs.
+    All the models were trained for 300 epochs, with the exception of the Model with a * next to the F1 score, which was trained for 600 epochs, with the F1 score being taken on only the last 300 epochs.
 \end{figure}
 
 \subsubsection{RCCN Sliding Window}
-\todo{NEW}
 
 By using the model with the highest base F1 score and introducing a sliding window to the RCNN, the peak F1 score can be increased. This effect is amplified by introducing an inner sliding window, which reduces the recall for the benefit of more precision \seefig{evalYOLOSliding}.
 
@@ -316,13 +310,13 @@ By using the model with the highest base F1 score and introducing a sliding wind
       \end{tabular}
     \end{center}
     \vspace{5mm}
-    All results are taken with a sliding window of $800$ pixels and a step size of $200$ pixels. The results are averaged over the confidence thresholds $t$ required for the bounding boxes to be saved $s.t.$ $0.1 \leq t \leq .85$ with a step size of $.05$.
+    All results are taken with a sliding window of $800$ pixels and a step size of $200$ pixels. The results are averaged over the confidence thresholds $t$ required for the bounding boxes to be kept, where $0.1 \leq t \leq .85$ with a step size of $.05$.
 \end{figure}
 
 \subsubsection{RCNN Duplicate Removal}
 \todo{NEW}
 
-By utilizing the confidence level produced by YOLO to break ties between overlapping bounding boxes in addition to a minimum confidence level and an IOU threshold to consider two bounding boxes overlapping, duplicates can be much more effectively removed, increasing the maximum F1 score of the bounding boxes \seefig{evalYOLODuplicates}.
+Yolo generates a confidence value for each bounding box. Using these confidence levels, ties between overlapping bounding boxes are broken where bounding boxes are defined as having an IOU above a threshold. Using this method to break ties, in addition to a minimum confidence level for bounding boxes, duplicates can be much more effectively removed, increasing the maximum F1 score of the bounding boxes \seefig{evalYOLODuplicates}.
 
 \begin{figure}[H]
     \caption{Evaluation Results for Maximal F1 Score for Sliding Window Duplicate Removal}
@@ -344,27 +338,23 @@ By utilizing the confidence level produced by YOLO to break ties between overlap
 \subsubsection{Binarization-Assisted CNN}
 \todo{NEW}
 
-Using the binary images to crop the bounding boxes generates bounding boxes that have an mean IOU of $71.5\%$ compared to a mean IOU of $73.0\%$ without cropping the bounding boxes, less an a $.01\%$ difference in mean precision, recall, and F1 scores. This method also reduces the mean classification F1 score by $1.8\%$.
+Using the binary images to tightly crop the YOLO-generated bounding boxes to the ink generates bounding boxes that have a mean IOU of $71.5\%$ compared to a mean IOU of $73.0\%$ without cropping the bounding boxes and resulting in a difference of less an a $.01\%$ in the mean precision, recall, and F1 scores. This method also reduces the mean classification F1 score by $1.8\%$.
 
 \section{Line Bounding}
-\todo{NEW}
 
 As in glyph bounding, no ground truth information was provided for which glyphs where in the same line, so a visual approximation must be used to determine which methods are best, at least when comparing results of each metric without taking the rest of the pipeline into account.
 
-\subsection{Point Of Interest Clustering}
-\todo{NEW}
+\subsection{Point-Of-Interest Clustering}
 
-Using point of interest clustering fails to generate valid lines as the noise in both the binarized and color images prevents the glyphs from being clustered correctly, with causes higher frequency noise to be made into lines, instead of the glyphs. Given more time, the application of de-noising techniques could be explored to make this method more effective.
+Using point-of-interest clustering fails to generate valid lines as the noise in both the binarized and color images preventing the glyphs from being clustered correctly, which causes higher frequency noise to be made into lines, instead of the glyphs. Given more time, the application of de-noising techniques could be explored to make this method more effective.
 
 \subsection{Adjacent and Overlapping Glyph Clustering}
-\todo{NEW}
 
 Grouping glyph bounding boxes into lines based on adjacency and overlapping produces significantly better results than would otherwise be generated, with this method improving the mean classification F1 score by $2.6\%$ on the best performing LSTM-based CNN classifier.
 
-\subsection{Line Based Bounding Box Cropping}
-\todo{NEW}
+\subsection{Line-Based Bounding Box Cropping}
 
-Using line based bounding box cropping to prevent bounding boxes from overlapping has a negative effect on glyph classification accuracy, but a small positive effect on bounding accuracy \seefig{lineIntersect}. When combined with bounding box cropping, this effect is amplified, further reducing classification and bounding box accuracies.
+Using line-based bounding box cropping to prevent bounding boxes from overlapping has a negative effect on glyph classification accuracy, but a small positive effect on bounding accuracy \seefig{lineIntersect}. When combined with bounding box cropping, this effect is amplified, further reducing classification and bounding box accuracies.
 
 \begin{figure}[H]
     \caption{Evaluation Results for Bounding Box Intersection Removal on Bounding Box and Classification F1 Scores}
@@ -385,7 +375,6 @@ Using line based bounding box cropping to prevent bounding boxes from overlappin
 \end{figure}
 
 \subsection{Line Variation Generation}
-\todo{NEW}
 
 Using lines to generate bounding box variations produced negative results on both the bounding and classification accuracy of the pipeline \seefig{lineVariants}. Variations are made based on the likelihood of the classifications, which, depending on the classifier used, could lead to worse line variants being accepted over the original line. This is because partial glyphs, such as the two halves of a $\Pi$, may closely resemble and be classified as other glyphs, such as a $\Gamma$ and a $T$. If this happens, then the line variant with the split $\Pi$ could be considered more likely, especially if the $\Pi$ is poorly formed or has noise in the upper right corner, for example.
 
@@ -410,9 +399,8 @@ Using lines to generate bounding box variations produced negative results on bot
 \textit{The accuracy metrics taken for the classification methods were generated on the evaluation set to ensure that the final test set evaluation could be done on unseen data. Therefore, the classification metrics in this section will not map directly to the results of the same classification methods when utilized in the final pipeline.}
 
 \subsection{Transfer Learning}
-\todo{NEW}
 
-Using the feature vectors generated with AlexNet on the non-NN methods, the best results were obtained using the binarizations of the images generated by DP-Linknet. Using GMMs, Random Forests, and $K$-Nearest Neighbors (k-NN) \seefig{classificationEuclideanNonNN} were generated with the full color and binarized images and Euclidean distance calculations \seeeq{distanceEuclidian}, with the best results for each method being shown, where F1 score is the average of the per-glyph F1 score weighted by glyph class occurrence frequency.
+Using the feature vectors generated with AlexNet on the non-NN methods, the best results were obtained using the binarizations of the images generated by DP-Linknet. GMMs, Random Forests, and $K$-Nearest Neighbors (k-NN) classifiers were generated with the full color and binarized images and Euclidean distance calculations \seeeq{distanceEuclidian}, with the best results for each method being shown \seefig{classificationEuclideanNonNN}, where F1 score is the average of the per-glyph F1 score weighted by glyph class occurrence frequency.
 
 \begin{figure}[H]
     \caption{Evaluation Results for Euclidean Non-NN Transfer Learning Classification}
@@ -470,7 +458,7 @@ Using pretrained neural networks to classify the data generated better results, 
 \subsection{Convolutional Neural Networks}
 \todo{NEW}
 
-Using architectures based on the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite{Xie}, and MNIST9975 \cite{Deotte}. The network based on AlexNet generates similar results to those based on the feature vectors generated by AlexNet, but has a higher weighted F1 score. The networks based on ResNeXt perform even better, at the cost of time, taking much longer to train and evaluate \seefig{classificationCNN}. In these larger, more complex models, the binarized images performed worse across all the models than the color images, so only the peak color image F1 score is used for evaluation. Each network was trained for approximately $100$ epochs on the same train and evaluation image and word sets.
+By training the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite{Xie}, and MNIST9975 \cite{Deotte}, the accuracy of the classifiers were able to be further increased. The convolutional network based on AlexNet generates similar results to those generated by the classifiers based on the feature vectors generated by AlexNet, but has a higher weighted F1 score. The networks based on ResNeXt perform even better, at the cost of time, taking much longer to train and evaluate \seefig{classificationCNN}. In these larger, more complex models, the binarized images performed worse than the color images across all the models, so only the peak color image F1 score is used for evaluation. Each network was trained for approximately $100$ epochs on the same train and evaluation image and word sets.
 
 \begin{figure}[H]
     \caption{Evaluation Results for CNN Classification}
@@ -494,12 +482,11 @@ Using architectures based on the convolutional layers of AlexNet \cite{Krizhevsk
 \end{figure}
 
 \subsection{Stochastic Language Models}
-\todo{NEW}
 
-Utilizing a trained ResNeXt50 CNN with no LSTM layers to evaluate the stochastic language models resulted in results consistently worse than those of any of the CNNs with an LSTM. By evaluating all parameters $\alpha$ in $[0,1]$ with a step size of $0.05$ and then $.01$ around the peak, the best value for $\alpha$ was $0.03$ with an F1 score of $0.681$, compared the baseline F1 score of $0.680$ using an $\alpha$ of $0$. With an $\alpha$ of $1$, the F1 score dropped even further to $0.636$. In addition, the language models were used to break ties in LSTM-based CNNs, which resulted in similar results when breaking ties between the top $n$ choices of the CNN \seefig{classificationMarkovTopN} and when breaking ties between the top choices when there was an difference between the top choices of less than a set uncertainty threshold $u$ \seefig{classificationMarkovUncertainty}. Therefore, it can be concluded that while a stochastic language model can be utilized to augment a non-LSTM classifier, a single LSTM layer generates results far better without requiring extra algorithmic steps in the classification process. However, utilizing an additional language model to assist the an LSTM-based classifier could potentially increase accuracy in approximately $0.02\%$ of the classifications.
+Utilizing a trained ResNeXt50 CNN with no LSTM layers to evaluate the stochastic language models resulted in results consistently worse than those of any of the CNNs with an LSTM. By evaluating all parameters $\alpha$ in $[0,1]$ with a step size of $0.05$ and then $.01$ around the peak, the best value for $\alpha$ was $0.03$ with an F1 score of $0.681$, compared to the baseline F1 score of $0.680$ using an $\alpha$ of $0$. With an $\alpha$ of $1$, the F1 score dropped even further to $0.636$. In addition, the language models were used to break ties in LSTM-based CNNs, which resulted in similar results when breaking ties between the top $n$ choices of the CNN \seefig{classificationMarkovTopN} and when breaking ties between the top choices when there was a difference between the top choices of less than a set uncertainty threshold $u$ \seefig{classificationMarkovUncertainty}. Therefore, it can be concluded that while a stochastic language model can be utilized to augment a non-LSTM classifier, a single LSTM layer generates results far better without requiring extra algorithmic steps in the classification process. However, utilizing an additional language model to assist the LSTM-based classifier could potentially increase accuracy in approximately $0.02\%$ of the classifications.
 
 \begin{figure}[H]
-    \caption{Evaluation Results for Top $n$ Tie Breaking Using Stochastic Language Models}
+    \caption{Evaluation Results for Top $n$ Tie-Breaking Using Stochastic Language Models}
     \label{fig:classificationMarkovTopN}
     \centering
     \begin{tabular}{ | l | l | }
@@ -514,7 +501,7 @@ Utilizing a trained ResNeXt50 CNN with no LSTM layers to evaluate the stochastic
 \end{figure}
 
 \begin{figure}[H]
-    \caption{Evaluation Results for Uncertainty Tie Breaking Using Stochastic Language Models}
+    \caption{Evaluation Results for Uncertainty Tie-Breaking Using Stochastic Language Models}
     \label{fig:classificationMarkovUncertainty}
     \centering
     \begin{tabular}{ | l | l | }
@@ -531,10 +518,9 @@ Utilizing a trained ResNeXt50 CNN with no LSTM layers to evaluate the stochastic
     \end{tabular}
 \end{figure}
 
-\subsection{Neural Netork Language Models}
-\todo{NEW}
+\subsection{Neural Network Language Models}
 
-As is partially demonstrated in Figures \ref{fig:classificationFeatureVectorNN} and \ref{fig:classificationCNN}, adding a LSTM layer to the Classifiers increases the accuracy over a classifier without the ability to remember. This can also be shown by shuffling the glyphs to make random sequences of glyphs instead of the expected glyph orderings patterns that the language models can learn \seefig{classificationShuffle}. In addition, the number of glyphs in a line has a significant effect on classification accuracy, with longer lines (larger batch size) generating a higher average F1 score than shorter lines (smaller batch size) \seefig{classificationBatchSize}.
+As is partially demonstrated in Figures \ref{fig:classificationFeatureVectorNN} and \ref{fig:classificationCNN}, adding a LSTM layer to the classifiers increases the accuracy over a classifier without the ability to remember. This can also be shown by shuffling the glyphs to make random sequences of glyphs instead of the expected glyph orderings patterns that the language models can learn \seefig{classificationShuffle}. In addition, the number of glyphs in a line has a significant effect on classification accuracy, with longer lines (larger batch size) generating a higher average F1 score than shorter lines (smaller batch size) \seefig{classificationBatchSize}.
 
 \begin{figure}[H]
     \caption{Evaluation Results for Shuffled Batches}
@@ -576,4 +562,4 @@ As is partially demonstrated in Figures \ref{fig:classificationFeatureVectorNN} 
 \end{figure}
 
 \section{Pipeline}
-\todo{TODO: DEC 14}
+\todo{TODO}

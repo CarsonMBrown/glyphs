@@ -1,10 +1,34 @@
+The following figures are psuedocode simplifications of the implementations of the convolutional neural networks utilized in the project. The full code for these networks is supplied in the github repo \cite{Git} of the project, but these should act as quick references for the differences in depth and layers between the networks.
+
 \begin{figure}
   \caption{AlexNet LSTM Classifier}
   \label{fig:cnnAlexNetLSTM}
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
+ReLU(),
+MaxPool2d(kernel_size=3, stride=2),
+Conv2d(64, 192, kernel_size=5, padding=2),
+ReLU(),
+MaxPool2d(kernel_size=3, stride=2),
+Conv2d(192, 384, kernel_size=3, padding=1),
+ReLU(),
+Conv2d(384, 256, kernel_size=3, padding=1),
+ReLU(),
+Conv2d(256, 256, kernel_size=3, padding=1),
+ReLU(),
+MaxPool2d(kernel_size=3, stride=2),
+self.avgpool = AdaptiveAvgPool2d((6, 6))
+Dropout( bidirectional.1),
+Linear(256 * 6 * 6, 4096),
+ReLU(),
+Dropout( bidirectional.1),
+Linear(4096, 4096),
+ReLU(),
+Linear(4096, 2048),
+LSTM(2048, 24, bidirectional=True)
+Linear(48, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -16,7 +40,9 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
+self.resnext.fc = LSTM(self.resnext.fc.in_features, 24, bidirectional=True)
+self.classifier = Linear(48, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -28,7 +54,17 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
+self.resnext.fc = Sequential(
+    Linear(self.resnext.fc.in_features, 200),
+    Dropout(0.1),
+    ReLU(),
+    Linear(200, 100),
+    Dropout(0.1),
+    ReLU(),
+    LSTM(100, 48, bidirectional=True)
+),
+Linear(48, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -40,7 +76,14 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
+self.resnext.fc = LSTM(self.resnext.fc.in_features, 48, bidirectional=True)
+Dropout(.2),
+ReLU(),
+Linear(96, 96),
+Dropout(.2),
+ReLU(),
+Linear(96, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -52,7 +95,14 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
+self.resnext.fc = LSTM(self.resnext.fc.in_features, 96, bidirectional=True)
+Dropout(0.2),
+ReLU(),
+Linear(192, 96),
+Dropout(0.2),
+ReLU(),
+Linear(96, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -64,7 +114,34 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+Conv2d(3, 32, 3, padding=1),
+ReLU(),
+BatchNorm2d(32),
+Conv2d(32, 32, 3, padding=1),
+ReLU(),
+BatchNorm2d(32),
+Conv2d(32, 32, 3, stride=2, padding=1),
+ReLU(),
+BatchNorm2d(32),
+MaxPool2d(2, 2),
+Dropout(.5),
+Conv2d(32, 64, 3, padding=1),
+ReLU(),
+BatchNorm2d(64),
+Conv2d(64, 64, 3, padding=1),
+ReLU(),
+BatchNorm2d(64),
+Conv2d(64, 64, 3, stride=2, padding=1),
+ReLU(),
+BatchNorm2d(64),
+MaxPool2d(2, 2),
+Dropout(.5),
+Conv2d(64, 128, 3, padding=1),
+ReLU(),
+BatchNorm2d(128),
+MaxPool2d(2, 2),
+Dropout(.5),
+Linear(128, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -76,7 +153,35 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+Conv2d(3, 32, 3, padding=1),
+ReLU(),
+BatchNorm2d(32),
+Conv2d(32, 32, 3, padding=1),
+ReLU(),
+BatchNorm2d(32),
+Conv2d(32, 32, 3, stride=2, padding=1),
+ReLU(),
+BatchNorm2d(32),
+MaxPool2d(2, 2),
+Dropout(.5),
+Conv2d(32, 64, 3, padding=1),
+ReLU(),
+BatchNorm2d(64),
+Conv2d(64, 64, 3, padding=1),
+ReLU(),
+BatchNorm2d(64),
+Conv2d(64, 64, 3, stride=2, padding=1),
+ReLU(),
+BatchNorm2d(64),
+MaxPool2d(2, 2),
+Dropout(.5),
+Conv2d(64, 128, 3, padding=1),
+ReLU(),
+BatchNorm2d(128),
+MaxPool2d(2, 2),
+Dropout(.5),
+LSTM(128, 24, bidirectional=True),
+nn.Linear(48, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}
@@ -88,7 +193,37 @@
   \par\noindent\rule{\textwidth}{0.5pt}
   \begin{\codefigsize}
   \begin{lstlisting}
-    TODO
+Conv2d(3, 32, 3, padding=1),
+ReLU(),
+BatchNorm2d(32),
+Conv2d(32, 32, 3, padding=1),
+ReLU(),
+BatchNorm2d(32),
+Conv2d(32, 32, 3, stride=2, padding=1),
+ReLU(),
+BatchNorm2d(32),
+MaxPool2d(2, 2),
+Dropout(.5),
+Conv2d(32, 64, 3, padding=1),
+ReLU(),
+BatchNorm2d(64),
+Conv2d(64, 64, 3, padding=1),
+ReLU(),
+BatchNorm2d(64),
+Conv2d(64, 64, 3, stride=2, padding=1),
+ReLU(),
+BatchNorm2d(64),
+MaxPool2d(2, 2),
+Dropout(.5),
+Conv2d(64, 128, 3, padding=1),
+ReLU(),
+BatchNorm2d(128),
+MaxPool2d(2, 2),
+Dropout(.5),
+LSTM(128, 24, bidirectional=True),
+nn.Linear(48, 48),
+nn.Linear(48, 48),
+nn.Linear(48, 24)
   \end{lstlisting}
   \end{\codefigsize}
   \par\noindent\rule{\textwidth}{0.5pt}

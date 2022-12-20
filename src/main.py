@@ -11,7 +11,7 @@ from src.binarization import binarize
 from src.bounding.bound import get_minimal_bounding_boxes_v2
 from src.bounding.yolo import yolo
 from src.classification.learning import nn_factory
-from src.classification.learning.mnist_nn import MNISTCNN, MNISTCNN_DEEP_LSTM, MNISTCNN_DEEP_ACTIVATED_LSTM
+from src.classification.learning.mnist_nn import MNISTCNN, MNISTCNN_DEEP_LSTM
 from src.classification.learning.resnext_lstm import ResNextLongLSTM, ResNext101LSTM
 from src.classification.learning.torch_dataloader import ImageLoader
 from src.classification.markov import markov
@@ -331,21 +331,8 @@ def get_input_paths(img_in_dir, binary_img_in_dir):
     return list(zip(color_img_list, binary_img_list))
 
 
-def classify_images(img_in_dir, binary_img_in_dir, img_out_dir):
-    init_output_dir(img_out_dir)
-    model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
-    output = []
-    for color_img, color_img_path, binary_img, img_output in get_image_output_tuples(img_in_dir, binary_img_in_dir,
-                                                                                     img_out_dir,
-                                                                                     formattable_output=1):
-        lines = generate_lines(color_img, binary_img=None, remove_intersections=False)
-        display_lines(color_img, lines, save_path=img_output.format("_lines"), wait=False)
-        lines = classify_lines(lines, model, color_img, ResNext101LSTM.transform_classify)
-        output.append((color_img_path, lines))
-    write_csv("out.csv", output)
-
-
 def classify_lines(lines, model, img, transform, flip_channels=True):
+    """Classify lines, flipping RGB to BGR or back if needed"""
     if flip_channels:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     nn_factory.classify(model, lines, img, transform)
@@ -353,6 +340,7 @@ def classify_lines(lines, model, img, transform, flip_channels=True):
 
 
 def classify_lines_with_variants(lines, model, img, transform, softmax=False, flip_channels=True):
+    """Classify lines and their variants, maximizing classification confidence score."""
     if flip_channels:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     new_lines = []
@@ -369,6 +357,7 @@ def classify_lines_with_variants(lines, model, img, transform, softmax=False, fl
 
 def classify_lines_with_adaptive_variants(lines, model, img, transform, softmax=False, variants_per_line=1,
                                           flip_channels=True):
+    """Classify lines and their variants, maximizing classification confidence score."""
     if flip_channels:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     new_lines = []
@@ -392,6 +381,9 @@ def classify_lines_with_adaptive_variants(lines, model, img, transform, softmax=
 
 def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *, crop=False,
                              remove_intersections=False):
+    """
+    Generate cropped or otherwise images from YOLO to train/eval on
+    """
     init_output_dir(out_dir)
     coco = CocoReader(coco_dir)
     meta_data = []
@@ -421,34 +413,38 @@ def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *
 
 
 def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
+    """
+    Generate full pipelin evaluation data / metrics
+    """
     with open(os.path.join("output_data", "pipeline_metrics.csv"), mode="w") as csv_file:
         csv_file.write(
             "confidence_min, duplicate_threshold, inner_sliding_window, intersect, crop, complex_nn, "
             "vary_lines, make_lines, bbox_precision, bbox_recall, "
-            "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n")
+            "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n"
+        )
         cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
         full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
 
-        for inner_window in [False, True]:
+        for inner_window in [False]:
             if inner_window:
-                min_confidence_val, max_confidence_val = .5, .8
+                min_confidence_val, max_confidence_val = .6, .8
             else:
-                min_confidence_val, max_confidence_val = .05, .5
-            for confidence_min in arange(min_confidence_val, max_confidence_val, .05):
+                min_confidence_val, max_confidence_val = .6, .8
+            for confidence_min in arange(min_confidence_val, max_confidence_val, .025):
                 confidence_min = round(confidence_min, 3)
                 if inner_window:
-                    min_duplicate_val, max_duplicate_val = .2, .9
+                    min_duplicate_val, max_duplicate_val = .1, .3
                 else:
-                    min_duplicate_val, max_duplicate_val = .2, .9
-                for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .05):
+                    min_duplicate_val, max_duplicate_val = .1, .3
+                for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .025):
                     duplicate_threshold = round(duplicate_threshold, 3)
                     img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
                                                                                       binary_img_in_dir,
                                                                                       inner_sliding_window=inner_window,
                                                                                       confidence_min=confidence_min,
                                                                                       duplicate_threshold=duplicate_threshold)
-                    crop, intersect, complex_nn, vary_lines, make_lines = False, False, False, False, True
-                    for complex_nn in n_choices(1, [True]):
+                    crop, intersect, complex_nn, vary_lines, make_lines = False, False, True, False, True
+                    for crop, intersect in n_choices(2, [False, True]):
                         truth_pred_iou_tuples = []
                         with tqdm(desc=f"Generating Lines w/ confidence:{confidence_min}",
                                   total=len(img_bboxes_pairs)) as pbar:
@@ -522,10 +518,27 @@ def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
 
 
 def n_choices(n, choices):
+    if n == 1:
+        return [c for c in choices]
     x = [[c] for c in choices]
     for _ in range(n - 1):
         x = [C + [c] for c in choices for C in x]
     return x
+
+
+def transcribe_images(img_in_dir, binary_img_in_dir, img_out_dir):
+    """Output transcription for all images"""
+    init_output_dir(img_out_dir)
+    model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
+    output = []
+    for color_img, color_img_path, binary_img, img_output in get_image_output_tuples(img_in_dir, binary_img_in_dir,
+                                                                                     img_out_dir,
+                                                                                     formattable_output=1):
+        lines = generate_lines(color_img, binary_img=None, remove_intersections=False)
+        display_lines(color_img, lines, save_path=img_output.format("_lines"), wait=False)
+        lines = classify_lines(lines, model, color_img, ResNext101LSTM.transform_classify)
+        output.append((color_img_path, lines))
+    write_csv("out.csv", output)
 
 
 if __name__ == '__main__':

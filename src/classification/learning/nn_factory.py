@@ -276,6 +276,14 @@ def generate_dataloader(lang_file, annotations_file, data_path, *, batch_size=32
 
 
 def train_one_epoch(epoch, training_loader, optimizer, model, loss_fn):
+    """
+    :param epoch: epoch label
+    :param training_loader: training data loader
+    :param optimizer:
+    :param model:
+    :param loss_fn: loss function
+    :return:
+    """
     running_loss = 0.
     last_loss = 0.
 

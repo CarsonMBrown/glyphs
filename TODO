@@ -1,10 +1,17 @@
 TODO:
+  Could discuss more about technical details
+  Final pipeline eval
+  Title
+  quote?
+  Final Word Count
+  Add Thanks specification
+
   height limit crops
   https://en.wikipedia.org/wiki/Conditional_random_field
   https://github.com/cdeotte/MNIST-CNN-99.75/blob/master/CNN.ipynb
   fix bounding issues (attempt removing sliding window)
 
-  More detail on GMMs 
+  More detail on GMMs
 
   kl diverivenge
 
