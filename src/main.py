@@ -111,102 +111,81 @@ meta_data_file = os.path.join(TRAIN_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv"), \
                  os.path.join(EVAL_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv")
 
 
-# TRAIN_RESIZED_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "resized", "raw")
-# TRAIN_RESIZED_BINARIZED_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "resized", "binarized")
-# TRAIN_OCULAR_TRAIN_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "ocular_training")
-# TRAIN_OUTPUT_DIR = os.path.join(IMAGE_DIR, TRAIN_DIR, "output")
-# RAW_OCULAR_GLYPHS_DIR = os.path.join(GLYPH_DIR, "ocular", "raw")
-# BINARIZED_OCULAR_GLYPHS_DIR = os.path.join(GLYPH_DIR, "ocular", "binarized")
+def train_model(train_dir, eval_dir, resume=False, start_epoch=0, epochs=100, batch_size=24):
+    """
+    Train the best network with the given parameters
+    """
+    nn_factory.train_model(
+        lang_file, meta_data_file, train_dir, eval_dir, ResNextLongLSTM, epochs=epochs, batch_size=batch_size,
+        num_workers=0, resume=resume, start_epoch=start_epoch, loader=ImageLoader,
+        transforms=[ResNext101LSTM.transform_train,
+                    ResNext101LSTM.transform_classify],
+        loss_fn=torch.nn.CrossEntropyLoss
+    )
 
 
-def train_model():
-    nn_factory.train_model(lang_file, meta_data_file,
-                           TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
-                           MNISTCNN_DEEP_LSTM,
-                           epochs=1000, batch_size=64, num_workers=700, resume=True,
-                           start_epoch=0, loader=ImageLoader,
-                           transforms=[MNISTCNN.transform_train_2,
-                                       MNISTCNN.transform_classify_2],
-                           loss_fn=torch.nn.NLLLoss,
-                           name="v3"
-                           )
-    # nn_factory.train_model(lang_file, meta_data_file,
-    #                        TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V3, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V3,
-    #                        ResNextLongLSTM,
-    #                        epochs=100, batch_size=24, num_workers=0, resume=False,
-    #                        start_epoch=0, loader=ImageLoader,
-    #                        transforms=[ResNext101LSTM.transform_train_padded,
-    #                                    ResNext101LSTM.transform_classify_padded],
-    #                        loss_fn=torch.nn.CrossEntropyLoss,
-    #                        name="v3"
-    #                        )
-
-    # nn_factory.train_model(lang_file, meta_data_file,
-    #                        TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V2, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V2,
-    #                        ResNextLongLSTM,
-    #                        epochs=25, batch_size=24, num_workers=0, resume=False,
-    #                        start_epoch=0, loader=ImageLoader,
-    #                        transforms=[ResNext101LSTM.transform_train_padded,
-    #                                    ResNext101LSTM.transform_classify_padded],
-    #                        name="generated_cropped_padded",
-    #                        loss_fn=torch.nn.CrossEntropyLoss)
-
-
-def eval_model():
-    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(quick_lang_file[-1],
-                                                                   meta_data_file[-1],
-                                                                   EVAL_RAW_GLYPHS_DIR, batch_size=16,
-                                                                   loader=ImageLoader,
-                                                                   transform=ResNext101LSTM.transform_classify)
+def eval_model(eval_dir, batch_size=24, start_epoch=0, epochs=100):
+    """Generates eval data for each epoch of the best network"""
+    # generate data loader
+    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(
+        lang_file[-1],
+        meta_data_file[-1],
+        eval_dir, batch_size=batch_size,
+        loader=ImageLoader,
+        transform=ResNext101LSTM.transform_classify
+    )
+    
     print("Epoch, Precision, Recall, FScore")
-    for epoch in range(37, 55):
+    # for each epoch
+    for epoch in range(start_epoch, start_epoch + epochs):
+        # load model at epoch
         model, _ = nn_factory.load_model(
             ResNext101LSTM, load_epoch=epoch, dataset=eval_dataset, resume=False)
+        # get eval metrics for model
         avg_precision, avg_recall, avg_fscore = nn_factory.eval_model(model, eval_dataloader, average="weighted",
                                                                       seed=0)
         print(f"{epoch}, {avg_precision}, {avg_recall}, {avg_fscore}")
+        # delete model from memory
         del model
 
 
-def deep_eval_model():
-    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(os.path.join(DATASET_DIR, "perseus_25000.txt"),
-                                                                   meta_data_file,
-                                                                   EVAL_RAW_GLYPHS_DIR, batch_size=8,
-                                                                   loader=ImageLoader,
-                                                                   transform=ResNext101LSTM.transform_classify)
+def eval_model_with_language_model(eval_dir, epoch, batch_size=24):
+    # generate data loader
+    eval_dataset, eval_dataloader = nn_factory.generate_dataloader(
+        lang_file[-1],
+        meta_data_file[-1],
+        eval_dir, batch_size=batch_size,
+        loader=ImageLoader,
+        transform=ResNext101LSTM.transform_classify
+    )
 
-    log_markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
-                                                get_classes_as_glyphs(),
-                                                cache_path=os.path.join("dataset", "perseus_log.markov"),
-                                                log=True,
-                                                overwrite=False)
-    # markov_chain = markov.init_markov_chain(os.path.join(DATASET_DIR, "perseus.txt"),
-    #                                         get_classes_as_glyphs(),
-    #                                         cache_path=os.path.join("dataset", "perseus.markov"),
-    #                                         overwrite=False)
+    log_markov_chain = markov.init_markov_chain(
+        os.path.join(DATASET_DIR, "perseus.txt"),
+        get_classes_as_glyphs(),
+        cache_path=os.path.join("dataset", "perseus_log.markov"),
+        log=True, overwrite=False
+    )
 
-    model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, dataset=eval_dataset, resume=False)
+    # load model at epoch
+    model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=epoch, dataset=eval_dataset, resume=False)
 
-    cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
-                                                          display_cm=False, seed=0, top_k=1,
-                                                          prediction_modifier=partial(
-                                                              markov.top_n_markov_optimization,
-                                                              log_markov_chain,
-                                                              n=1,
-                                                          ))
-    print(p, r, fs)
+    print("uncertainty, precision, recall, f1score")
 
-    for u in arange(0, 1.01, 0.01):
-        u = round(u, 2)
-        cm, (p, r, fs, _) = nn_factory.model_confusion_matrix(model, eval_dataloader,
-                                                              display_cm=False, seed=0, top_k=1,
-                                                              prediction_modifier=partial(
-                                                                  markov.top_n_markov_optimization,
-                                                                  log_markov_chain,
-                                                                  n=2,
-                                                                  uncertainty_threshold=u
-                                                              ))
-        print(u, p, r, fs)
+    for uncertainty in arange(0, 1.01, 0.01):
+        # round uncertainty to deal with floating point errors
+        uncertainty = round(uncertainty, 2)
+        # get confusion matrix, precision, recall, and fscore
+        confusion_matrix, (precision, recall, fscore, _) = nn_factory.model_confusion_matrix(
+            model, eval_dataloader,
+            display_cm=False, seed=0,
+            top_k=1,
+            prediction_modifier=partial(
+                markov.top_n_markov_optimization,
+                log_markov_chain,
+                n=2,
+                uncertainty_threshold=uncertainty
+            ))
+        print(f"{uncertainty}, {precision}, {recall}, {fscore}")
 
 
 def display_lines(img, lines, *, save_path=None, wait=True):

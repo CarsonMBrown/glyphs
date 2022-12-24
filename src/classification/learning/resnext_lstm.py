@@ -145,11 +145,11 @@ class ResNext101LSTM(nn.Module):
         transforms.Resize(240),
         transforms.RandomPerspective(distortion_scale=0.2, p=.5),
         transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=.3),
-        transforms.RandomAffine(degrees=15, translate=(0.4, 0.4), scale=(0.6, 1.4), shear=0.4),
+        transforms.RandomAffine(degrees=15, translate=(0.3, 0.3), scale=(0.7, 1.3), shear=0.3),
         transforms.RandomAdjustSharpness(sharpness_factor=.8, p=.1),
         transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
         transforms.RandomAutocontrast(),
-        transforms.CenterCrop(224),
+        transforms.RandomCrop(224),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])

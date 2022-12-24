@@ -21,11 +21,9 @@ Similarly, training Ocular on both raw and binarized full images and individual 
 \section{Binarization}
 
 \subsection{Evaluation Metrics}
-\todo{NEW}
+As there was no ground-truth information provided to compare binarizations against, visual comparison was utilized to determine which binarization method was providing the highest quality binarizations. Evaluation was performed on four different images, which contained various features that would allow for quick visual evidence of the effectiveness of the methods \seefig{binarizationRaw}. Images from the training image set were utilized in hyperparameter optimization for the binarization methods, which included generating binarizations of more than four images. The four images are of assorted sizes, from different collections, and are degraded to different degrees, allowing them to function as a valuable quick assessment tool without introducing bias into the evaluation of the methods using visually approximated signal-to-noise ratio as a metric.
 
-As there was no ground-truth information provided to compare binarizations against, visual comparison was utilized to determine which binarization method was providing the highest quality binarizations. Evaluation was performed on four different images, which contained various features that would allow for quick visual evidence of the effectiveness of the methods \seefig{binarizationRaw}. Images from the training image set were utilized in hyperparameter for the binarization methods, which included generating binarizations of more than four images. The four images are of assorted sizes, from different collections, and are degraded to different degrees, allowing them to function as a valuable quick assessment tool without introducing bias into the evaluation of the methods using visually approximated signal-to-noise ratio as a metric.
-
-To assess each binarization method, these images, containing a total of approximately $300$ glyphs, were used to determine how much of the ink on the papyrus was being included, and if noise was being added to the image in the form of background pixels being black or ink pixels being white. This metric was designed to ensure that the signal-to-noise ratio would be low and that the recall and precision would be high, even if these metrics were not directly measurable without a expert-generated ground truth for each pixel.
+To assess each binarization method, these images, containing a total of approximately $300$ glyphs, were used to determine how much of the ink on the papyrus was being included, and if noise was being added to the image in the form of background pixels being black or ink pixels being white. This metric was designed to ensure that the signal-to-noise ratio would be low and that the recall and precision would be high, even if these metrics were not directly measurable without an expert-generated ground truth for each pixel.
 
 \begin{figure}[H]
     \caption{Four Images Utilized to Visually Assess Binarization Quality}
@@ -224,11 +222,10 @@ Using the results of the Gabor wavelet approximation \seefig{binarizationGabor},
 \section{Glyph Bounding}
 
 \subsection{Evaluation Metrics}
-\todo{NEW}
 
 As the ground-truth information provided for bounding boxes is not tight, perfectly accurate metrics on bounding are not possible without manually tightly rebounding each glyph. Therefore, IOU is used, along with glyph precision and recall measuring the approximate efficacy of methods, with the caveat that a method may have a lower IOU if it generates tighter bounding boxes than if the bounding box was less tight.
 
-Precision and recall are measured not on the glyph level, ignoring the exact pixels and sizes of the bounding boxes. A prediction is defined as a match for a known bounding box if the IOU between the two bounding boxes is greater than zero. Each ground truth bounding box is then paired with the matched prediction bounding box with the highest IOU value such that no bounding box is paired with more than one other bounding box. The mean IOU is also recorded for all true positives as a method to determine how close the prediction bounding boxes are to the ground truth values.
+Precision and recall are measured on glyphs, ignoring the exact pixels and sizes of the bounding boxes. A prediction is defined as a match for a known bounding box if the IOU between the two bounding boxes is greater than zero. Each ground truth bounding box is then paired with the matched prediction bounding box with the highest IOU value such that no bounding box is paired with more than one other bounding box. The mean IOU is also recorded for all true positives as a method to determine how close the prediction bounding boxes are to the ground truth values.
 
 \begin{figure}[H]
     \caption{Test Results for Glyph Bounding Methods}
@@ -265,7 +262,7 @@ Glyph bounding using connected components fails to precisely generate bounding b
 
 \subsection{Region-Based Convolution Neural Networks}
 
-YOLO, when trained on color images, performs better than when trained on binarized images. In addition, by training YOLO to recognize all glyphs as one class instead of each glyph class as its own class the accuracy can be significantly increased \seefig{evalYOLORaw}. In addition, networks were trained with and without freezing the backbone layers, which are the layers defined as the initial convolutional layers (layers 0-9) \cite{YoloBackbone} that process the input before the main convolutions are performed. This allowed for faster training with a potential for lost accuracy.
+YOLO, when trained on color images, performs better than when trained on binarized images. In addition, by training YOLO to recognize all glyphs as one class instead of each glyph class as its own class the accuracy can be significantly increased \seefig{evalYOLORaw}. In addition, networks were trained with and without freezing the backbone layers, which are the layers defined as the initial convolutional layers (layers 0-9) \cite{YOLOBackbone} that process the input before the main convolutions are performed. This allowed for faster training with a potential for lost accuracy.
 
 \textit{The accuracy metrics taken for each YOLO model were generated on the evaluation set to ensure that the final test set evaluation could be done on unseen data. Therefore, the classification metrics in this sub-section will not map directly to the results of the same classification methods when utilized in the final pipeline.}
 
@@ -314,9 +311,7 @@ By using the model with the highest base F1 score and introducing a sliding wind
 \end{figure}
 
 \subsubsection{RCNN Duplicate Removal}
-\todo{NEW}
-
-Yolo generates a confidence value for each bounding box. Using these confidence levels, ties between overlapping bounding boxes are broken where bounding boxes are defined as having an IOU above a threshold. Using this method to break ties, in addition to a minimum confidence level for bounding boxes, duplicates can be much more effectively removed, increasing the maximum F1 score of the bounding boxes \seefig{evalYOLODuplicates}.
+YOLO generates a confidence value for each bounding box. Using these confidence levels, ties between overlapping bounding boxes are broken where bounding boxes are defined as having an IOU above a threshold. Using this method to break ties, in addition to a minimum confidence level for bounding boxes, duplicates can be much more effectively removed, increasing the maximum F1 score of the bounding boxes \seefig{evalYOLODuplicates}.
 
 \begin{figure}[H]
     \caption{Evaluation Results for Maximal F1 Score for Sliding Window Duplicate Removal}
@@ -336,9 +331,7 @@ Yolo generates a confidence value for each bounding box. Using these confidence 
 \end{figure}
 
 \subsubsection{Binarization-Assisted CNN}
-\todo{NEW}
-
-Using the binary images to tightly crop the YOLO-generated bounding boxes to the ink generates bounding boxes that have a mean IOU of $71.5\%$ compared to a mean IOU of $73.0\%$ without cropping the bounding boxes and resulting in a difference of less an a $.01\%$ in the mean precision, recall, and F1 scores. This method also reduces the mean classification F1 score by $1.8\%$.
+Using the binary images to tightly crop the YOLO-generated bounding boxes to the ink generates bounding boxes that have a mean IOU of $71.5\%$ compared to a mean IOU of $73.0\%$ without cropping the bounding boxes. This difference in bounding box size and shape results in a difference of less an a $.01\%$ in the mean precision, recall, and F1 scores. Cropping bounding boxes using the binarized images also reduces the mean classification F1 score by $1.8\%$.
 
 \section{Line Bounding}
 
@@ -456,9 +449,7 @@ Using pretrained neural networks to classify the data generated better results, 
 \end{figure}
 
 \subsection{Convolutional Neural Networks}
-\todo{NEW}
-
-By training the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite{Xie}, and MNIST9975 \cite{Deotte}, the accuracy of the classifiers were able to be further increased. The convolutional network based on AlexNet generates similar results to those generated by the classifiers based on the feature vectors generated by AlexNet, but has a higher weighted F1 score. The networks based on ResNeXt perform even better, at the cost of time, taking much longer to train and evaluate \seefig{classificationCNN}. In these larger, more complex models, the binarized images performed worse than the color images across all the models, so only the peak color image F1 score is used for evaluation. Each network was trained for approximately $100$ epochs on the same train and evaluation image and word sets.
+By training the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite{Xie}, and MNIST9975 \cite{Deotte}, the accuracy of the classifiers were able to be further increased. The convolutional network based on AlexNet generates similar results to those generated by the classifiers based on the feature vectors generated by AlexNet, but has a higher weighted F1 score. The networks based on ResNeXt perform even better, at the cost of time, taking much longer to train and evaluate \seefig{classificationCNN}. In these larger, more complex models, the binarized images performed worse than the color images across all the models, so only the peak color image F1 score is used for evaluation. Each network was trained and evaluated for approximately $100$ epochs on the same train and evaluation image and word sets.
 
 \begin{figure}[H]
     \caption{Evaluation Results for CNN Classification}
