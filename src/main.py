@@ -134,7 +134,7 @@ def eval_model(eval_dir, batch_size=24, start_epoch=0, epochs=100):
         loader=ImageLoader,
         transform=ResNext101LSTM.transform_classify
     )
-    
+
     print("Epoch, Precision, Recall, FScore")
     # for each epoch
     for epoch in range(start_epoch, start_epoch + epochs):
@@ -253,27 +253,30 @@ def get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary
     if color_img is None:
         print("NO COLOR IMAGE: " + color_img_path)
         return None
-    binary_img, _ = load_image(binary_img_in_dir, save_path, binary_img_path, skip_existing=False,
-                               gray_scale=True, verbose=verbose)
-    if binary_img is None:
-        print("NO BINARY IMAGE: " + binary_img_path)
-        return None
-    return color_img, binary_img, img_output
+    if binary_img_in_dir is not None:
+        binary_img, _ = load_image(binary_img_in_dir, save_path, binary_img_path, skip_existing=False,
+                                   gray_scale=True, verbose=verbose)
+        if binary_img is None:
+            print("NO BINARY IMAGE: " + binary_img_path)
+            return None
+        return color_img, binary_img, img_output
+    return color_img, None, img_output
 
 
-def get_image_output_tuples(img_in_dir, binary_img_in_dir, save_path, verbose=False,
+def get_image_output_tuples(img_in_dir, save_path, *, binary_img_in_dir=None, verbose=False,
                             formattable_output=0):
     images_output_pairs = []
     for color_img_path, binary_img_path in get_input_paths(img_in_dir, binary_img_in_dir):
         x = get_image_output_tuple(img_in_dir, binary_img_in_dir, color_img_path, binary_img_path, save_path,
                                    verbose, formattable_output)
         if x is not None:
-            images_output_pairs.append(*x)
+            images_output_pairs.append((x[0], color_img_path, x[1], x[2]))
     return images_output_pairs
 
 
 def generate_bboxes(img, *, inner_sliding_window=True, bbox_gif_export_path=None, confidence_min=None, cache_name=None,
                     duplicate_threshold=None):
+    """Generate the bounding boxes in the passed in image"""
     bboxes = yolo.sliding_glyph_window(img, inner_sliding_window=inner_sliding_window,
                                        bbox_gif_export_path=bbox_gif_export_path,
                                        confidence_min=confidence_min, cache_name=cache_name,
@@ -283,6 +286,7 @@ def generate_bboxes(img, *, inner_sliding_window=True, bbox_gif_export_path=None
 
 
 def bboxes_to_lines(binary_img, remove_intersections, bboxes):
+    """Bind bboxes into lines"""
     lines, _ = link_bboxes(bboxes)
     if remove_intersections:
         lines = remove_bbox_intersections(lines)
@@ -417,21 +421,22 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                     min_duplicate_val, max_duplicate_val = .1, .3
                 for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .025):
                     duplicate_threshold = round(duplicate_threshold, 3)
-                    img_bboxes_pairs, template_truth_bboxes = generate_img_bbox_pairs(coco_dir, img_in_dir,
-                                                                                      binary_img_in_dir,
-                                                                                      inner_sliding_window=inner_window,
-                                                                                      confidence_min=confidence_min,
-                                                                                      duplicate_threshold=duplicate_threshold)
+                    img_bboxes_dicts = generate_img_bbox_dicts(coco_dir, img_in_dir,
+                                                               binary_img_in_dir,
+                                                               inner_sliding_window=inner_window,
+                                                               confidence_min=confidence_min,
+                                                               duplicate_threshold=duplicate_threshold)
                     crop, intersect, complex_nn, vary_lines, make_lines = False, False, True, False, True
-                    for crop, intersect in n_choices(2, [False, True]):
+                    for crop, intersect in n_booleans(2):
                         truth_pred_iou_tuples = []
                         with tqdm(desc=f"Generating Lines w/ confidence:{confidence_min}",
-                                  total=len(img_bboxes_pairs)) as pbar:
-                            for i, (color_img, binary_img, template_bboxes) in enumerate(img_bboxes_pairs):
-                                bboxes = [bbox.copy() for bbox in template_bboxes]
-                                truth_bboxes = [bbox.copy() for bbox in template_truth_bboxes[i]]
+                                  total=len(img_bboxes_dicts)) as pbar:
+                            for i, img_bboxes_dict in enumerate(img_bboxes_dicts):
+
+                                bboxes = [bbox.copy() for bbox in img_bboxes_dict["pred"]]
+                                truth_bboxes = [bbox.copy() for bbox in img_bboxes_dict["truth"]]
                                 if make_lines:
-                                    lines = bboxes_to_lines(binary_img=binary_img if crop else None,
+                                    lines = bboxes_to_lines(binary_img=img_bboxes_dict["binary"] if crop else None,
                                                             remove_intersections=intersect,
                                                             bboxes=bboxes)
                                 else:
@@ -442,11 +447,12 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                                     model, transform = cropped_model, MNISTCNN.transform_classify_2
 
                                 if vary_lines:
-                                    lines = classify_lines_with_adaptive_variants(lines, model, color_img, transform,
+                                    lines = classify_lines_with_adaptive_variants(lines, model,
+                                                                                  img_bboxes_dict["color"], transform,
                                                                                   softmax=complex_nn,
                                                                                   flip_channels=False)
                                 else:
-                                    lines = classify_lines(lines, model, color_img, transform,
+                                    lines = classify_lines(lines, model, img_bboxes_dict["color"], transform,
                                                            flip_channels=False)
 
                                 pred_bboxes = unpack_lines(lines)
@@ -465,58 +471,84 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                                 f"{bbox_fscore}, {avg_IOU}, {class_precision}, {class_recall}, {class_fscore}\n")
 
 
-def generate_img_bbox_pairs(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sliding_window=True,
+def generate_img_bbox_dicts(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sliding_window=True,
                             confidence_min=None, duplicate_threshold=None):
+    """
+    Given a coco file and an image directory path, generate a list of,
+    (image, binary image, predicted bounding box, truth bounding box) tuples
+    """
     coco = CocoReader(coco_dir)
     input_paths = get_input_paths(img_in_dir, binary_img_in_dir)[0:]
-    img_bboxes_pairs = []
-    truth_bboxes = []
+    img_bboxes_dicts = []
     with tqdm(desc="Bounding Boxes", total=len(input_paths)) as pbar:
         for color_img_path, binary_img_path in input_paths:
-            truth_bboxes.append(load_truth(coco, get_file_name(color_img_path)))
+            truth_bboxes = load_truth(coco, get_file_name(color_img_path))
             color_img, _ = load_image(img_in_dir, "", color_img_path, formattable_output=1,
                                       skip_existing=False, verbose=False)
             if color_img is None:
                 print("NO IMAGE: " + color_img_path)
                 continue
-            binary_img, _ = load_image(binary_img_in_dir, "", binary_img_path, skip_existing=False,
-                                       gray_scale=True, verbose=False)
-            if binary_img is None:
-                print("NO IMAGE: " + binary_img_path)
-                continue
-            img_bboxes_pairs.append((
-                cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB),
-                binary_img,
-                generate_bboxes(color_img, inner_sliding_window=inner_sliding_window, confidence_min=confidence_min,
-                                cache_name=color_img_path, duplicate_threshold=duplicate_threshold)
-            ))
 
+            if binary_img_path is not None:
+                binary_img, _ = load_image(binary_img_in_dir, "", binary_img_path, skip_existing=False,
+                                           gray_scale=True, verbose=False)
+                if binary_img is None:
+                    print("NO IMAGE: " + binary_img_path)
+                    continue
+            else:
+                binary_img = None
+
+            img_bboxes_dicts.append({
+                "color": cv2.cvtColor(color_img, cv2.COLOR_BGR2RGB),
+                "binary": binary_img,
+                "pred": generate_bboxes(color_img, inner_sliding_window=inner_sliding_window,
+                                        confidence_min=confidence_min,
+                                        cache_name=color_img_path, duplicate_threshold=duplicate_threshold),
+                "truth": truth_bboxes
+            })
             pbar.update(1)
 
-    return img_bboxes_pairs, truth_bboxes
+    return img_bboxes_dicts
+
+
+def n_booleans(n):
+    """
+    Generate all the lists of n elements that can be made of booleans
+    :param n: number of elements to have in the lists being generated
+    :return a list of lists, where each list is made up of n booleans, s.t each ordered list of booleans is unique
+    """
+    return n_choices(n, [True, False])
 
 
 def n_choices(n, choices):
-    if n == 1:
-        return [c for c in choices]
+    """
+    From a given list of choices, generate all the lists of n elements that can be made by picking an element
+    from the list of choices at each index in the new list
+    :param n: number of elements to have in the lists being generated
+    :param choices: list of choices for each element in the new lists
+    :return a list of lists, where each list is made up of n elements from the choices list s.t. the ordered lists that
+    are returned are unique
+    """
     x = [[c] for c in choices]
+    if n == 1:
+        return x
     for _ in range(n - 1):
         x = [C + [c] for c in choices for C in x]
     return x
 
 
-def transcribe_images(img_in_dir, binary_img_in_dir, img_out_dir):
+def transcribe_images(img_in_dir, img_out_dir, *, binary_img_in_dir=None):
     """Output transcription for all images"""
     init_output_dir(img_out_dir)
+    img_path_tuples = get_image_output_tuples(img_in_dir, img_out_dir, formattable_output=1,
+                                              binary_img_in_dir=binary_img_in_dir)
     model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
     output = []
-    for color_img, color_img_path, binary_img, img_output in get_image_output_tuples(img_in_dir, binary_img_in_dir,
-                                                                                     img_out_dir,
-                                                                                     formattable_output=1):
-        lines = generate_lines(color_img, binary_img=None, remove_intersections=False)
-        display_lines(color_img, lines, save_path=img_output.format("_lines"), wait=False)
-        lines = classify_lines(lines, model, color_img, ResNext101LSTM.transform_classify)
-        output.append((color_img_path, lines))
+    for img, img_path, binary_img, save_path in tqdm(img_path_tuples, desc="Transcribing Image"):
+        lines = generate_lines(img, binary_img=binary_img, remove_intersections=False)
+        display_lines(img, lines, save_path=save_path.format("_lines"), wait=False)
+        lines = classify_lines(lines, model, img, ResNext101LSTM.transform_classify)
+        output.append((img_path, lines))
     write_csv("out.csv", output)
 
 
@@ -556,6 +588,6 @@ if __name__ == '__main__':
     #                          remove_intersections=False, crop=False)
     # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR_V3,
     #                          remove_intersections=False, crop=False)
-
-    generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
+    transcribe_images(r"temp\test_input_dir", r"temp\test_output_dir")
+    # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
     # train_model()

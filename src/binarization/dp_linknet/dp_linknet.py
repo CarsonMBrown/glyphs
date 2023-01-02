@@ -136,7 +136,6 @@ def binarize_imgs(img_in_dir, img_out_dir, *, threshold=7.5, tile_size=256, data
                   network_name="DPLinkNet34",
                   weights_dir="weights/dp-linknet/"):
     """
-
     :param img_in_dir: path to directory containing input images
     :param img_out_dir: path to directory to output images
     :param threshold: int to threshold on int, None to not threshold

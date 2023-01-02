@@ -38,6 +38,8 @@ def load_image(img_in_dir, img_out_dir, img_path, *, skip_existing=True, gray_sc
 
 
 def save_image(img_output, image):
+    if not os.path.exists(img_output):
+        os.makedirs(img_output[0:img_output.rindex("\\")])
     cv2.imwrite(img_output, image.astype(np.uint8))
 
 
