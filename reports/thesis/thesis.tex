@@ -73,7 +73,7 @@ headsepline, % Uncomment to get a line under the header
 %-------------------------------------------------------------------------------
 
 
-\thesistitle{TODO} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Automated Optical Detection and Recognition of Greek Letters on Degraded Papyri} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Dr. Mark-Jan \textsc{Nederhof}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \degree{Master in Science - Computer Science} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
 \author{Carson \textsc{Brown}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
@@ -117,9 +117,9 @@ headsepline, % Uncomment to get a line under the header
 \begin{flushright} \large
 \emph{Supervisor:}\\\supname
 \end{flushright}
-\end{minipage}\\[1.5cm]
+\end{minipage}\\[1cm]
 
-\includegraphics[width=0.5\textwidth]{{misc/st-andrews_vertical_black.png}}\\[1.5cm]
+\includegraphics[width=0.5\textwidth]{{misc/st-andrews_vertical_black.png}}\\[1cm]
 
 % \large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
 % \textit{in the}\\[0.4cm]
@@ -146,11 +146,10 @@ headsepline, % Uncomment to get a line under the header
 %	ACKNOWLEDGEMENTS
 %-------------------------------------------------------------------------------
 
-% TODO
-% \addchaptertocentry{Acknowledgements} % Add the acknowledgements to the table of contents
-% \begin{acknowledgements}
-% 	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on this project. I would also like to thank Dr. Isabelle Marthot-Santaniello for authoring the competition that led to this project. Finally, I would like to thank my family and friends who have supported me throughout this process, your support is invaluable.
-% \end{acknowledgements}
+\addchaptertocentry{Acknowledgements} % Add the acknowledgements to the table of contents
+\begin{acknowledgements}
+	I would like to thank my project supervisor, Dr. Mark-Jan Nederhof, for his insights on language and character recognition and his help on this project. I would also like to thank Dr. Isabelle Marthot-Santaniello for her assistance with understanding the dataset. Finally, I would like to thank my family and friends, who have supported me throughout my education, your support is invaluable.
+\end{acknowledgements}
 
 %-------------------------------------------------------------------------------
 %	DECLARATION PAGE
@@ -224,56 +223,57 @@ I declare that the material submitted for assessment is my own work except where
 \mainmatter % Begin numeric (1,2,3...) page numbering
 
 \pagestyle{thesis}
-% Total Words: (Dec 10)
-% 11,500 ish, need to recalc
+% Total Words: (Jan 5)
+% 12,686
 
-% This doc: 325 words (Dec 05)
-% Includes abstract, declaration, dedication, and quote
+% This doc: 307 words (Jan 5)
+% Includes abstract, declaration, dedication
 
-% 316 Words (Nov 29)
+% 316 Words (Jan 5)
 \chapter{Introduction}
 \chapterinput{introduction.tex}
 
-% 1895 Words (Nov 18)
+% 1895 Words (Jan 5)
 \chapter{Context Survey}
 \chapterinput{context_survey.tex}
 
-% 31 Words (Nov 18)
+% 31 Words (Jan 5)
 \chapter{Ethical Considerations}
 \chapterinput{ethics.tex}
 
-% 151 Words (Nov 29)
+% 151 Words (Jan 5)
 \chapter{Requirement Specification}
 \chapterinput{requirements.tex}
 
-% 428 Words (Nov 29)
+% 428 Words (Jan 5)
 \chapter{Software Engineering Methodology}
 \chapterinput{software_engineering.tex}
 
-% 551 Words (Nov 29)
+% 551 Words (Jan 5)
 \chapter{Design}
 \chapterinput{design.tex}
 
 % Up to this point
-% 3,697 (Dec 10)
+% 3,679 (Jan 5)
 
-% 3,984 Words (Dec 11)
-% + 1,469 in figures (Dec 10)
+% 4,186 Words (Dec 11)
+% + 1,472 in figures (Dec 10)
 \chapter{Implementation}
 \chapterinput{implementation.tex}
 
-% 2,150 Words (Dec 11)
+% 2,375 Words (Jan 4)
+% + 454 in figures (Jan 4)
 \chapter{Evaluation}
 \chapterinput{evaluation.tex}
 
 % After this point
-% 315 Words (Dec 15)
+% 315 Words (Jan 5)
 
-% 107 Words (Dec 15)
+% 110 Words (Jan 5)
 \chapter{Conclusion}
 \chapterinput{conclusion.tex}
 
-% 208 Words (Dec 15)
+% 205 Words (Dec 15)
 \chapter{Proposed Future Work}
 \chapterinput{future.tex}
 
@@ -282,7 +282,9 @@ I declare that the material submitted for assessment is my own work except where
 %-------------------------------------------------------------------------------
 
 \appendix
+% 205 Words (Jan 5)
 
+% 105 Words (Jan 4)
 \chapter{File Fragments}
 \appendixinput{code.tex}
 

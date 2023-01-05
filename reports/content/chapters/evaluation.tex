@@ -457,7 +457,7 @@ By training the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite
     \centering
     \begin{tabular}{ | l | l | l | }
         \hline
-        Base Network & Modified Network Name & Weighted F1 Score \\
+        Base Network & Modified Network Name & Peak Weighted F1 Score \\
         \hline
         AlexNet & AlexNet LSTM & 0.754 \\
         ResNeXt50 & ResNeXt50 Simple-LSTM & 0.786 \\
@@ -552,5 +552,24 @@ As is partially demonstrated in Figures \ref{fig:classificationFeatureVectorNN} 
     \end{tabular}
 \end{figure}
 
-\section{Pipeline}
+\subsection{Classification Training on RCNN Bounding Boxes}
 \todo{TODO}
+
+\section{Pipeline}
+Using the product of the classification F1 score and the bounding F1 score we can get a metric for the pipeline that when optimized generates hyperparameters that favor bounding and classification equally. Using this metric, the best results on the evaluation data were generated with a bounding box confidence threshold of $0.635$ and a duplicate threshold of $0.185$ without using an inner sliding window, cropping the bounding boxes to the binarized images, or removing the intersecting regions between bounding boxes. These parameters were used on the unseen testing set to generate evaluation results for the entire pipeline as a whole \seefig{pipelineTest}.
+
+\begin{figure}[H]
+    \caption{Final Pipeline Evaluation and Test Results}
+    \label{fig:pipelineTest}
+    \centering
+    \begin{tabular}{ | l | l | l | l | l | }
+        \hline
+        Data Set & Task & Precision & Recall & Weighted F1 Score \\
+        \hline
+        Evaluation & Bounding & 0.963 & 0.869 & 0.914 \\
+        Test & Bounding & 0.958 & 0.811 & 0.878 \\
+        Evaluation & Classification & 0.84 & 0.833 & 0.832 \\
+        Test & Classification & 0.822 & 0.815 & 0.814 \\
+        \hline
+    \end{tabular}
+\end{figure}

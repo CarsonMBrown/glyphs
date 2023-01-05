@@ -397,7 +397,7 @@ def generate_training_images(coco_dir, img_in_dir, binary_img_in_dir, out_dir, *
 
 def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
     """
-    Generate full pipelin evaluation data / metrics
+    Generate full pipeline evaluation data / metrics
     """
     with open(os.path.join("output_data", "pipeline_metrics.csv"), mode="w") as csv_file:
         csv_file.write(
@@ -407,19 +407,18 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
         )
         cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
         full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
-
         for inner_window in [False]:
             if inner_window:
-                min_confidence_val, max_confidence_val = .6, .8
+                min_confidence_val, max_confidence_val = .285, .326
             else:
-                min_confidence_val, max_confidence_val = .6, .8
-            for confidence_min in arange(min_confidence_val, max_confidence_val, .025):
+                min_confidence_val, max_confidence_val = 0.635, 0.636
+            for confidence_min in arange(min_confidence_val, max_confidence_val, .005):
                 confidence_min = round(confidence_min, 3)
                 if inner_window:
-                    min_duplicate_val, max_duplicate_val = .1, .3
+                    min_duplicate_val, max_duplicate_val = .430, .461
                 else:
-                    min_duplicate_val, max_duplicate_val = .1, .3
-                for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .025):
+                    min_duplicate_val, max_duplicate_val = .185, .186
+                for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .005):
                     duplicate_threshold = round(duplicate_threshold, 3)
                     img_bboxes_dicts = generate_img_bbox_dicts(coco_dir, img_in_dir,
                                                                binary_img_in_dir,
@@ -427,9 +426,9 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
                                                                confidence_min=confidence_min,
                                                                duplicate_threshold=duplicate_threshold)
                     crop, intersect, complex_nn, vary_lines, make_lines = False, False, True, False, True
-                    for crop, intersect in n_booleans(2):
+                    for crop, in n_choices(1, [False]):
                         truth_pred_iou_tuples = []
-                        with tqdm(desc=f"Generating Lines w/ confidence:{confidence_min}",
+                        with tqdm(desc=f"Generating Lines (c:{confidence_min}, t:{duplicate_threshold})",
                                   total=len(img_bboxes_dicts)) as pbar:
                             for i, img_bboxes_dict in enumerate(img_bboxes_dicts):
 
@@ -555,39 +554,6 @@ def transcribe_images(img_in_dir, img_out_dir, *, binary_img_in_dir=None):
 if __name__ == '__main__':
     print("Starting...")
 
-    # eval_model()
-    # deep_eval_model()
-    # generate_line_images(EVAL_RAW_DIR, EVAL_BINARIZED_DIR,
-    #                      os.path.join(EVAL_OUTPUT_DIR, "intersected_cropped_no_window"),
-    #                      remove_intersections=True, inner_sliding_window=False)
-
-    # if False:
-    #     generate_line_image(
-    #         cv2.imread(
-    #             r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.jpg"),
-    #         binary_img=cv2.imread(
-    #             r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\binarized\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.png",
-    #             cv2.IMREAD_GRAYSCALE),
-    #         remove_intersections=True, inner_sliding_window=False,
-    #         wait=False,
-    #         bbox_gif_export_path=r"C:\Users\Carson Brown\git\glyphs\output_data\sliding_window\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8")
-    #
-    # generate_line_image(
-    #     cv2.imread(
-    #         r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\raw\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.jpg"),
-    #     binary_img=cv2.imread(
-    #         r"C:\Users\Carson Brown\git\glyphs\dataset\images\eval\binarized\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.png",
-    #         cv2.IMREAD_GRAYSCALE),
-    #     save_path=r"C:\Users\Carson Brown\git\glyphs\output_data\line_generation\Bodleian_Library_MS_Gr_class_a_1_P_1_10_00008_frame_8.png",
-    #     remove_intersections=True, inner_sliding_window=False,
-    #     wait=False)
-
-    # generate_training_images(COCO_TRAINING_DIR, TRAIN_RAW_DIR, TRAIN_BINARIZED_DIR,
-    #                          TRAIN_GENERATED_CROPPED_GLYPHS_DIR_V3, remove_intersections=False, crop=False)
-    # generate_training_images(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR, EVAL_GENERATED_CROPPED_GLYPHS_DIR_V3,
-    #                          remove_intersections=False, crop=False)
-    # generate_training_images(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR, TEST_GENERATED_CROPPED_GLYPHS_DIR_V3,
-    #                          remove_intersections=False, crop=False)
-    transcribe_images(r"temp\test_input_dir", r"temp\test_output_dir")
+    # transcribe_images(r"temp\test_input_dir", r"temp\test_output_dir")
     # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
-    # train_model()
+    generate_eval_data(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR)
