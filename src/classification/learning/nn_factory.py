@@ -21,11 +21,14 @@ GLYPH_CLASSES = get_classes_as_glyphs()
 
 def load_model(model_class, *, name=None, load_epoch=0, dataset=None, input_size=None, resume=False):
     if dataset is not None:
-        model = model_class(dataset.get_vector_size(), 24).cuda()
+        model = model_class(dataset.get_vector_size(), 24)
     elif input_size is not None:
-        model = model_class(input_size, 24).cuda()
+        model = model_class(input_size, 24)
     else:
-        model = model_class(None, 24).cuda()
+        model = model_class(None, 24)
+
+    if torch.cuda.is_available():
+        model = model.cuda()
 
     model_path, save_file = get_model_path(load_epoch, model, name)
 
@@ -216,7 +219,9 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
     if model is None:
         if resume:
             print("Could not load model...")
-        model = model_class(validation_set.get_vector_size(), 24).cuda()
+        model = model_class(validation_set.get_vector_size(), 24)
+        if torch.cuda.is_available():
+            model = model.cuda()
         model_path, _ = get_model_path(start_epoch, model, name)
 
     # Load training set after model init and potential load as it may be much larger than validation set
