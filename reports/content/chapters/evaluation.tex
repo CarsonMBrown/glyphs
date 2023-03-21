@@ -307,7 +307,7 @@ By using the model with the highest base F1 score and introducing a sliding wind
       \end{tabular}
     \end{center}
     \vspace{5mm}
-    All results are taken with a sliding window of $800$ pixels and a step size of $200$ pixels. The results are averaged over the confidence thresholds $t$ required for the bounding boxes to be kept, where $0.1 \leq t \leq .85$ with a step size of $.05$.
+    All results are taken with a sliding window of $800$ pixels and a step size of $200$ pixels. The results are averaged over the confidence thresholds $t$ required for the bounding boxes to be kept, where $0.1 \leq t \leq 0.85$ with a step size of $0.05$.
 \end{figure}
 
 \subsubsection{RCNN Duplicate Removal}
@@ -331,7 +331,7 @@ YOLO generates a confidence value for each bounding box. Using these confidence 
 \end{figure}
 
 \subsubsection{Binarization-Assisted CNN}
-Using the binary images to tightly crop the YOLO-generated bounding boxes to the ink generates bounding boxes that have a mean IOU of $71.5\%$ compared to a mean IOU of $73.0\%$ without cropping the bounding boxes. This difference in bounding box size and shape results in a difference of less an a $.01\%$ in the mean precision, recall, and F1 scores. Cropping bounding boxes using the binarized images also reduces the mean classification F1 score by $1.8\%$.
+Using the binary images to tightly crop the YOLO-generated bounding boxes to the ink generates bounding boxes that have a mean IOU of $71.5\%$ compared to a mean IOU of $73.0\%$ without cropping the bounding boxes. This difference in bounding box size and shape results in a difference of less an a $0.01\%$ in the mean precision, recall, and F1 scores. Cropping bounding boxes using the binarized images also reduces the mean classification F1 score by $1.8\%$.
 
 \section{Line Bounding}
 
@@ -474,7 +474,7 @@ By training the convolutional layers of AlexNet \cite{Krizhevsky}, ResNeXt \cite
 
 \subsection{Stochastic Language Models}
 
-Utilizing a trained ResNeXt50 CNN with no LSTM layers to evaluate the stochastic language models resulted in results consistently worse than those of any of the CNNs with an LSTM. By evaluating all parameters $\alpha$ in $[0,1]$ with a step size of $0.05$ and then $.01$ around the peak, the best value for $\alpha$ was $0.03$ with an F1 score of $0.681$, compared to the baseline F1 score of $0.680$ using an $\alpha$ of $0$. With an $\alpha$ of $1$, the F1 score dropped even further to $0.636$. In addition, the language models were used to break ties in LSTM-based CNNs, which resulted in similar results when breaking ties between the top $n$ choices of the CNN \seefig{classificationMarkovTopN} and when breaking ties between the top choices when there was a difference between the top choices of less than a set uncertainty threshold $u$ \seefig{classificationMarkovUncertainty}. Therefore, it can be concluded that while a stochastic language model can be utilized to augment a non-LSTM classifier, a single LSTM layer generates results far better without requiring extra algorithmic steps in the classification process. However, utilizing an additional language model to assist the LSTM-based classifier could potentially increase accuracy in approximately $0.02\%$ of the classifications.
+Utilizing a trained ResNeXt50 CNN with no LSTM layers to evaluate the stochastic language models resulted in results consistently worse than those of any of the CNNs with an LSTM. By evaluating all parameters $\alpha$ in $[0,1]$ with a step size of $0.05$ and then $0.01$ around the peak, the best value for $\alpha$ was $0.03$ with an F1 score of $0.681$, compared to the baseline F1 score of $0.680$ using an $\alpha$ of $0$. With an $\alpha$ of $1$, the F1 score dropped even further to $0.636$. In addition, the language models were used to break ties in LSTM-based CNNs, which resulted in similar results when breaking ties between the top $n$ choices of the CNN \seefig{classificationMarkovTopN} and when breaking ties between the top choices when there was a difference between the top choices of less than a set uncertainty threshold $u$ \seefig{classificationMarkovUncertainty}. Therefore, it can be concluded that while a stochastic language model can be utilized to augment a non-LSTM classifier, a single LSTM layer generates results far better without requiring extra algorithmic steps in the classification process. However, utilizing an additional language model to assist the LSTM-based classifier could potentially increase accuracy in approximately $0.02\%$ of the classifications.
 
 \begin{figure}[H]
     \caption{Evaluation Results for Top $n$ Tie-Breaking Using Stochastic Language Models}
