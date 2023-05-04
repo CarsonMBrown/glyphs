@@ -1,4 +1,5 @@
 from torch import nn, randn
+from torch.nn import ModuleList
 from torchvision import transforms
 from torchvision.models import resnext50_32x4d, ResNeXt50_32X4D_Weights, ResNeXt101_32X8D_Weights, resnext101_32x8d
 
@@ -60,9 +61,32 @@ class ResNext50LSTM(nn.Module):
 # EPOCH 56: PRECISION 0.8464500000000006 RECALL 0.839 FSCORE 0.833355238095238
 # Start training at 74 with higher dropout (.1 -> .33)
 class ResNextLongLSTM(nn.Module):
+    transform_train = transforms.Compose([
+        transforms.Resize(240),
+        transforms.RandomPerspective(distortion_scale=0.15, p=.5),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.15, hue=0.1),
+        transforms.RandomAffine(degrees=5, translate=(0.1, 0.1), scale=(0.2, 1.2), shear=3),
+        transforms.RandomApply(ModuleList([
+            transforms.GaussianBlur(kernel_size=3)
+        ]), p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=.8, p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
+        transforms.RandomAutocontrast(p=.5),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    transform_classify = transforms.Compose([
+        transforms.Resize(240),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
     def __init__(self, input_size, output_size):
         super().__init__()
-        dropout = 0.0
+        dropout = 0.5
         self.resnext = resnext50_32x4d(ResNeXt50_32X4D_Weights.IMAGENET1K_V2)
         self.resnext.fc = nn.LSTM(self.resnext.fc.in_features, output_size * 2, num_layers=1, bidirectional=True)
         self.classifier = nn.Sequential(
@@ -146,6 +170,19 @@ class ResNext101LSTM(nn.Module):
         transforms.RandomPerspective(distortion_scale=0.2, p=.5),
         transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=.3),
         transforms.RandomAffine(degrees=15, translate=(0.3, 0.3), scale=(0.7, 1.3), shear=0.3),
+        transforms.RandomAdjustSharpness(sharpness_factor=.8, p=.1),
+        transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
+        transforms.RandomAutocontrast(),
+        transforms.RandomCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    transform_train_mild = transforms.Compose([
+        transforms.Resize(240),
+        transforms.RandomPerspective(distortion_scale=0.2, p=.5),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.3, hue=.2),
+        transforms.RandomAffine(degrees=5, translate=(0.2, 0.2), scale=(0.7, 1.3), shear=0.1),
         transforms.RandomAdjustSharpness(sharpness_factor=.8, p=.1),
         transforms.RandomAdjustSharpness(sharpness_factor=1.2, p=.1),
         transforms.RandomAutocontrast(),

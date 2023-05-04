@@ -3,7 +3,8 @@ import os
 from src.bounding import bound
 from src.bounding.connected_components import bound_and_render
 from src.evaluation.bbox_eval import get_truth_pred_iou_tuples, get_iou_metrics
-from src.main import generate_img_bbox_dicts, n_booleans
+from src.main import generate_img_bbox_dicts
+from src.util.iteration_util import n_booleans
 
 
 def eval_connected_components_bounding(coco_dir, binary_img_in_dir):

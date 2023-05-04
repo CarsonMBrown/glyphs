@@ -1,5 +1,5 @@
 from src.bounding.connected_components import get_connected_component_bounding_boxes, bound_and_render
-from src.util.bbox import BBox, get_mean_dims
+from src.util.bbox_util import BBox, get_mean_dims
 
 
 def export_connected_component(img_in_dir, img_out_dir):

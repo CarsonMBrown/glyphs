@@ -3,6 +3,7 @@ import fnmatch
 import json
 import os
 import re
+import shutil
 
 from coco import COCOread, COCO
 
@@ -50,13 +51,14 @@ def annotation_record(trans, id, cat_id, image_id):
     record['iscrowd'] = 0
     record['seg_id'] = id
     record['tags'] = {'BaseType': ['bt1']}
+    record['score'] = float(trans['certainty'])
     return record
 
 
 if __name__ == '__main__':
     dir_train = '../HomerCompTraining'
     dir_test = '../HomerCompTesting'
-    trans_file_csv = '../output/transcriptions.csv'
+    trans_file_csv = '../output/transcriptions_800_200_no_inner_window.csv'
     template_coco_file = '../output/template.json'
     coco_train = COCOread(os.path.join(dir_train, 'HomerCompTrainingReadCoco.json'))
     coco_test = COCO(coco_train.categories, coco_train.licenses)
@@ -80,4 +82,6 @@ if __name__ == '__main__':
         image_id = path_to_img_id[path_to_linux(trans['image_path'])]
         ann_record = annotation_record(trans, i, cat_id, image_id)
         coco_test.add_annotation(ann_record)
-    coco_test.write(os.path.join(dir_test, 'HomerCompTestingCoco.json'))
+    coco_test.write(os.path.join(dir_test, 'output', 'HomerCompTestingCoco.json'))
+    shutil.make_archive(os.path.join(dir_test, 'HomerCompTestingCoco'), 'zip',
+                        os.path.join(dir_test, 'output'))

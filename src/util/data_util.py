@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 
 from src.bounding.bound import get_minimal_bounding_boxes_v2
-from src.util.bbox import BBox
+from src.util.bbox_util import BBox
 from src.util.dir_util import split_image_name_extension, get_file_name
 from src.util.glyph_util import glyph_to_name, glyph_to_glyph
 from src.util.img_util import plot_lines
@@ -174,7 +174,7 @@ def divide_into_lines(ann):
 
 
 def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_filter=None,
-                   glyphs_per_footmark_type_limit=None):
+                   glyphs_per_footmark_type_limit=None, separate_footmark_types=False):
     if quality_filter is None:
         quality_filter = []
     coco = CocoReader(coco_dir)
@@ -216,8 +216,10 @@ def extract_glyphs(coco_dir, in_dir, out_dir, *, ocular_format=False, quality_fi
                 glyph_path = out_dir
             else:
                 glyph_path = os.path.join(out_dir, glyph_to_name(glyph))
+                if separate_footmark_types:
+                    glyph_path += "_" + (foot_mark_type if foot_mark_type is not None else "None")
                 if not os.path.exists(glyph_path):
-                    os.mkdir(glyph_path)
+                    os.makedirs(glyph_path)
 
             full_glyph_image_path = os.path.join(glyph_path, output_file_name)
             if ocular_format:
@@ -293,7 +295,7 @@ def load_truth(coco, image):
             for annotation in get_annotations(coco, image) if annotation_to_glyph(annotation, coco) != "."]
 
 
-def generate_yolo_labels(coco_dir, out_dir, *, mono_class=False):
+def generate_yolo_labels(coco_dir, out_dir, *, mono_class=True):
     coco = CocoReader(coco_dir)
     labels = set()
     # First pass, get all classes that actually appear

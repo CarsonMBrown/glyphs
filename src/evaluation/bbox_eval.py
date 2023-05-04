@@ -2,7 +2,7 @@ from statistics import mean
 
 from sklearn.metrics import precision_recall_fscore_support
 
-from src.util.bbox import get_mean_dims
+from src.util.bbox_util import get_mean_dims
 
 
 def get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes):
@@ -86,6 +86,10 @@ def get_unique_bboxes(bboxes, iou_threshold=.8):
 
 def get_non_enclosed_bboxes(bboxes):
     return [bbox for bbox in bboxes if len(bbox.get_enclosing(bboxes)) == 0]
+
+
+def get_non_phantom_bboxes(bboxes, x, y, area):
+    return [bbox for bbox in bboxes if len(bbox.get_overlaid(bboxes, x, y, area)) == 0]
 
 
 def remove_bbox_outliers(bboxes, *, x_min_percent=.5, x_max_percent=2, y_min_percent=.5, y_max_percent=2):

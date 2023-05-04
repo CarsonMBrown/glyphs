@@ -1,4 +1,6 @@
 import os.path
+import os.path
+import random
 import sys
 from functools import partial
 
@@ -24,6 +26,7 @@ from src.util.data_util import load_truth, CocoReader, write_meta
 from src.util.dir_util import get_input_img_paths, init_output_dir, write_generated_bboxes, get_file_name
 from src.util.glyph_util import get_classes_as_glyphs
 from src.util.img_util import plot_bboxes, plot_lines, load_image
+from src.util.iteration_util import n_choices
 from src.util.line_util import get_line_centers, unpack_lines, clean_lines, generate_line_variants, \
     generate_line_variants_at_indexes
 
@@ -107,21 +110,24 @@ BINARIZED_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "binarized"
 ARTIFICIAL_TEMPLATE_GLYPHS_DIR = os.path.join(GLYPH_DIR, "templates", "artificial")
 
 lang_file = os.path.join(DATASET_DIR, "perseus_25000.txt"), os.path.join(DATASET_DIR, "perseus_5000.txt")
+rand_lang_file = os.path.join(DATASET_DIR, "perseus_25000_random.txt"), os.path.join(DATASET_DIR, "perseus_5000.txt")
 quick_lang_file = os.path.join(DATASET_DIR, "perseus_5000.txt"), os.path.join(DATASET_DIR, "perseus_2000.txt")
-meta_data_file = os.path.join(TRAIN_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv"), \
-                 os.path.join(EVAL_GENERATED_CROPPED_GLYPHS_DIR, "meta.csv")
+meta_data_file = os.path.join(GLYPH_DIR, "contest_train", "meta.csv"), \
+                 os.path.join(GLYPH_DIR, "contest_eval", "meta.csv")
 
 
-def train_model(train_dir, eval_dir, resume=False, start_epoch=0, epochs=100, batch_size=24):
+def train_model(train_dir, eval_dir, resume=False, start_epoch=0, epochs=100, batch_size=24, name=None,
+                rand_lang=False):
     """
     Train the best network with the given parameters
     """
+    random.seed(0)
     nn_factory.train_model(
-        lang_file, meta_data_file, train_dir, eval_dir, ResNextLongLSTM, epochs=epochs, batch_size=batch_size,
-        num_workers=0, resume=resume, start_epoch=start_epoch, loader=ImageLoader,
-        transforms=[ResNext101LSTM.transform_train,
-                    ResNext101LSTM.transform_classify],
-        loss_fn=torch.nn.CrossEntropyLoss
+        lang_file if not rand_lang else rand_lang_file, meta_data_file, train_dir, eval_dir, ResNextLongLSTM,
+        epochs=epochs, batch_size=batch_size, num_workers=0, resume=resume,
+        start_epoch=start_epoch, loader=ImageLoader, name=name, loss_fn=torch.nn.CrossEntropyLoss,
+        transforms=[ResNextLongLSTM.transform_train,
+                    ResNextLongLSTM.transform_classify]
     )
 
 
@@ -215,7 +221,7 @@ def display_lines(img, lines, *, save_path=None, wait=True):
     return img
 
 
-def generate_lines(img, *, binary_img=None, remove_intersections=False, inner_sliding_window=True,
+def generate_lines(img, *, binary_img=None, remove_intersections=False, inner_sliding_window=False,
                    bbox_gif_export_path=None):
     valid_bboxes = generate_bboxes(img, inner_sliding_window=inner_sliding_window,
                                    bbox_gif_export_path=bbox_gif_export_path)
@@ -276,12 +282,15 @@ def get_image_output_tuples(img_in_dir, save_path, *, binary_img_in_dir=None, ve
 
 
 def generate_bboxes(img, *, inner_sliding_window=True, bbox_gif_export_path=None, confidence_min=None, cache_name=None,
-                    duplicate_threshold=None):
-    """Generate the bounding boxes in the passed in image"""
+                    duplicate_threshold=None, sliding_window_size=None, sliding_window_step=None,
+                    x_phantom_max=None, y_phantom_max=None, area_phantom_max=None):
+    """Generate the bounding boxes in the given image"""
     bboxes = yolo.sliding_glyph_window(img, inner_sliding_window=inner_sliding_window,
                                        bbox_gif_export_path=bbox_gif_export_path,
                                        confidence_min=confidence_min, cache_name=cache_name,
-                                       duplicate_threshold=duplicate_threshold)
+                                       duplicate_threshold=duplicate_threshold, window_size=sliding_window_size,
+                                       window_step=sliding_window_step, x_phantom_max=x_phantom_max,
+                                       y_phantom_max=y_phantom_max, area_phantom_max=area_phantom_max)
     valid_bboxes, outlier_boxes = remove_bbox_outliers(bboxes), get_bbox_outliers(bboxes)
     return valid_bboxes
 
@@ -402,77 +411,90 @@ def generate_eval_data(coco_dir, img_in_dir, binary_img_in_dir):
     """
     with open(os.path.join("output_data", "pipeline_metrics.csv"), mode="w") as csv_file:
         csv_file.write(
-            "confidence_min, duplicate_threshold, inner_sliding_window, intersect, crop, complex_nn, "
-            "vary_lines, make_lines, bbox_precision, bbox_recall, "
-            "bbox_fscore, avg_iou, class_precision, class_recall, class_fscore\n"
+            "confidence_min,duplicate_threshold,window_size,window_step_percent,x_intersection_allowed,"
+            "inner_sliding_window,intersect,crop,complex_nn,"
+            "vary_lines,make_lines,bbox_precision,bbox_recall,"
+            "bbox_fscore,avg_iou,class_precision,class_recall,class_fscore\n"
         )
-        cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
-        full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
-        for inner_window in [False]:
-            if inner_window:
-                min_confidence_val, max_confidence_val = .285, .326
-            else:
-                min_confidence_val, max_confidence_val = 0.635, 0.636
-            for confidence_min in arange(min_confidence_val, max_confidence_val, .005):
-                confidence_min = round(confidence_min, 3)
-                if inner_window:
-                    min_duplicate_val, max_duplicate_val = .430, .461
-                else:
-                    min_duplicate_val, max_duplicate_val = .185, .186
-                for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .005):
-                    duplicate_threshold = round(duplicate_threshold, 3)
-                    img_bboxes_dicts = generate_img_bbox_dicts(coco_dir, img_in_dir,
-                                                               binary_img_in_dir,
-                                                               inner_sliding_window=inner_window,
-                                                               confidence_min=confidence_min,
-                                                               duplicate_threshold=duplicate_threshold)
-                    crop, intersect, complex_nn, vary_lines, make_lines = False, False, True, False, True
-                    for crop, in n_choices(1, [False]):
-                        truth_pred_iou_tuples = []
-                        with tqdm(desc=f"Generating Lines (c:{confidence_min}, t:{duplicate_threshold})",
-                                  total=len(img_bboxes_dicts)) as pbar:
-                            for i, img_bboxes_dict in enumerate(img_bboxes_dicts):
+    cropped_model, _ = nn_factory.load_model(MNISTCNN_DEEP_LSTM, load_epoch=773, resume=False)
+    full_size_model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
+    for window_size in [1100]:
+        for window_step_percent in [.3]:
+            for x_intersection_allowed in [.97, .98, .99, 1, 1.1]:
+                window_step = window_size * window_step_percent
+                for inner_window in [False]:
+                    if inner_window:
+                        min_confidence_val, max_confidence_val = .285, .326
+                    else:
+                        min_confidence_val, max_confidence_val = 0.620, 0.641
+                    for confidence_min in arange(min_confidence_val, max_confidence_val, .005):
+                        confidence_min = round(confidence_min, 3)
+                        if inner_window:
+                            min_duplicate_val, max_duplicate_val = .430, .461
+                        else:
+                            min_duplicate_val, max_duplicate_val = .125, .146
+                        for duplicate_threshold in arange(min_duplicate_val, max_duplicate_val, .005):
+                            duplicate_threshold = round(duplicate_threshold, 3)
+                            img_bboxes_dicts = generate_img_bbox_dicts(coco_dir, img_in_dir,
+                                                                       binary_img_in_dir,
+                                                                       inner_sliding_window=inner_window,
+                                                                       confidence_min=confidence_min,
+                                                                       duplicate_threshold=duplicate_threshold,
+                                                                       sliding_window_size=window_size,
+                                                                       sliding_window_step=window_step,
+                                                                       x_phantom_max=x_intersection_allowed)
+                            crop, intersect, complex_nn, vary_lines, make_lines = False, False, True, False, True
+                            for crop, in n_choices(1, [False]):
+                                truth_pred_iou_tuples = []
+                                with tqdm(desc=f"Generating Lines (c:{confidence_min}, t:{duplicate_threshold})",
+                                          total=len(img_bboxes_dicts)) as pbar:
+                                    for i, img_bboxes_dict in enumerate(img_bboxes_dicts):
 
-                                bboxes = [bbox.copy() for bbox in img_bboxes_dict["pred"]]
-                                truth_bboxes = [bbox.copy() for bbox in img_bboxes_dict["truth"]]
-                                if make_lines:
-                                    lines = bboxes_to_lines(binary_img=img_bboxes_dict["binary"] if crop else None,
-                                                            remove_intersections=intersect,
-                                                            bboxes=bboxes)
-                                else:
-                                    lines = [[bbox] for bbox in bboxes]
-                                if complex_nn:
-                                    model, transform = full_size_model, ResNext101LSTM.transform_classify_padded
-                                else:
-                                    model, transform = cropped_model, MNISTCNN.transform_classify_2
+                                        bboxes = [bbox.copy() for bbox in img_bboxes_dict["pred"]]
+                                        truth_bboxes = [bbox.copy() for bbox in img_bboxes_dict["truth"]]
+                                        if make_lines:
+                                            lines = bboxes_to_lines(
+                                                binary_img=img_bboxes_dict["binary"] if crop else None,
+                                                remove_intersections=intersect,
+                                                bboxes=bboxes)
+                                        else:
+                                            lines = [[bbox] for bbox in bboxes]
+                                        if complex_nn:
+                                            model, transform = full_size_model, ResNext101LSTM.transform_classify_padded
+                                        else:
+                                            model, transform = cropped_model, MNISTCNN.transform_classify_2
 
-                                if vary_lines:
-                                    lines = classify_lines_with_adaptive_variants(lines, model,
-                                                                                  img_bboxes_dict["color"], transform,
-                                                                                  softmax=complex_nn,
-                                                                                  flip_channels=False)
-                                else:
-                                    lines = classify_lines(lines, model, img_bboxes_dict["color"], transform,
-                                                           flip_channels=False)
+                                        if vary_lines:
+                                            lines = classify_lines_with_adaptive_variants(lines, model,
+                                                                                          img_bboxes_dict["color"],
+                                                                                          transform,
+                                                                                          softmax=complex_nn,
+                                                                                          flip_channels=False)
+                                        else:
+                                            lines = classify_lines(lines, model, img_bboxes_dict["color"], transform,
+                                                                   flip_channels=False)
 
-                                pred_bboxes = unpack_lines(lines)
-                                truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
-                                pbar.update(1)
+                                        pred_bboxes = unpack_lines(lines)
+                                        truth_pred_iou_tuples += get_truth_pred_iou_tuples(truth_bboxes, pred_bboxes)
+                                        pbar.update(1)
 
-                            bbox_precision, bbox_recall, bbox_fscore, avg_IOU = \
-                                get_iou_metrics(truth_pred_iou_tuples)
-                            class_precision, class_recall, class_fscore = get_class_metrics(
-                                truth_pred_iou_tuples)
+                                    bbox_precision, bbox_recall, bbox_fscore, avg_IOU = \
+                                        get_iou_metrics(truth_pred_iou_tuples)
+                                    class_precision, class_recall, class_fscore = get_class_metrics(
+                                        truth_pred_iou_tuples)
 
-                            csv_file.write(
-                                f"{confidence_min}, {duplicate_threshold}, {inner_window}, "
-                                f"{intersect}, {crop}, {complex_nn}, "
-                                f"{vary_lines}, {make_lines}, {bbox_precision}, {bbox_recall}, "
-                                f"{bbox_fscore}, {avg_IOU}, {class_precision}, {class_recall}, {class_fscore}\n")
+                                    with open(os.path.join("output_data", "pipeline_metrics.csv"),
+                                              mode="a") as csv_file:
+                                        csv_file.write(
+                                            f"{confidence_min},{duplicate_threshold},{window_size},{window_step_percent},"
+                                            f"{x_intersection_allowed},{inner_window},{intersect},{crop},{complex_nn},"
+                                            f"{vary_lines},{make_lines},{bbox_precision},{bbox_recall},"
+                                            f"{bbox_fscore},{avg_IOU},{class_precision},{class_recall},{class_fscore}\n")
 
 
 def generate_img_bbox_dicts(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sliding_window=True,
-                            confidence_min=None, duplicate_threshold=None):
+                            confidence_min=None, duplicate_threshold=None, sliding_window_size=None,
+                            sliding_window_step=None, x_phantom_max=None, y_phantom_max=None, area_phantom_max=None):
     """
     Given a coco file and an image directory path, generate a list of,
     (image, binary image, predicted bounding box, truth bounding box) tuples
@@ -503,38 +525,16 @@ def generate_img_bbox_dicts(coco_dir, img_in_dir, binary_img_in_dir, *, inner_sl
                 "binary": binary_img,
                 "pred": generate_bboxes(color_img, inner_sliding_window=inner_sliding_window,
                                         confidence_min=confidence_min,
-                                        cache_name=color_img_path, duplicate_threshold=duplicate_threshold),
+                                        sliding_window_size=sliding_window_size,
+                                        sliding_window_step=sliding_window_step,
+                                        cache_name=color_img_path, duplicate_threshold=duplicate_threshold,
+                                        x_phantom_max=x_phantom_max, y_phantom_max=y_phantom_max,
+                                        area_phantom_max=area_phantom_max),
                 "truth": truth_bboxes
             })
             pbar.update(1)
 
     return img_bboxes_dicts
-
-
-def n_booleans(n):
-    """
-    Generate all the lists of n elements that can be made of booleans
-    :param n: number of elements to have in the lists being generated
-    :return a list of lists, where each list is made up of n booleans, s.t each ordered list of booleans is unique
-    """
-    return n_choices(n, [True, False])
-
-
-def n_choices(n, choices):
-    """
-    From a given list of choices, generate all the lists of n elements that can be made by picking an element
-    from the list of choices at each index in the new list
-    :param n: number of elements to have in the lists being generated
-    :param choices: list of choices for each element in the new lists
-    :return a list of lists, where each list is made up of n elements from the choices list s.t. the ordered lists that
-    are returned are unique
-    """
-    x = [[c] for c in choices]
-    if n == 1:
-        return x
-    for _ in range(n - 1):
-        x = [C + [c] for c in choices for C in x]
-    return x
 
 
 def transcribe_images(img_in_dir, img_out_dir, *, binary_img_in_dir=None):
@@ -545,7 +545,7 @@ def transcribe_images(img_in_dir, img_out_dir, *, binary_img_in_dir=None):
     model, _ = nn_factory.load_model(ResNextLongLSTM, load_epoch=24, resume=False)
     output = []
     for img, img_path, binary_img, save_path in tqdm(img_path_tuples, desc="Transcribing Image"):
-        lines = generate_lines(img, binary_img=binary_img, remove_intersections=False)
+        lines = generate_lines(img, binary_img=None, inner_sliding_window=False, remove_intersections=False)
         display_lines(img, lines, save_path=save_path.format("_lines"), wait=False)
         lines = classify_lines(lines, model, img, ResNext101LSTM.transform_classify)
         output.append((img_path, lines))
@@ -558,6 +558,21 @@ if __name__ == '__main__':
     if len(args) != 2:
         print(f"Usage: {sys.argv[0]} <input_path> <output_path>")
     else:
-        transcribe_images(args[0], args[1])
-        # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, EVAL_BINARIZED_DIR)
+        # transcribe_images(args[0], args[1])
+        # TODO command line args for training glyph crops generation
+        # src.util.data_util.extract_glyphs(COCO_TRAINING_DIR, os.path.join(IMAGE_DIR, "temp"),
+        #                                   os.path.join(GLYPH_DIR, "contest_train"))
+        # src.util.data_util.extract_glyphs(COCO_TRAINING_DIR, EVAL_RAW_DIR,
+        #                                   os.path.join(GLYPH_DIR, "contest_eval"))
+        # TODO command line args for training classification nn
+        train_model(TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                    resume=True, start_epoch=11, epochs=20, name="test_with_lang_data")
+        train_model(TRAIN_RAW_GLYPHS_DIR, EVAL_RAW_GLYPHS_DIR,
+                    resume=True, start_epoch=8, epochs=20, name="test_without_lang_data", rand_lang=True)
+        # TODO command line args for eval data generation
+        # generate_eval_data(COCO_TRAINING_DIR, EVAL_RAW_DIR, None)
+        # TODO command line args for test data generation
         # generate_eval_data(COCO_TRAINING_DIR, TEST_RAW_DIR, TEST_BINARIZED_DIR)
+        # TODO command line args for yolo label generation
+        # generate_yolo_labels(r"C:\Users\Carson Brown\git\glyphs\HomerCompTraining",
+        #                      r"C:\Users\Carson Brown\git\glyphs\dataset\yolo")

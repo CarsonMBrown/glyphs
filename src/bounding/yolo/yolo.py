@@ -3,8 +3,8 @@ import os.path
 import cv2
 import torch
 
-from src.evaluation.bbox_eval import get_non_enclosed_bboxes
-from src.util.bbox import BBox
+from src.evaluation.bbox_eval import get_non_enclosed_bboxes, get_non_phantom_bboxes
+from src.util.bbox_util import BBox
 from src.util.img_util import plot_bboxes
 
 # don't load model until needed
@@ -33,9 +33,9 @@ def find_glyphs(img, *, model_local=True):
     return model(img)
 
 
-# TODO: HYPER PARAM TUNING ON WINDOW SIZE AND STEP
-def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_export_path=None,
-                         inner_sliding_window=True, confidence_min=None, cache_name=None, duplicate_threshold=None):
+def sliding_glyph_window(img, *, window_size=None, window_step=None, bbox_gif_export_path=None,
+                         inner_sliding_window=False, confidence_min=None, cache_name=None, duplicate_threshold=None,
+                         x_phantom_max=None, y_phantom_max=None, area_phantom_max=None):
     """
     :param img: img to get bboxes from (IN BGR)
     :param window_size: size of the sliding window to use
@@ -45,15 +45,31 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
     :param confidence_min: min confidence to keep bboxes
     :param cache_name: where to save bboxes in memory, None to not save
     :param duplicate_threshold: IOU threshold to not add a bbox
+    :param x_phantom_max: max allowed intersection in the x direction (as a percentage) before a box is removed
+    :param y_phantom_max: max allowed intersection in the y direction (as a percentage) before a box is removed
+    :param area_phantom_max: max allowed intersection area (as a percentage) before a box is removed
     :return: returns a list of bounding boxes
     """
     if bbox_gif_export_path is not None:
         os.makedirs(bbox_gif_export_path, exist_ok=True)
 
     if duplicate_threshold is None:
-        duplicate_threshold = .450 if inner_sliding_window else .330
+        duplicate_threshold = .450 if inner_sliding_window else .135
     if confidence_min is None:
-        confidence_min = .290 if inner_sliding_window else .475
+        confidence_min = .290 if inner_sliding_window else .63
+    if window_size is None:
+        window_size = 1100
+    if window_step is None:
+        window_step = 330
+    else:
+        window_step = int(window_step)
+
+    if x_phantom_max is None:
+        x_phantom_max = 2
+    if y_phantom_max is None:
+        y_phantom_max = 0
+    if area_phantom_max is None:
+        area_phantom_max = 0
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -66,12 +82,12 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
             window_y_max = y_max if dy + window_step + window_size >= y_max else dy + window_size
 
             # get bboxes fully contained by the window
-            if cache_name is not None and str(f"{cache_name}{dy}{dx}") in cache:
-                found_glyphs = cache[f"{cache_name}{dy}{dx}"]
+            if cache_name is not None and str(f"{cache_name}{window_size}{dy}{dx}") in cache:
+                found_glyphs = cache[f"{cache_name}{window_size}{dy}{dx}"]
             else:
                 found_glyphs = find_glyphs(img[dy:window_y_max, dx:window_x_max])
                 if cache_name is not None:
-                    cache[f"{cache_name}{dy}{dx}"] = found_glyphs
+                    cache[f"{cache_name}{window_size}{dy}{dx}"] = found_glyphs
 
             potential_bboxes = get_bounding_boxes(found_glyphs,
                                                   offset_x=dx,
@@ -120,7 +136,9 @@ def sliding_glyph_window(img, *, window_size=800, window_step=200, bbox_gif_expo
                 cv2.imwrite(os.path.join(bbox_gif_export_path, f"window_{dx}_{dy}.png"), temp_img)
 
     non_internal_bboxes = get_non_enclosed_bboxes(bboxes)
-    return non_internal_bboxes
+    non_phantom_bboxes = get_non_phantom_bboxes(non_internal_bboxes, x=x_phantom_max, y=y_phantom_max,
+                                                area=area_phantom_max)
+    return non_phantom_bboxes
 
 
 def show_result(result):

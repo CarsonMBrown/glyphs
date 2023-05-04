@@ -17,7 +17,7 @@ color_pallet = [
 
 
 def load_image(img_in_dir, img_out_dir, img_path, *, skip_existing=True, gray_scale=False, invert=False,
-               formattable_output=0, verbose=True):
+               formattable_output=0, verbose=False):
     if verbose:
         print("Now processing image:", img_path)
 

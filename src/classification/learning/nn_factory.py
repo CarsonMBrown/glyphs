@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from src.classification.learning.torch_dataloader import VectorLoader
-from src.util.bbox import BBox
+from src.util.bbox_util import BBox
 from src.util.glyph_util import get_classes_as_glyphs
 
 SAVE_PATH = os.path.join("weights", "nn")
@@ -233,8 +233,8 @@ def train_model(lang_file, annotations_file, training_data_path, validation_data
 
     loss_fn = loss_fn()
 
-    optimizer1 = torch.optim.Adam(model.parameters(), lr=0.1)
-    optimizer2 = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer1 = torch.optim.Adam(model.parameters(), lr=0.00002)
+    optimizer2 = torch.optim.Adam(model.parameters(), lr=0.00001)
 
     # Report split sizes
     print('Training set has {} instances'.format(len(training_set)))

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from src.util.bbox import BBox
+from src.util.bbox_util import BBox
 from src.util.dir_util import get_input_img_paths, init_output_dir
 from src.util.img_util import load_image, save_image
 
